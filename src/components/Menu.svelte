@@ -1,4 +1,7 @@
 <script>
+  import {menuComponents} from '../lib/store';
+  import MenuItem from './MenuItem.svelte';
+
   export let sidebarOpen = false;
 </script>
 <div class:sidebarOpen={sidebarOpen} class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
@@ -21,8 +24,10 @@
       </a>
     </li>
     <div class="collapse" id="collapseExample">
-      <div class="card card-body">
-        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+      <div class="content-menu row row-cols-2 row-cols-lg-3">
+        {#each $menuComponents as component}
+          <MenuItem {component}/>
+        {/each}
       </div>
     </div>
   </ul>
@@ -46,6 +51,12 @@
   .sidebar{ height: 100vh; position: absolute;top: 0;left: -100vw;bottom: 0;z-index: 9;}
   i.fas{ margin-right: 10px; }
   .nav-link{margin: 10px 0;}
+  .content-menu{
+    background-color: #f1f1f1;
+    padding: 10px 5px;
+    margin: 0 2px;
+    border-radius: 5px;
+  }
   .sidebar{transition: all ease .3s;}
   .close-sidebar-icon{ padding: 10px 0 10px 10px; cursor: pointer;}
   .sidebarOpen{left: 0;}

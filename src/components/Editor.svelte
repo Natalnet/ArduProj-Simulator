@@ -1,23 +1,41 @@
 <script>
-import Canvas from './editor/components/Canvas.svelte';
-import Circle from './editor/components/Circle.svelte';
-let cxM = 0, cyM = 0;
+  import { components, menuComponents } from '../lib/store';
+  import Canvas from './editor/components/Canvas.svelte';
+  import Circle from './editor/components/Circle.svelte';
 
-let editorOffsetHeight, editorOffsetWidth, editor;
+  let mouseData = {cxM: 0, cyM: 0, onMouseDown: false, working: false}
+  let editorOffsetHeight, editorOffsetWidth, editor;
+
+  const handleDragDrop = e => {
+    let name = e
+        .dataTransfer
+        .getData("text");
+    let element = JSON.parse(JSON.stringify($menuComponents.filter(el => el.name == name)[0]));
+    components.set([...$components, element]);
+  }
 </script>
+<div id="editor" 
+  bind:this={editor} 
+  bind:clientWidth={editorOffsetWidth} 
+  bind:clientHeight={editorOffsetHeight}
 
-<div id="editor" bind:this={editor} bind:clientWidth={editorOffsetWidth} bind:clientHeight={editorOffsetHeight}>
+	on:drop|preventDefault={handleDragDrop} 
+	ondragover="return false"
+>
   {#if editor}
-    <Canvas height={editorOffsetHeight} width={editorOffsetWidth}  bind:cxM={cxM} bind:cyM={cyM} editorSize={{height: editorOffsetHeight, width: editorOffsetWidth}}>
-      <Circle 
-        r="30"
-        cx={cxM}
-        cy={cyM}
-        fill={0}
-        
-      />
+    <Canvas
+      height={editorOffsetHeight} 
+      width={editorOffsetWidth}  
+      bind:onMouseDown={mouseData.onMouseDown}
+      bind:mouseData={mouseData}
+      editorSize={{height: editorOffsetHeight, width: editorOffsetWidth}}
+    >
+      {#each $components as component}
+        <Circle bind:data={component} {mouseData}/>
+      {/each}
   </Canvas>
 {/if}
+  <p class="mouse-position">x: {mouseData.cxM} y: {mouseData.cyM}</p>
 </div>
 
 <style>
@@ -27,5 +45,13 @@ let editorOffsetHeight, editorOffsetWidth, editor;
     border-radius: 10px;
     flex: 1;
     height: calc(100vh - 100px);
+    position: relative;
   }
+  .mouse-position{
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    color: #f1f1f1
+  }
+
 </style>
