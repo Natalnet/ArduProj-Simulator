@@ -1,13 +1,13 @@
 <script>
-  export let closeSidebar = false;
+  export let sidebarOpen = false;
 </script>
-<div class:closeSidebar={closeSidebar} class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+<div class:sidebarOpen={sidebarOpen} class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
   <a href="/" class="header-navbar d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
     <span>
       <i class="fas fa-tools"></i>
       <span class="fs-4">Logo?</span>
     </span>
-    <i class="fas fa-times close-sidebar" on:click={() => closeSidebar = !closeSidebar}></i>
+    <i class="fas fa-times close-sidebar-icon" on:click={() => sidebarOpen = !sidebarOpen}></i>
   </a>
   <hr>
   <ul class="nav nav-pills flex-column mb-auto">
@@ -43,11 +43,11 @@
 </div>
 
 <style>
-  .sidebar{ height: 100vh; }
+  .sidebar{ height: 100vh; position: absolute;top: 0;left: -100vw;bottom: 0;z-index: 9;}
   i.fas{ margin-right: 10px; }
   .nav-link{margin: 10px 0;}
   .sidebar{transition: all ease .3s;}
-  .close-sidebar{ padding: 10px 0 10px 10px; cursor: pointer;}
-  .closeSidebar{margin-left: -280px;}
+  .close-sidebar-icon{ padding: 10px 0 10px 10px; cursor: pointer;}
+  .sidebarOpen{left: 0;}
   .nav-link, .header-navbar{display:flex !important; width: 100%; align-items:center; justify-content:space-between;}
 </style>

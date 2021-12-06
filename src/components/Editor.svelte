@@ -3,12 +3,12 @@ import Canvas from './editor/components/Canvas.svelte';
 import Circle from './editor/components/Circle.svelte';
 let cxM = 0, cyM = 0;
 
-let editor;
+let editorOffsetHeight, editorOffsetWidth, editor;
 </script>
 
-<div id="editor" bind:this={editor}>
+<div id="editor" bind:this={editor} bind:clientWidth={editorOffsetWidth} bind:clientHeight={editorOffsetHeight}>
   {#if editor}
-    <Canvas height={editor.offsetHeight} width={editor.offsetWidth}  bind:cxM={cxM} bind:cyM={cyM} editorSize={{height: editor.offsetHeight, width: editor.offsetWidth}}>
+    <Canvas height={editorOffsetHeight} width={editorOffsetWidth}  bind:cxM={cxM} bind:cyM={cyM} editorSize={{height: editorOffsetHeight, width: editorOffsetWidth}}>
       <Circle 
         r="30"
         cx={cxM}

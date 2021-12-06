@@ -1,8 +1,7 @@
 <script>
 	import { onMount, setContext } from 'svelte';
 	let canvas;
-	export let height;
-	export let width, cxM, cyM;
+	export let cxM, cyM;
   export let editorSize;
 	
 	const drawFunctions = [];
@@ -18,8 +17,8 @@
 	
 	onMount(() => {
 		const ctx = canvas.getContext('2d');
-		canvas.height = height;
-		canvas.width = width;
+		canvas.height = editorSize.height;
+		canvas.width = editorSize.width;
 		
 		function update() {
 			//
@@ -48,6 +47,11 @@
 	};
 </script>
 
-<canvas on:mousemove={handleMouseMove} bind:this={canvas} style="border: 1px solid red" />
+<canvas on:mousemove={handleMouseMove} bind:this={canvas} height={editorSize.height} width={editorSize.width} />
 
 <slot />
+<style>
+  canvas{
+    border-radius: 10px;
+  }
+</style>

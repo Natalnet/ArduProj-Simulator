@@ -12,7 +12,7 @@
 </script>
 
 <div class="content">
-	<Menu bind:closeSidebar={sidebar}/>
+	<Menu bind:sidebarOpen={sidebar}/>
 	<section class="main">
 		<Header bind:sidebar={sidebar}/>
 		<Editor/>
