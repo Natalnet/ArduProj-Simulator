@@ -51,12 +51,12 @@
     if(validatePositionDraggable() || data.dragOn){ updateStatus(ctx);}
     else{ ctx.arc(data.cx, data.cy, data.r, 0, 2*Math.PI, true); }
 
-    if(validatePosition()){
+    if(validatePosition() || data == itemSelected){
       ctx.font = "16px serif";
       ctx.textAlign = "center";
       document.body.style.cursor = "pointer";
       ctx.fillText(data.name, data.cx, data.cy + data.r*1.5, data.r*5)
-    }else{document.body.style.cursor = "auto";}
+    }else{document.body.style.cursor = "auto"; }
       
     
     if(mouseData.onDblclick || itemSelected == data){ itemSelected = $components[$components.length - 1]; mouseData.onDblclick = false; }
