@@ -3,6 +3,7 @@
   import Canvas from './editor/components/Canvas.svelte';
   import Circle from './editor/components/Circle.svelte';
   import MenuForItem from './editor/components/MenuForItem.svelte';
+  import Initialize from './editor/components/Initialize.svelte';
 
   let mouseData = {cxM: 0, cyM: 0, onMouseDown: false, working: false, onDblclick: false}
   let editorOffsetHeight, editorOffsetWidth, editor;
@@ -15,13 +16,14 @@
     let element = JSON.parse(JSON.stringify($menuComponents.filter(el => el.name == name)[0]));
     components.set([...$components, element]);
   }
+
 </script>
 <div id="editor" 
   bind:this={editor} 
   bind:clientWidth={editorOffsetWidth} 
   bind:clientHeight={editorOffsetHeight}
 
-	on:drop|preventDefault={handleDragDrop} 
+	on:drop|preventDefault={handleDragDrop}
 	ondragover="return false"
 >
   {#if editor}
@@ -32,6 +34,7 @@
       bind:mouseData={mouseData}
       editorSize={{height: editorOffsetHeight, width: editorOffsetWidth}}
     >
+      <Initialize/>
       {#each $components as component}
         <Circle bind:data={component} {mouseData} bind:itemSelected={itemSelected}/>
       {/each}

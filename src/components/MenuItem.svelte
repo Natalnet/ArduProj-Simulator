@@ -10,7 +10,7 @@
 <div
   name={component.name}
   style='background-color:{component.fill}'
-  class="item" 
+  class="item col" 
   draggable=true
   on:dragstart={handleDragStart}
   >
@@ -21,5 +21,6 @@
     border-radius: 5px;
     cursor: pointer;
     user-select: none;
+    margin: 5px 10px;
   }
 </style>

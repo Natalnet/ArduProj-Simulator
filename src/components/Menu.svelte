@@ -3,12 +3,17 @@
   import MenuItem from './MenuItem.svelte';
 
   export let sidebarOpen = false;
+  
+  let filteredComponents = [];
+  let search = '';
+  $: if(search != ''){ filteredComponents = $menuComponents.filter(comp => comp.name.toLowerCase().includes(search.toLowerCase()));}
+     else{filteredComponents = $menuComponents}
 </script>
 <div class:sidebarOpen={sidebarOpen} class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
   <a href="/" class="header-navbar d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
     <span>
       <i class="fas fa-tools"></i>
-      <span class="fs-4">Logo?</span>
+      <span class="fs-4">ArduProj-Simulator</span>
     </span>
     <i class="fas fa-times close-sidebar-icon" on:click={() => sidebarOpen = !sidebarOpen}></i>
   </a>
@@ -24,10 +29,15 @@
       </a>
     </li>
     <div class="collapse" id="collapseExample">
-      <div class="content-menu row row-cols-2 row-cols-lg-3">
-        {#each $menuComponents as component}
-          <MenuItem {component}/>
-        {/each}
+      <div class="input-group flex-nowrap search-input">
+        <input type="text" bind:value={search} class="form-control" placeholder="Buscar.." aria-label="Buscar..">
+      </div>
+      <div class="container content-menu">
+        <div class="row">
+          {#each filteredComponents as component }
+            <MenuItem {component}/>
+          {/each}
+        </div>
       </div>
     </div>
   </ul>
@@ -52,10 +62,17 @@
   i.fas{ margin-right: 10px; }
   .nav-link{margin: 10px 0;}
   .content-menu{
-    background-color: #f1f1f1;
+    background-color: #fff;
     padding: 10px 5px;
     margin: 0 2px;
     border-radius: 5px;
+    max-height: 350px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .search-input{
+    margin-bottom: 10px;
+    margin-left: 1px;
   }
   .sidebar{transition: all ease .3s;}
   .close-sidebar-icon{ padding: 10px 0 10px 10px; cursor: pointer;}

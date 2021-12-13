@@ -18,7 +18,7 @@
     <div class="card-body">
       {#each itemSelected.editableAttributes as attr}
         <div class="input-container">
-          <label for={attr.key} class="label-el form-label" data-name={name = attr.name}>{attr.name}</label>
+          <label for={attr.key} class="label-el form-label">{attr.name}</label>
           <input type="text" name={attr.key} id={attr.key} bind:value={itemSelected[attr.key]} class="input-el form-control">
         </div>
       {/each}
