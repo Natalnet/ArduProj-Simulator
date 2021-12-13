@@ -70,6 +70,7 @@
 	width={editorSize.width} 
 	on:mousedown={ () => onMouseDown = true}
 	on:mouseup={ () => {onMouseDown = false; mouseData.working = false}}
+	on:dblclick={() =>  mouseData.onDblclick = true}
 />
 
 <slot />

@@ -2,15 +2,19 @@
   import { components } from '../../../lib/store';
 	import { getContext, onMount } from 'svelte';
 	
-	export let data, mouseData;
+	export let data, mouseData, itemSelected;
   
 	const { register, unregister } = getContext('canvas');
 	
-  const validatePosition = () => {
+  const validatePositionDraggable = () => {
     return (
       !mouseData.working 
       && mouseData.onMouseDown 
-      && (
+      && validatePosition()
+    )
+  }
+  const validatePosition = () => {
+    return ((
         (
           (mouseData.cxM - data.cx)*(mouseData.cxM - data.cx) + 
           (mouseData.cyM - data.cy)*(mouseData.cyM - data.cy)
@@ -44,11 +48,19 @@
 		ctx.fillStyle = data.fill;
 
     if(!mouseData.onMouseDown) data.dragOn = false;
-    if(validatePosition() || data.dragOn){
-      updateStatus(ctx);
-    }else{
-      ctx.arc(data.cx, data.cy, data.r, 0, 2*Math.PI, true);
-    }
+    if(validatePositionDraggable() || data.dragOn){ updateStatus(ctx);}
+    else{ ctx.arc(data.cx, data.cy, data.r, 0, 2*Math.PI, true); }
+
+    if(validatePosition()){
+      ctx.font = "16px serif";
+      ctx.textAlign = "center";
+      document.body.style.cursor = "pointer";
+      ctx.fillText(data.name, data.cx, data.cy + data.r*1.5, data.r*5)
+    }else{document.body.style.cursor = "auto";}
+      
+    
+    if(mouseData.onDblclick || itemSelected == data){ itemSelected = $components[$components.length - 1]; mouseData.onDblclick = false; }
+
 		ctx.fill();
 	}
 </script>
