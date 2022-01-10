@@ -58,9 +58,9 @@
       ctx.fillText(data.name, data.cx, data.cy + data.r*1.5, data.r*5)
     }else{document.body.style.cursor = "auto"; }
       
-    
     if(mouseData.onDblclick || itemSelected == data){ itemSelected = $components[$components.length - 1]; mouseData.onDblclick = false; }
-
+    
+    ctx.stroke();
 		ctx.fill();
 	}
 </script>

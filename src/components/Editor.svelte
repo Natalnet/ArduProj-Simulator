@@ -2,6 +2,8 @@
   import { components, menuComponents } from '../lib/store';
   import Canvas from './editor/components/Canvas.svelte';
   import Circle from './editor/components/Circle.svelte';
+  import Line from './editor/components/Line.svelte';
+  import ToolBar from './editor/components/ToolBar.svelte';
   import MenuForItem from './editor/components/MenuForItem.svelte';
   import Initialize from './editor/components/Initialize.svelte';
 
@@ -26,6 +28,8 @@
 	on:drop|preventDefault={handleDragDrop}
 	ondragover="return false"
 >
+<ToolBar/>
+<div class="canvas">
   {#if editor}
     <Canvas
       height={editorOffsetHeight} 
@@ -34,25 +38,30 @@
       bind:mouseData={mouseData}
       editorSize={{height: editorOffsetHeight, width: editorOffsetWidth}}
     >
-      <Initialize/>
+      <Initialize {mouseData}/>
+      <!-- <Line {mouseData}/> -->
       {#each $components as component}
         <Circle bind:data={component} {mouseData} bind:itemSelected={itemSelected}/>
       {/each}
-  </Canvas>
-{/if}
-  <p class="mouse-position">x: {mouseData.cxM} y: {mouseData.cyM}</p>
+    </Canvas>
+  {/if}
+</div>
+  <p class="mouse-position">x: {mouseData.cxM.toFixed(1)} y: {mouseData.cyM.toFixed(1)}</p>
   <MenuForItem bind:itemSelected={itemSelected}/>
 </div>
 
 <style>
   #editor {
-    background-color: hsl(0, 0%, 10%);
     margin: 0 10px 5px 10px;
-    border-radius: 10px;
     flex: 1;
     height: calc(100vh - 100px);
     position: relative;
     overflow: hidden;
+    border-radius: 10px;
+  }
+  .canvas{
+    background-color: hsl(0, 0%, 10%);
+    border-radius: 10px;
   }
   .mouse-position{
     position: absolute;

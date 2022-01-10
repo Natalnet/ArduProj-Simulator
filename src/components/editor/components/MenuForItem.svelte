@@ -7,6 +7,9 @@
     components.set($components.filter(item => item !== itemSelected));
     itemSelected = undefined;
   }
+  const handleKeyUp = e => {
+    if (e.charCode === 13) itemSelected = undefined;;
+  }
 </script>
 
 {#if itemSelected}
@@ -19,7 +22,7 @@
       {#each itemSelected.editableAttributes as attr}
         <div class="input-container">
           <label for={attr.key} class="label-el form-label">{attr.name}</label>
-          <input type="text" name={attr.key} id={attr.key} bind:value={itemSelected[attr.key]} class="input-el form-control">
+          <input type="text" name={attr.key} id={attr.key} bind:value={itemSelected[attr.key]} class="input-el form-control" on:keypress={handleKeyUp}>
         </div>
       {/each}
     </div>
