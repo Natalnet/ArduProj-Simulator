@@ -11,10 +11,10 @@
 - Install the necessary dependencies
   
   ```bash
-    npm install # or yarn
+    npm i # or yarn
   ```
 - Run in development mode
   
   ```bash
-    npm run dev -- --open # It will run on port 3000 by default
+    npm start # It will run on port 3000 by default
   ```
