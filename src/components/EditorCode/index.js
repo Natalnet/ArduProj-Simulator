@@ -1,15 +1,15 @@
 import React from "react";
-import { Container, Header, Content, InputEditor, TabsContainer, Tab } from "./EditorCodeStyle";
+import { Container, Header, Content, InputEditor, TabsContainer, ContainerActions, Tab, ButtonAction } from "./EditorCodeStyle";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
 
 import WorkerBuilder from './ArduinoWorker/worker-builder';
 import Worker from './ArduinoWorker/arduino.worker';
 
-
-
 function EditorCode({editorCodeStatus, handleStatusEditorCode, diagram, setDiagram, code, setCode}) {
   const [tabsStatus, setTabsStatus] = React.useState({code: true, diagram: false});
+  const [valueDiagram, setValueDiagram] = React.useState(JSON.stringify(diagram));
+  const [running, setRunning] = React.useState(false);
 
   var executedCode, lastExecuted;
 
@@ -24,6 +24,10 @@ function EditorCode({editorCodeStatus, handleStatusEditorCode, diagram, setDiagr
     }, 1000
   );
   */
+
+  React.useEffect(() => {
+    setValueDiagram(JSON.stringify(diagram))
+  }, [diagram]);
 
   function loadJS(FILE_URL, async = true) {
     let scriptEle = document.createElement("script");
@@ -49,14 +53,20 @@ function EditorCode({editorCodeStatus, handleStatusEditorCode, diagram, setDiagr
   }
 
   const runCode = (code_) => {
+    try{
+      setDiagram(JSON.parse(valueDiagram));
+    }catch(e){
+      console.error("Diagrama incorreto: ", e)
+      return 0;
+    }
+    setRunning(true);
     if (executedCode === code_){
       console.log("Calling main");
       Arduinos[Arduinos.length - 1].terminate();
       Arduinos[Arduinos.length - 1] = new WorkerBuilder(Worker);
       Arduinos[Arduinos.length - 1].postMessage({start: `http://localhost:3001/${lastExecuted.jsfile}`});
       //Arduinos[Arduinos.length - 1].postMessage({getState: `?`});
-    }
-    else{
+    }else{
       console.log("Compiling code " + code_);
       fetch('http://localhost:3001/compile-wasm',
         { 
@@ -77,28 +87,20 @@ function EditorCode({editorCodeStatus, handleStatusEditorCode, diagram, setDiagr
 
         /*versão com workers*/
         var instance = new WorkerBuilder(Worker);
-        instance.onmessage = (msg)=> {
-          console.log(msg);
+        instance.onmessage = (msg) => {
+          let diagramTemp = JSON.parse(JSON.stringify(diagram));
+          
           if(msg.data.type === 'stateUpdate'){
             var pinStates = JSON.parse(msg.data.pinValues);
-            if(pinStates[13] === 1){
-              for(let part of diagram.parts){
-                if(part.type === 'wokwi-led'){
-                  console.log('led on');
-                  part.attrs.value = "1";
-                }
+            
+            for(let i = 0; i < diagramTemp.parts.length; i ++){
+              if(diagramTemp.parts[i].type === 'wokwi-led'){
+                console.log('led state: ', pinStates[13] === 1 ? 'on' : 'off');
+                diagramTemp.parts[i].attrs.value = pinStates[13] === 1 ? '1' : '';
+                setDiagram(diagramTemp);
               }
             }
-            else{
-              for(let part of diagram.parts){
-                if(part.type === 'wokwi-led'){
-                  console.log('led off')
-                  part.attrs.value = ""
-                }
-              }
-            }
-            setDiagram(diagram);
-
+            diagramTemp = undefined;
           }
           //console.log("Diagram Values");
           //console.log(diagram);
@@ -113,6 +115,7 @@ function EditorCode({editorCodeStatus, handleStatusEditorCode, diagram, setDiagr
       })
       .then(data => console.log(data))
       .catch((error) => {
+        setRunning(false);
         console.error('Error:', error);
       });
 
@@ -145,6 +148,7 @@ function EditorCode({editorCodeStatus, handleStatusEditorCode, diagram, setDiagr
 
   const stopSimulation = () => {
     console.log("Stoping simulatiors");
+    setRunning(false);
     for (let a of Arduinos){
       a.terminate();
     }
@@ -167,20 +171,24 @@ function EditorCode({editorCodeStatus, handleStatusEditorCode, diagram, setDiagr
       </Header>
       <Content>
         { tabsStatus.code ? 
-          <div>
             <InputEditor 
             onChange={(e) => setCode(e.target.value)}
             value={code} 
             placeholder="Hello World..? (Code)"/> 
-            <button onClick={() => runCode(code)}>Run</button>
-            <button onClick={() => stopSimulation()}>Stop</button>
-          </div>
         :         
           <InputEditor 
-            onChange={(e) => setDiagram(JSON.parse(e.target.value))}
-            value={JSON.stringify(diagram)} 
+            onChange={(e) => setValueDiagram(e.target.value)}
+            value={valueDiagram} 
             placeholder="Hello World..? (Diagram)"/>
         }
+        <ContainerActions>
+          <ButtonAction running={running} name="run" onClick={() => runCode(code)}>
+            <FontAwesomeIcon icon={faPlay} style={{cursor: 'pointer'}}/>
+          </ButtonAction>
+          <ButtonAction running={running} name="stop" onClick={() => stopSimulation()}>
+            <FontAwesomeIcon icon={faStop} style={{cursor: 'pointer'}}/>  
+          </ButtonAction>
+        </ContainerActions>
       </Content>
     </Container>
   );

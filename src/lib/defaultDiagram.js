@@ -3,7 +3,7 @@ export default {
   "author": "Test",
   "editor": "Arduino Project Simulator - Test",
   "parts": [
-    { "type": "wokwi-arduino-uno", "id": "uno", "top": 30, "left": 0, "attrs": {} }
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 50, "left": 50, "attrs": {} }
   ],
   "connections": []
 }

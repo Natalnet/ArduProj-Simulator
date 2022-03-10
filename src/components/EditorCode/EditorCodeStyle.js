@@ -24,10 +24,11 @@ export const Content = styled.div`
   padding: 0 .5rem .5rem .5rem;
   width: 100%;
   height: 95%;
+  position: relative;
 `;
 export const InputEditor = styled.textarea`
   width: 100%;
-  height: 100%;
+  min-height: 500px;
   border-radius: 0 .5rem .5rem .5rem;
   resize: none;
   outline: none;
@@ -49,4 +50,35 @@ export const Tab = styled.div`
   padding: .5rem 2rem .5rem 1rem;
   border-radius: .5rem 2rem 0 0;
   cursor: pointer;
+`;
+export const ButtonAction = styled.button`
+  padding: .5rem .7rem;
+  font-size: 1rem;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--button-color);
+  color: var(--letter-color);
+  margin: .25rem;
+
+  background-color: ${props => {
+    if(props.name == 'stop' && props.running){
+      return `#db4646;`;
+    }else if(props.name == 'run' && props.running){
+      return `var(--button-color);
+              pointer-events: none;
+              opacity: .5;`
+    }else{
+      return `var(--button-color)`;
+    }
+  }}
+`;
+export const ContainerActions = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  top: 1rem;
+  right: -3.5rem;
+  z-index: 9;
 `;
