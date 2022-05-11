@@ -11,9 +11,6 @@ function EditorComponents({diagram, setDiagram}) {
   const doubleClickSetCurrentEditComponent = (diagram) =>  setCurrentEditComponent(diagram);
   const ref = useRef(null);
   
-  React.useEffect(() => {
-    console.log(1)
-  }, [currentEditComponent]);
   return (
     <Container ref={ref} id="components-container">
       <ListComponents setDiagram={setDiagram} diagram={diagram}/>
