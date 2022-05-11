@@ -18,3 +18,8 @@
   ```bash
     npm start # It will run on port 3000 by default
   ```
+
+# Docs
+
+- [State of art](https://docs.google.com/document/d/1YkRjVjYIZjsZMjFvQZma4BJ1DXc46HReRXJAq__SlB4/edit?usp=sharing)
+- [Folder on google drive](https://drive.google.com/drive/folders/1gdZ_isXbc53TAUyRjdTTZnVTli_kYKyw)
