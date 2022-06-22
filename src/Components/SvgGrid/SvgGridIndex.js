@@ -6,11 +6,8 @@ export default function SvgGridIndex({data, setDragMap}) {
   const parser = new DOMParser();
   const [count, setCount] = React.useState('0')
 
-
-
   /*
   Teste
-
   const [localData, setLocalData] = React.useState(data);
   React.useEffect(() => { 
     setLocalData(data) 

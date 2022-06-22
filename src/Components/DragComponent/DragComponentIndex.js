@@ -4,6 +4,7 @@ import { useDrag } from '@use-gesture/react'
 
 export default function DragComponentIndex() {
 
+    //Ainda não terminado
     function DragComponent() {
         const [{ x, y }, api] = useSpring(() => ({ x: 200, y: 200 }))
         const bind = useDrag(({ offset: [x, y] }) => api.start({ x, y }))

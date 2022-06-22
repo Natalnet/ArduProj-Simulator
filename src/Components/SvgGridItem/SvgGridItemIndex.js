@@ -4,6 +4,8 @@ import './SvgGridItemStyle.css'
 export default function SvgGridItemIndex( {svg, name, setDragMap, breadboard}) {
 
     const scaleFunc = () => {
+
+        //Não terminado
         let minor
         if (svg.width.baseVal.value < svg.height.baseVal.value) {
             minor = svg.width.baseVal.value
