@@ -8,9 +8,10 @@ export const AppContext = React.createContext(null)
 
 function App() {
 
+  //Lib para fazer o unzip
   var jsZip = new JSZip
 
- 
+
   //Arquivos importados
   const [data, setData] = useState([])
 
@@ -84,6 +85,7 @@ function App() {
               tempObj[contentType] = fileData
 
               dataLet.push(tempObj)
+              console.log(data)
             }
             
           })
