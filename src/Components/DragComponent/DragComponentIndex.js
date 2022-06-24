@@ -2,7 +2,11 @@ import React from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 
-export default function DragComponentIndex() {
+export default function DragComponentIndex({name, svg}) {
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svg, 'text/html');
+    const currentSvg = doc.getElementsByTagName('svg')[0];
 
     //Ainda não terminado
     function DragComponent() {
@@ -10,7 +14,9 @@ export default function DragComponentIndex() {
         const bind = useDrag(({ offset: [x, y] }) => api.start({ x, y }))
         return (
         <animated.div {...bind()} style={{ x, y }}  className='teste'>
-          <svg></svg>
+          <svg
+          dangerouslySetInnerHTML={{__html: currentSvg.innerHTML}}
+          />
         </animated.div>)
       }
 

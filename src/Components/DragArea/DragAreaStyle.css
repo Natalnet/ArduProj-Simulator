@@ -1,12 +1,18 @@
 .DragAreaDiv {
     height: 100vh;
     width: 100%;
-    
 }
 
 .teste {
     height: 10vh;
     width: 10vh;
+}
 
-    background-color: aqua;
+.GridButton2 {
+    position: fixed;
+    display: block;
+    bottom: 0;
+    right: 0;
+    margin-right: 8vw;
+    background-color: brown;
 }

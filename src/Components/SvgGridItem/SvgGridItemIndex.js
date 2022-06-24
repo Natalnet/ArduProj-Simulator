@@ -1,11 +1,24 @@
 import React from 'react'
 import './SvgGridItemStyle.css'
+import {AppContext} from '../../App'
 
-export default function SvgGridItemIndex( {svg, name, setDragMap, breadboard}) {
+export default function SvgGridItemIndex( {svg, name, breadboard}) {
 
+    
+    const {setDragMap, dragMap} = React.useContext(AppContext)
+
+    function dragMapHandler() {
+        let tempMap = dragMap
+
+        tempMap.push({componentName: name, breadboard:breadboard})
+
+        setDragMap(tempMap)
+    }
+
+    //Não terminado
     const scaleFunc = () => {
 
-        //Não terminado
+
         let minor
         if (svg.width.baseVal.value < svg.height.baseVal.value) {
             minor = svg.width.baseVal.value
@@ -31,7 +44,7 @@ export default function SvgGridItemIndex( {svg, name, setDragMap, breadboard}) {
 
 
   return (
-    <div className='ItemDiv' onClick={() => {setDragMap(breadboard)}}>
+    <div className='ItemDiv' onClick={() => {dragMapHandler()}}>
         <div className='SvgDiv'>
             <svg className='Svg' 
                 viewBox={scaleFunc()}

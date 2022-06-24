@@ -1,20 +1,21 @@
 import React from 'react'
 import SvgGridItemIndex from '../SvgGridItem/SvgGridItemIndex';
 import './SvgGridStyle.css'
+import {AppContext} from '../../App'
 
-export default function SvgGridIndex({data, setDragMap}) {
+export default function SvgGridIndex() {
   const parser = new DOMParser();
   const [count, setCount] = React.useState('0')
+  
+  const {data} = React.useContext(AppContext)
 
-  /*
-  Teste
   const [localData, setLocalData] = React.useState(data);
   React.useEffect(() => { 
     setLocalData(data) 
     setCount(count + 1)
     console.log("data mudou")
   }, [data]);
-  **/
+  
 
   return (
     <div className='Grid' key={count} >
@@ -30,7 +31,6 @@ export default function SvgGridIndex({data, setDragMap}) {
                 key={d.componentName}
                 svg={currentSvg}
                 name={d.componentName}
-                setDragMap={setDragMap}
                 breadboard={d.breadboard}
               />
         )

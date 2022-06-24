@@ -4,16 +4,18 @@ import SideBarIndex from './Components/SideBar/SideBarIndex';
 import JSZip from 'jszip';
 import DragAreaIndex from './Components/DragArea/DragAreaIndex';
 
+export const AppContext = React.createContext(null)
+
 function App() {
 
   var jsZip = new JSZip
 
+ 
   //Arquivos importados
   const [data, setData] = useState([])
 
   //Todos os componentes presentes no drag and drop
-  const [dragMap, setDragMap] = useState()
-
+  const [dragMap, setDragMap] = useState([])
 
   //Função responsavel por extrair arquivos do zip e adicionalos no data
   function unzipFile(file) {
@@ -121,8 +123,10 @@ function App() {
 
   return (
     <div className="App" >
-      <SideBarIndex onDrop={handleDrop} data={data} setDragMap={setDragMap} />
-      <DragAreaIndex dragMap={dragMap} onClick={(dragMap) => {console.log(`DRAGMAP: ${dragMap}`)}} />
+      <AppContext.Provider value={{data, setData, dragMap, setDragMap}}>
+        <SideBarIndex onDrop={handleDrop} />
+        <DragAreaIndex />
+      </AppContext.Provider>
     </div>
   );
 }
