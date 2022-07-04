@@ -11,4 +11,11 @@
   font-size: calc(10px + 2vmin);
   color: white;
   overflow-y: auto;
+
 }
+
+/* 
+* {
+  background: rgb(0 100 0 / 0.1) !important;
+}
+*/

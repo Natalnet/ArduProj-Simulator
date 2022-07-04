@@ -24,6 +24,7 @@ export default function DragAreaIndex() {
         <DragComponentIndex 
           name={d.componentName}
           svg={d.breadboard}
+          part={d.part}
         />)
       }) }
       <button className='GridButton2' onClick={() => {setCount(count + 1)}}> Load </button>

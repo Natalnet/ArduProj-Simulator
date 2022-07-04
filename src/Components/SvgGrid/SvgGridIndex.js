@@ -14,7 +14,7 @@ export default function SvgGridIndex() {
     setLocalData(data) 
     setCount(count + 1)
     console.log("data mudou")
-  }, [data]);
+  }, []);
   
 
   return (
@@ -32,6 +32,7 @@ export default function SvgGridIndex() {
                 svg={currentSvg}
                 name={d.componentName}
                 breadboard={d.breadboard}
+                part={d.part}
               />
         )
       })}

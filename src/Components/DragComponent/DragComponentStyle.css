@@ -1,0 +1,18 @@
+.svgDiv{
+   max-height: fit-content;
+   max-width: fit-content;
+}
+
+.connector:hover {
+    fill:hsl(0, 100%, 50%) !important;
+}
+
+.connector{
+    cursor: pointer;
+    z-index: 1;
+}
+
+.dragSvg {
+    max-height: fit-content;
+    max-width: fit-content;
+}

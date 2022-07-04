@@ -2,7 +2,7 @@ import React from 'react'
 import './SvgGridItemStyle.css'
 import {AppContext} from '../../App'
 
-export default function SvgGridItemIndex( {svg, name, breadboard}) {
+export default function SvgGridItemIndex( {svg, name, breadboard, part}) {
 
     
     const {setDragMap, dragMap} = React.useContext(AppContext)
@@ -10,7 +10,7 @@ export default function SvgGridItemIndex( {svg, name, breadboard}) {
     function dragMapHandler() {
         let tempMap = dragMap
 
-        tempMap.push({componentName: name, breadboard:breadboard})
+        tempMap.push({componentName: name, breadboard:breadboard, part:part})
 
         setDragMap(tempMap)
     }

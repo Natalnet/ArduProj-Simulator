@@ -2,8 +2,11 @@ import React from 'react'
 import './SideBarStyle.css'
 import DropZoneIndex from '../DropZone/DropZoneIndex';
 import SvgGridIndex from '../SvgGrid/SvgGridIndex';
+import {AppContext} from '../../App'
 
 export default function SideBarIndex({onDrop}) {
+
+  const {data} = React.useContext(AppContext)
 
   //Não terminado
   const [sideBarStatus, setsideBarStatus] = React.useState(false)
@@ -14,6 +17,7 @@ export default function SideBarIndex({onDrop}) {
   const SideBarButtonClick = () => {
     SideBarRef.current.classList.toggle("closed")
     ButtonRef.current.classList.toggle("closed")
+    console.log(data)
     setsideBarStatus(!sideBarStatus)
   }
     
