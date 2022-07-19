@@ -1,6 +1,7 @@
 import React from 'react'
 import './SvgGridItemStyle.css'
 import {AppContext} from '../../App'
+import uuid from 'react-uuid'
 
 export default function SvgGridItemIndex( {svg, name, breadboard, part}) {
 
@@ -9,8 +10,8 @@ export default function SvgGridItemIndex( {svg, name, breadboard, part}) {
 
     function dragMapHandler() {
         let tempMap = dragMap
-
-        tempMap.push({componentName: name, breadboard:breadboard, part:part})
+        let id = uuid()
+        tempMap.push({componentName: name, breadboard:breadboard, part:part, id:id})
 
         setDragMap(tempMap)
     }

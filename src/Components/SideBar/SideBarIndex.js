@@ -4,9 +4,11 @@ import DropZoneIndex from '../DropZone/DropZoneIndex';
 import SvgGridIndex from '../SvgGrid/SvgGridIndex';
 import {AppContext} from '../../App'
 
-export default function SideBarIndex({onDrop}) {
+export default function SideBarIndex() {
 
-  const {data} = React.useContext(AppContext)
+  //Arquivos importados
+  const [data, setData] = React.useState([])
+
 
   //Não terminado
   const [sideBarStatus, setsideBarStatus] = React.useState(false)
@@ -25,8 +27,8 @@ export default function SideBarIndex({onDrop}) {
     <aside ref={SideBarRef} className="SideBar">
       <div ref={ButtonRef} className="Button" onClick={ () => SideBarButtonClick()} />
       { sideBarStatus ? 
-      <> </> : <DropZoneIndex onDrop={ onDrop }/>}
-      <SvgGridIndex />
+      <> </> : <DropZoneIndex data={data} setData={setData} />}
+      <SvgGridIndex data={data} />
     </aside>
   )
 }

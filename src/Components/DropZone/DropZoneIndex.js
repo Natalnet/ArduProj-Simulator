@@ -1,7 +1,8 @@
 import React, {useContext} from 'react'
 import './DropZoneStyle.css'
+import { handleFileDrop } from '../../Functions';
 
-export default function DropZoneIndex({ onDrop }) {
+export default function DropZoneIndex(props) {
 
   const drop = React.useRef(null)
 
@@ -20,7 +21,7 @@ export default function DropZoneIndex({ onDrop }) {
       drop.current.removeEventListener('dragenter', handleDragEnter);
       drop.current.removeEventListener('dragleave', handleDragLeave);
     };
-  }, [drop, onDrop]);
+  }, [drop, handleFileDrop]);
 
   //Funções para previnir que orquivo seja aberto por outras funções do dispositivo
   function handleDragEnter(e) {
@@ -44,7 +45,7 @@ export default function DropZoneIndex({ onDrop }) {
   function handleDrop(e) {
 
     //Função que lida com os arquivos dropados 
-    onDrop(e);
+    handleFileDrop(e, props.data, props.setData);
     
     setDragging(false);
   }

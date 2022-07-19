@@ -3,15 +3,15 @@ import SvgGridItemIndex from '../SvgGridItem/SvgGridItemIndex';
 import './SvgGridStyle.css'
 import {AppContext} from '../../App'
 
-export default function SvgGridIndex() {
+export default function SvgGridIndex(props) {
   const parser = new DOMParser();
   const [count, setCount] = React.useState('0')
   
-  const {data} = React.useContext(AppContext)
+  
 
-  const [localData, setLocalData] = React.useState(data);
+  const [localData, setLocalData] = React.useState(props.data);
   React.useEffect(() => { 
-    setLocalData(data) 
+    setLocalData(props.data) 
     setCount(count + 1)
     console.log("data mudou")
   }, []);
@@ -22,7 +22,7 @@ export default function SvgGridIndex() {
 
       <button className='GridButton' onClick={() => {setCount(count + 1)}}> Load </button>
 
-      {data.map(d => {
+      {props.data.map(d => {
         if(!d.icon) {return}
         const doc = parser.parseFromString(d.icon, 'text/html');
         const currentSvg = doc.getElementsByTagName('svg')[0];
