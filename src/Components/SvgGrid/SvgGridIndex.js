@@ -8,14 +8,14 @@ export default function SvgGridIndex(props) {
   const [count, setCount] = React.useState('0')
   
   
-
+/*
   const [localData, setLocalData] = React.useState(props.data);
   React.useEffect(() => { 
     setLocalData(props.data) 
     setCount(count + 1)
     console.log("data mudou")
   }, []);
-  
+ */ 
 
   return (
     <div className='Grid' key={count} >

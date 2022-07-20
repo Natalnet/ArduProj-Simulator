@@ -8,7 +8,10 @@ export function unzipFile(file, data, setData) {
     var jsZip = new JSZip
 
     //Variavel temporaria para onde é passada os arquivos
-    let dataLet = data
+    //se você apenas referenciar o data, ele não vai mudar a referencia, logo não vai atualizar
+    //o estado. O ruim é perdere memória =), para não fazer assim a gente teria que implementar
+    //algum outro estado que sinalizasse ou forçasse o update
+    let dataLet = [...data]
 
     //Aqui o arquivo é lido como um buffer
     const bufferReader = new FileReader()
