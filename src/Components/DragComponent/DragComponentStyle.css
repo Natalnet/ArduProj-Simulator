@@ -1,0 +1,25 @@
+.svgDiv{
+   max-height: fit-content;
+   max-width: fit-content;
+}
+
+.animatedSvgDiv {
+    touch-action: none;
+}
+
+.connector:hover {
+    fill:hsl(0, 100%, 50%) !important;
+}
+
+.connector{
+    cursor: pointer;
+    z-index: 1;
+}
+
+.led {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    
+}

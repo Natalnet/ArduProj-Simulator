@@ -1,0 +1,23 @@
+.ItemDiv {
+    margin: 0 auto;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    width: 90%;
+    height: 10vh;
+    display: flex;
+    flex-direction: row;
+    background-color: hsl(235, 22%, 20%);
+    border-radius: 5%;
+}
+
+.SvgDiv {
+    margin-top: 1vh;
+    
+}
+
+
+.NameDiv {
+    width: 60%;
+    font-size: xx-small;
+    word-wrap: break-word;
+}

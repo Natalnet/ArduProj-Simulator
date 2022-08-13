@@ -1,0 +1,37 @@
+.SideBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: hsl(235, 32%, 10%);
+    color: #fff;
+    height: 100%;
+    width: 10rem;
+    display:flex;
+    flex-direction: column;
+    padding-left: 1rem;
+
+}
+
+.SideBar.closed {
+    width:2vw;
+}
+
+.Button {
+    margin-top: 1rem;
+    width: 2vw;
+    height: 2vw;
+    background-color: green;
+    border-radius: 15%;
+}
+
+.Button.closed {
+    background-color: blue;
+}
+
+.BtnTeste {
+    width: 2rem;
+    height: 2rem;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+}
