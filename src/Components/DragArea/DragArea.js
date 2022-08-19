@@ -3,7 +3,7 @@ import DragComponentIndex from '../DragComponent/DragComponent'
 import './DragAreaStyle.css'
 import LeaderLine from 'react-leader-line'
 import {AppContext} from '../../App'
-import { lineFunc } from '../../Functions'
+import { lineFunc } from '../../Functions/Functions'
 
 export default function DragAreaIndex() {
 

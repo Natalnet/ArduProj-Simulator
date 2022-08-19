@@ -1,6 +1,6 @@
 import React, {useContext} from 'react'
 import './DropZoneStyle.css'
-import { handleFileDrop } from '../../Functions';
+import { handleFileDrop } from '../../Functions/Functions';
 
 export default function DropZoneIndex(props) {
 

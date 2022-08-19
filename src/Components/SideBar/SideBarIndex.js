@@ -5,6 +5,7 @@ import DropZoneIndex from '../DropZone/DropZone';
 import SvgGridIndex from '../SvgGrid/SvgGridIndex';
 import {AppContext} from '../../App'
 import uuid from 'react-uuid'
+import { changeColor } from '../../Functions/Behavior';
 
 export default function SideBarIndex() {
 
@@ -31,49 +32,18 @@ export default function SideBarIndex() {
     setsideBarStatus(!sideBarStatus)
   }
 
+  const [entrada, setEntrada] = React.useState(0)
+
   function createLed() {
-    let tempMap = [...dragMap]
-    let id = uuid()
-
-    // * Aqui pegamos o primeiro componente do SvgGrid
-    var component = data[1].breadboard
-
-    component = parser.parseFromString(component,'text/html')
-    
-    component = component.getElementsByTagName('svg')
-
-    // * Aqui buscamos o componente Svg que possui a cor #FF0000, cor essa que será definida pelo usuario
-    var led = component[0].querySelector('[fill="#FF0000"]')
-
-    // * Transformamos a cor em HEX para melhor manuseio e criamos sua versão escura
-    const hex = led.getAttribute('fill')
-    var hsl = hexToHsl(hex)
-    var darkHsl = `hsl(${hsl[0]},${hsl[1]}%,${hsl[2] - 35}%)`
-    hsl = `hsl(${hsl[0]},${hsl[1]}%,${hsl[2]}%)`
-    
-
-    var splitedComponent = component[0].outerHTML.split(led.outerHTML)
-
-    const splitLed = led.outerHTML.split('</')
-
-    // * O componente animate é o responsavel por criar a animação de blink
-    led = `${splitLed[0]}<animate
-    class="animate"
-    attributeName="fill"
-    values="${darkHsl};${hsl};${darkHsl}"
-    dur="2s"
-    repeatCount="indefinite"
-  /></${splitLed[1]}
-    `
-    component = `${splitedComponent[0]}${led}${splitedComponent[1]}`
-
-    tempMap.push({componentName: data[1].componentName, breadboard:component, part:data[1].part, id:id})
-
-    setDragMap(tempMap)
+    console.log(entrada)
+    changeColor(entrada,dragMap[0].id)
+    if (entrada === 0) {
+      setEntrada(1)
+    } else {setEntrada(0)}
   }
     
   return (
-    <div ref={SideBarRef} className="SideBar">
+    <div ref={SideBarRef} className="SideBar" >
       <div ref={ButtonRef} className="Button" onClick={ () => SideBarButtonClick()} />
       { sideBarStatus ? 
       <> </> : <DropZoneIndex data={data} setData={setData} />}

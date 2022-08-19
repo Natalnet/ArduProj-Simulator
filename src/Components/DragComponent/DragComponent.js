@@ -4,7 +4,7 @@ import { useDrag, useGesture } from '@use-gesture/react'
 import LeaderLine from 'react-leader-line'
 import './DragComponentStyle.css'
 import {AppContext} from '../../App'
-import { lineFunc } from '../../Functions'
+import { lineFunc } from '../../Functions/Functions'
 import { type } from '@testing-library/user-event/dist/type'
 
 export default function DragComponentIndex({name, svg, part, id, updatePositionCallback}) {
@@ -52,7 +52,11 @@ export default function DragComponentIndex({name, svg, part, id, updatePositionC
       return(currentSvg.innerHTML)
     }
 
-    const [{x, y, width, height}, api] = useSpring(() => ({x:400, y:-300, width:currentSvg.width.baseVal.value, height:currentSvg.height.baseVal.value}))
+    const [{x, y, width, height}, api] = useSpring(() => ({
+      x:400, 
+      y:-300, 
+      width:currentSvg.width.baseVal.value ? currentSvg.width.baseVal.value : currentSvg.height.baseVal.value, 
+      height:currentSvg.height.baseVal.value ? currentSvg.height.baseVal.value : currentSvg.width.baseVal.value}))
 
     function DragComponent() {
         

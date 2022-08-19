@@ -29,11 +29,14 @@ export function unzipFile(file, data, setData) {
             let componentName
             let contentType
 
+            console.log(cortado)
+
             //Condicional para dividir os arquivos entre Svgs, fzb e fzp
             if (cortado[3] === 'svg') {
 
-              componentName = cortado[2].slice(0,-(cortado[1].length))
-              componentName = componentName.substring(0,20)
+              //componentName = cortado[2].slice(0,-(cortado[1].length))
+              //componentName = componentName.substring(0,20)
+              componentName = cortado[2]
               contentType = cortado[1]
 
             } else if (cortado[2] === 'fzp') {
@@ -48,6 +51,8 @@ export function unzipFile(file, data, setData) {
 
             }
             
+            console.log(componentName)
+            console.log(contentType)
             
 
             //Condional para testar se ja existe um objeto que condiz ao componente atual
