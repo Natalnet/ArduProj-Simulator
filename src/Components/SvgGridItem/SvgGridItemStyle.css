@@ -5,14 +5,15 @@
     width: 90%;
     height: 10vh;
     display: flex;
-    flex-direction: row;
+    justify-content: center;
+    align-content: center;
     background-color: hsl(235, 22%, 20%);
     border-radius: 5%;
 }
 
 .SvgDiv {
-    margin-top: 1vh;
-    
+    margin: 0;
+    padding: 0;
 }
 
 

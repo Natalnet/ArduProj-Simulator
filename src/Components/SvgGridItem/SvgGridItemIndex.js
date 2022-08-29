@@ -42,24 +42,23 @@ export default function SvgGridItemIndex( {svg, name, breadboard, part}) {
         }
     }
     
-
+    console.log(svg.width.baseVal.value)
 
   return (
     <div className='ItemDiv' onClick={() => {dragMapHandler()}}>
-        <div className='SvgDiv'>
-            <svg className='Svg' 
+        <div 
+            className='SvgDiv'
+            width={svg.width.baseVal.value}
+            height={svg.height.baseVal.value}
+            >
+            <svg 
+                className='Svg' 
                 //viewBox={scaleFunc()}
-                width="100%"
-                height="100%"
+                width={svg.width.baseVal.value}
+                height={svg.height.baseVal.value}
                 dangerouslySetInnerHTML={{__html: svg.innerHTML}}
             />
         </div>
-        <div className='NameDiv'>
-            <p>
-                {name}
-            </p>
-        </div>
-        
     </div>
   )
 }
