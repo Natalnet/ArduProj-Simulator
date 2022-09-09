@@ -1,12 +1,15 @@
 .Grid {   
     width: 8rem;
-    height: 30rem; 
+    min-height: 15rem;
+    max-height: 26rem;
+    height: max-content; 
     border: 2px hsl(0, 0%, 36%) dashed;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: auto;
+    flex-grow: 1;
 }
 
 .GridButton {

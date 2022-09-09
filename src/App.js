@@ -1,29 +1,37 @@
 import './App.css';
 import React, { useState } from 'react'
-import SideBarIndex from './Components/SideBar/SideBarIndex';
-import DragAreaIndex from './Components/DragArea/DragArea';
-import Header from './Components/Header/Header';
+import SideBar from './Components/SideBar/SideBar';
+import DragArea from './Components/DragArea/DragArea';
+
+import { Route, BrowserRouter as Router, Routes, Switch } from 'react-router-dom';
+import Home from './Pages/Simulador/Simulador';
+import Editor from './Pages/Editor/Editor';
+import Simulador from './Pages/Simulador/Simulador';
 
 
 export const AppContext = React.createContext(null)
 
 function App() {
 
-  
 
-  //Todos os componentes presentes no drag and drop
-  const [dragMap, setDragMap] = useState([])
 
-  const [lines, setLines] = useState([])
+    //Todos os componentes presentes no drag and drop
+    const [dragMap, setDragMap] = useState([])
 
-  return (
-    <div className="App" >
-      <AppContext.Provider value={{dragMap, setDragMap, lines, setLines}}>
-        <SideBarIndex/>
-        <DragAreaIndex />
-      </AppContext.Provider>
-    </div>
-  );
+    const [lines, setLines] = useState([])
+
+    const [alignment, setAlignment] = React.useState('simulador');
+
+    return (
+        <div className="App" >
+            <AppContext.Provider value={{ dragMap, setDragMap, lines, setLines, alignment, setAlignment }}>
+                <Routes>
+                    <Route path='/' element={<Simulador />} />
+                    <Route path='editor' element={<Editor />} />
+                </Routes>
+            </AppContext.Provider>
+        </div>
+    );
 }
 
 export default App;

@@ -5,7 +5,7 @@ import LeaderLine from 'react-leader-line'
 import {AppContext} from '../../App'
 import { lineFunc } from '../../Functions/Functions'
 
-export default function DragAreaIndex() {
+export default function DragArea() {
 
   const {dragMap, lines, setLines} = React.useContext(AppContext)
 

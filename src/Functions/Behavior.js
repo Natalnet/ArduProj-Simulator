@@ -51,14 +51,18 @@ function getColors(input, led) {
 export async function changeColor(input, svgElementId) {
 
     try {
+        // TODO: Trocar o behavior change color para getId
         var led = document.getElementById(svgElementId).querySelector('[behavior=changeColor]')
         var color = await getColors(input, led)
 
+
+
         // ? Essa parte fica dentro do behavior?
         led.setAttribute('fill', color)
+        // ?
+
 
         var output = {
-            color: color,
             state: input
         }
         return output

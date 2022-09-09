@@ -1,9 +1,10 @@
+
 .ItemDiv {
     margin: 0 auto;
     margin-top: 1vh;
     margin-bottom: 1vh;
     width: 90%;
-    height: 10vh;
+    height: auto;
     display: flex;
     justify-content: center;
     align-content: center;
@@ -15,7 +16,6 @@
     margin: 0;
     padding: 0;
 }
-
 
 .NameDiv {
     width: 60%;

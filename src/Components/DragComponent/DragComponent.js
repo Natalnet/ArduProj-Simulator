@@ -74,14 +74,7 @@ export default function DragComponentIndex({name, svg, part, id, updatePositionC
           if(params.tap) console.log(params)
           
         },
-        {
-          
-          filterTaps: true,
-          from: () => {
-            return [x.get(), y.get()]
-          }
-          
-        }
+        ({ down, movement: [mx, my] }) => api.start({ x: down ? mx : 0, y: down ? my : 0, scale: down ? 1.2 : 1 })
         
       
         ) 

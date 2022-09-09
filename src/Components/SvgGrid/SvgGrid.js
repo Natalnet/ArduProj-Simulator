@@ -1,9 +1,9 @@
 import React from 'react'
-import SvgGridItemIndex from '../SvgGridItem/SvgGridItemIndex';
+import SvgGridItem from '../SvgGridItem/SvgGridItem';
 import './SvgGridStyle.css'
 
 
-export default function SvgGridIndex(props) {
+export default function SvgGrid(props) {
   const parser = new DOMParser();
 
 
@@ -14,7 +14,7 @@ export default function SvgGridIndex(props) {
         const doc = parser.parseFromString(d.icon, 'text/html');
         const currentSvg = doc.getElementsByTagName('svg')[0];
         return(
-              <SvgGridItemIndex
+              <SvgGridItem
                 key={d.componentName}
                 svg={currentSvg}
                 name={d.componentName}
