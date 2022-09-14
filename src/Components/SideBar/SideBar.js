@@ -9,9 +9,8 @@ import RouterButton from '../RouterButton/RouterButton';
 export default function SideBar() {
 
     //Arquivos importados
-    const [data, setData] = React.useState([])
 
-    const { setDragMap, dragMap, alignment } = React.useContext(AppContext)
+    const {data, setData, setDragMap, dragMap, alignment } = React.useContext(AppContext)
 
     const [entrada, setEntrada] = React.useState(0)
 
@@ -38,7 +37,7 @@ export default function SideBar() {
             <RouterButton />
             {hasDropZone(alignment)}
             <SvgGrid data={data} />
-            <button className='BtnTeste' onClick={() => { testButton() }}>Teste de LED</button>
+            {/*<button className='BtnTeste' onClick={() => { testButton() }}>Teste de LED</button>*/}
         </div>
     )
 }

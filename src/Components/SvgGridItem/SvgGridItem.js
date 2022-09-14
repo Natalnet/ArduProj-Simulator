@@ -1,6 +1,7 @@
 import React from 'react'
 import './SvgGridItemStyle.css'
 import {AppContext} from '../../App'
+import {EditorContext} from '../../Pages/Editor/Editor'
 import uuid from 'react-uuid'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag, useGesture } from '@use-gesture/react'
@@ -8,14 +9,19 @@ import { useDrag, useGesture } from '@use-gesture/react'
 export default function SvgGridItem( {svg, name, breadboard, part}) {
 
     
-    const {setDragMap, dragMap} = React.useContext(AppContext)
+    const {setDragMap, dragMap, alignment, setEditorComponent, editorComponent} = React.useContext(AppContext)
 
     function dragMapHandler() {
-        let tempMap = [...dragMap]
-        let id = uuid()
-        tempMap.push({componentName: name, breadboard:breadboard, part:part, id:id})
+        if(alignment == 'simulador'){
+            let tempMap = [...dragMap]
+            let id = uuid()
+            tempMap.push({componentName: name, breadboard:breadboard, part:part, id:id})
 
-        setDragMap(tempMap)
+            setDragMap(tempMap)
+        } else{
+            setEditorComponent({componentName: name, breadboard:breadboard, part:part})
+            console.log(editorComponent)
+        }
     }
 
     const [{x, y, scale, zindex}, api] = useSpring(() => ({

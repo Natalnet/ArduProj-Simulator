@@ -11,8 +11,8 @@ export default function SvgGrid(props) {
     <div className='Grid'>
       {props.data.map(d => {
         if(!d.icon) {return}
-        const doc = parser.parseFromString(d.icon, 'text/html');
-        const currentSvg = doc.getElementsByTagName('svg')[0];
+        const doc = parser.parseFromString(d.icon, 'text/html')
+        const currentSvg = doc.getElementsByTagName('svg')[0]
         return(
               <SvgGridItem
                 key={d.componentName}
