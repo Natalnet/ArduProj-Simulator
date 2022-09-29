@@ -43,17 +43,6 @@ export default function EditorComponentDisplay() {
         <div>
             <Card sx={{ maxWidth: 345 }} justifyContent="center">
                 {hasEditorComponent()}
-                <CardActions justifyContent="center">
-                    <Fab>
-                        <PowerIcon />
-                    </Fab>
-                    <Fab>
-                        <PowerOffIcon />
-                    </Fab>
-                    <Fab>
-                        <SaveIcon />
-                    </Fab>
-                </CardActions>
             </Card>
         </div>
     )

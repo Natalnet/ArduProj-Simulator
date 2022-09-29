@@ -4,13 +4,19 @@ import EditorComponentSideBar from '../../Components/EditorComponentSideBar/Edit
 import SideBar from '../../Components/SideBar/SideBar'
 import './EditorStyle.css'
 
+export const EditorContext = React.createContext(null)
+
 export default function Editor() {
+
+    const [toolsMap, setToolsMap] = React.useState([])
 
     return (
         <div className='Editor'>
-            <SideBar pageAligment={'editor'}/>
-            <EditorComponentDisplay />
-            <EditorComponentSideBar />
+            <EditorContext.Provider value={{toolsMap, setToolsMap}}>
+                <SideBar pageAlignment='editor' />
+                <EditorComponentDisplay />
+                <EditorComponentSideBar />
+            </EditorContext.Provider>
         </div>
     )
 }

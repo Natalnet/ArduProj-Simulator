@@ -5,7 +5,7 @@ import SideBar from '../../Components/SideBar/SideBar'
 export default function Simulador() {
   return (
     <>
-      <SideBar pageAligment={"simulador"} />
+      <SideBar pageAlignment="simulador" />
       <DragArea />
     </>
   )

@@ -1,0 +1,13 @@
+
+.ItemDiv {
+    margin: 0 auto;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    width: 90%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    background-color: hsl(235, 22%, 20%);
+    border-radius: 5%;
+}

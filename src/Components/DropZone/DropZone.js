@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import './DropZoneStyle.css'
 import { handleFileDrop } from '../../Functions/Functions';
+import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
 
 export default function DropZoneIndex(props) {
 
@@ -58,7 +59,7 @@ export default function DropZoneIndex(props) {
           Solte aqui.
         </span> :
         <span>
-          Arraste para aqui.
+          <ArchiveRoundedIcon fontSize='large' />
         </span>
       }
     </div>
