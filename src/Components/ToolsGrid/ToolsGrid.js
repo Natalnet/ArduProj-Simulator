@@ -15,7 +15,7 @@ export default function ToolsGrid() {
 
             name: 'digital',
             sigla: 'D',
-            color: 'red',
+            color: 'orangered',
             icon: <ArrowRightAltRoundedIcon fontSize='large' />
 
         },

@@ -5,7 +5,6 @@ import LeaderLine from 'react-leader-line'
 import './DragComponentStyle.css'
 import {AppContext} from '../../App'
 import { lineFunc } from '../../Functions/Functions'
-import { type } from '@testing-library/user-event/dist/type'
 
 export default function DragComponentIndex({name, svg, part, id, updatePositionCallback}) {
 
@@ -53,8 +52,8 @@ export default function DragComponentIndex({name, svg, part, id, updatePositionC
     }
 
     const [{x, y, width, height}, api] = useSpring(() => ({
-      x:400, 
-      y:-300, 
+      x:0, 
+      y:0, 
       width:currentSvg.width.baseVal.value ? currentSvg.width.baseVal.value : currentSvg.height.baseVal.value, 
       height:currentSvg.height.baseVal.value ? currentSvg.height.baseVal.value : currentSvg.width.baseVal.value}))
 
@@ -135,7 +134,7 @@ export default function DragComponentIndex({name, svg, part, id, updatePositionC
     const forceUpdate = useForceUpdate();
 
   return (
-    <div className='svgDiv' id={id} style={{position:'fixed', bottom:0, left:0, pointerEvents:'none'}} onClick={forceUpdate}  onDoubleClick={() => {removeComponent()}}>
+    <div className='svgDiv' id={id} style={{position:'fixed', x:400, y:-300, pointerEvents:'none'}} onClick={forceUpdate}  onDoubleClick={() => {removeComponent()}}>
       {DragComponent()}
     </div>
   )

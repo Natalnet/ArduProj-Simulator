@@ -42,7 +42,10 @@ export default function ToolsButton({screen, setScreen}) {
         exclusive
         onChange={handleChange}
         aria-label="Platform"
-        size='small'
+        style={{
+          width:'fit-content',
+          justifySelf:'center'
+        }}
       >
         <ToggleButton value="components">
           <DeveloperBoardRoundedIcon />

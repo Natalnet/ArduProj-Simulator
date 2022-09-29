@@ -15,7 +15,6 @@ export default function EditorComponentSideBar() {
 
     return (
         <div className='EditorSideBar'>
-            Editor
             <div>
                 <AceEditor
                     mode="javascript"
@@ -23,7 +22,7 @@ export default function EditorComponentSideBar() {
                     onChange={onChange}
                     name="UNIQUE_ID_OF_DIV"
                     editorProps={{ $blockScrolling: true }}
-                    height='27rem'
+                    height='29rem'
                     width='18rem'
                     wrapEnabled='true'
                 />
