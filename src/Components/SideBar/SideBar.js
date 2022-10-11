@@ -98,7 +98,7 @@ export default function SideBar(pageAlignment) {
 		if (pageAlignment.pageAlignment == 'simulador') {
 			return <DropZone data={data} setData={setData} />
 		} else {
-			return
+			return <DropZone data={data} setData={setData} />
 		}
 	}
 

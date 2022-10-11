@@ -1,10 +1,11 @@
 import React from 'react'
-import JSZip from 'jszip';
+import JSZip from 'jszip'
 import LeaderLine from 'react-leader-line'
 
 //Função responsavel por extrair arquivos do zip e adicionalos no data
 export function unzipFile(file, data, setData) {
     return new Promise((resolve, reject) => {
+    
         
     var jsZip = new JSZip
 
@@ -13,19 +14,24 @@ export function unzipFile(file, data, setData) {
     //o estado. O ruim é perdere memória =), para não fazer assim a gente teria que implementar
     //algum outro estado que sinalizasse ou forçasse o update
     let dataLet = [...data]
-
+  
     //Aqui o arquivo é lido como um buffer
     const bufferReader = new FileReader()
-    bufferReader.onload = () => {
-
+   
+    bufferReader.onload = (zip) => {
+  
       //Depois é extraído do .zip
       jsZip.loadAsync(bufferReader.result).then(function (zip) {
+        
         Object.keys(zip.files).forEach(function (filename) {
+        
           zip.files[filename].async('string').then(function (fileData) {
+           
 
             //E adicionado a variavel temporaria formando um objeto composto pelo nome do arquivo e seu conteudo em texto
 
             let cortado = filename.split('.')
+            
             let componentName
             let contentType
 
@@ -98,15 +104,16 @@ export function unzipFile(file, data, setData) {
 
 //Função que lida com os arquivos dropados 
 export async function handleFileDrop(e, data, setData) {
-    e.preventDefault();
-    e.stopPropagation();
+  
+    e.preventDefault()
+    e.stopPropagation()
 
     //Arquivos dropados antes de serem lidos
-    const droppedFiles = e.dataTransfer.files;
+    const droppedFiles = e.dataTransfer.files
 
     //Para cada arquivo(i) dropado será realizado essa função onde nela os arquivos serão lidos e salvos na variavel files
     for (let i in droppedFiles) {
-      let item = droppedFiles[i];
+      let item = droppedFiles[i]
       if (typeof item === 'object') {
 
         //Função que extrai e adiciona os arquivos a variavel data
