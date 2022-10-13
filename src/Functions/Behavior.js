@@ -51,20 +51,70 @@ function getColors(input, led) {
 export async function changeColor(input, svgElementId) {
 
     try {
-        // TODO: Trocar o behavior change color para getId
-        var led = document.getElementById(svgElementId).querySelector('[behavior=changeColor]')
+        //Troque o 'SelectedId' pelo Id correspondente do componente que você deseja alterar a cor
+        var led = document.getElementById(svgElementId).querySelector('#SelectedId')
+
+        //Essa função é usada para conseguir uma versão da cor do componente
+        //Passando o valor 1 no input o usuario receberá uma versão clara da cor do componente
+        //E passando o valor 0 no input o usuario receberá uma versão escura da cor do componente
+        //O segundo parametro é o id do componente
         var color = await getColors(input, led)
 
 
 
-        // ? Essa parte fica dentro do behavior?
+        // Modifique o codigo dentro dessa area
         led.setAttribute('fill', color)
-        // ?
-
 
         var output = {
             state: input
         }
+        // 
+
+        return output
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
+export async function rotateComponent(input, svgElementId) {
+
+    try {
+        //Troque o 'SelectedId' pelo Id correspondente do componente que você deseja rotacionar
+        var rotateC = document.getElementById(svgElementId).querySelector('#SelectedId')
+
+        // Modifique o codigo dentro dessa area
+        rotateC.style.setProperty('rotate', '10px')
+        rotateC.style.setProperty('transform-origin', '0 0')
+
+        var output = {
+            state: input
+        }
+        // 
+
+        return output
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
+export async function moveComponent(input, svgElementId) {
+
+    try {
+        //Troque o 'SelectedId' pelo Id correspondente do componente que você deseja rotacionar
+        var rotateC = document.getElementById(svgElementId).querySelector('#SelectedId')
+
+        // Modifique o codigo dentro dessa area
+        rotateC.style.setProperty('translate', '0px')
+
+        var output = {
+            state: input
+        }
+        // 
+
         return output
 
     } catch (err) {
