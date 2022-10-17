@@ -13,12 +13,14 @@ export function unzipFile(file, data, setData) {
     //se você apenas referenciar o data, ele não vai mudar a referencia, logo não vai atualizar
     //o estado. O ruim é perdere memória =), para não fazer assim a gente teria que implementar
     //algum outro estado que sinalizasse ou forçasse o update
+    console.log(data)
     let dataLet = [...data]
-  
+    console.log(dataLet)
+
     //Aqui o arquivo é lido como um buffer
     const bufferReader = new FileReader()
    
-    bufferReader.onload = (zip) => {
+    bufferReader.onload = () => {
   
       //Depois é extraído do .zip
       jsZip.loadAsync(bufferReader.result).then(function (zip) {
@@ -57,9 +59,6 @@ export function unzipFile(file, data, setData) {
 
             }
             
-            console.log(componentName)
-            console.log(contentType)
-            
 
             //Condional para testar se ja existe um objeto que condiz ao componente atual
             if (contentType === 'fzb') {
@@ -84,7 +83,14 @@ export function unzipFile(file, data, setData) {
               tempObj.componentName = componentName
               tempObj[contentType] = fileData
 
+              console.log('filedada:')
+              console.log(fileData)
+
+              console.log('tempObj')
+              console.log(tempObj)
+
               dataLet.push(tempObj)
+              console.log(dataLet)
             }
             
           })

@@ -12,8 +12,8 @@ export default function DragComponentIndex({name, svg, part, id, updatePositionC
 
     const parser = new DOMParser();
     const connectorsDoc = parser.parseFromString(part, 'text/html')
-    const doc = parser.parseFromString(svg, 'text/html')
-    const currentSvg = doc.getElementsByTagName('svg')[0]
+    const svgComXML = parser.parseFromString(svg, 'text/html')
+    const currentSvg = svgComXML.getElementsByTagName('svg')[0]
 
     
     //Função que seleciona os elementos no svg responsaveis pelos conectores e adiciona a classe 'connector' a eles
