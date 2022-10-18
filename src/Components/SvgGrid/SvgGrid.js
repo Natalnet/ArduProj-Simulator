@@ -10,6 +10,7 @@ export default function SvgGrid(props) {
     return (
         <div className='Grid'>
             {props.data.map(d => {
+                console.log(d)
                 if (!d.icon) { return }
                 const doc = parser.parseFromString(d.icon, 'text/html')
                 const currentSvg = doc.getElementsByTagName('svg')[0]

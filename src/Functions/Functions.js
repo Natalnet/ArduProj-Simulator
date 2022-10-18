@@ -28,6 +28,15 @@ export function unzipFile(file, data, setData) {
         Object.keys(zip.files).forEach(function (filename) {
         
           zip.files[filename].async('string').then(function (fileData) {
+
+            /* 
+            ! O formato do nome do arquivo deverá ser tipoDeComponente.nome.formatoDoArquivo
+            ! Ex: breadboard.arduinoUnoV3.svg
+            ! Os arquvios fzb serão excessão devendo ser da seguinte forma:
+            ! nome.fzb
+            */
+
+            console.log(filename)
            
 
             //E adicionado a variavel temporaria formando um objeto composto pelo nome do arquivo e seu conteudo em texto
@@ -40,31 +49,33 @@ export function unzipFile(file, data, setData) {
             console.log(cortado)
 
             //Condicional para dividir os arquivos entre Svgs, fzb e fzp
-            if (cortado[3] === 'svg') {
+            if (!cortado[1]){
+
+                //A primeira leitura será sempre um arquivo vazio com o nome da pasta
+                return 0
+
+            } else if (cortado[2] === 'svg' || cortado[2] === 'fzp') {
 
               //componentName = cortado[2].slice(0,-(cortado[1].length))
               //componentName = componentName.substring(0,20)
-              componentName = cortado[2]
-              contentType = cortado[1]
-
-            } else if (cortado[2] === 'fzp') {
-
               componentName = cortado[1].substring(0,20)
-              contentType = 'part'
+              contentType = cortado[0]
 
             } else {
 
-              componentName = 'fzbList'
-              contentType = cortado[0]
+              componentName = `${cortado[0]}_fzbList`
+              contentType = cortado[1]
 
             }
             
 
             //Condional para testar se ja existe um objeto que condiz ao componente atual
+            console.log(contentType)
             if (contentType === 'fzb') {
-
+                console.log(dataLet)
+              // ! O ERRO ESTÁ AQUI
               //Nesse caso ja existe um objeto guardando os fzbs
-              let index = dataLet.findIndex(e => e.componentName === 'fzbList')
+              let index = dataLet.findIndex(e => e.componentName === `${cortado[0]}_fzbList`)
               dataLet[index][contentType] = fileData
 
             } else if (dataLet.some(e => e.componentName === componentName)) {
@@ -83,22 +94,23 @@ export function unzipFile(file, data, setData) {
               tempObj.componentName = componentName
               tempObj[contentType] = fileData
 
-              console.log('filedada:')
-              console.log(fileData)
+              //console.log('filedada:')
+              //console.log(fileData)
 
-              console.log('tempObj')
-              console.log(tempObj)
+              //console.log('tempObj')
+              //console.log(tempObj)
 
               dataLet.push(tempObj)
-              console.log(dataLet)
+              
             }
             
           })
           .then( () => {
 
             //Aqui transferimos para a variavel global
+            
             setData(dataLet)
-           
+            
           })
         })
       })

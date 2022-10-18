@@ -131,6 +131,7 @@ export default function SideBar(pageAlignment) {
 					top: '1rem',
 					right: '-1.25rem'
 				}}
+				onClick={() => {console.log(data)}}
 			>
 				<PlayArrowRoundedIcon />
 			</Fab>

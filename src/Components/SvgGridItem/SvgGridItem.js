@@ -11,7 +11,9 @@ export default function SvgGridItem( {svg, name, breadboard, part}) {
     const {setDragMap, dragMap, alignment, setEditorComponent, editorComponent} = React.useContext(AppContext)
 
     function dragMapHandler() {
+        
         if(alignment == 'simulador'){
+            console.log(breadboard)
             let tempMap = [...dragMap]
             let id = uuid()
             tempMap.push({componentName: name, breadboard:breadboard, part:part, id:id})
