@@ -1,6 +1,7 @@
 import React from 'react'
 import JSZip from 'jszip'
 import LeaderLine from 'react-leader-line'
+import { getSpeedDialIconUtilityClass } from '@mui/material'
 
 //Função responsavel por extrair arquivos do zip e adicionalos no data
 export function unzipFile(file, data, setData) {
@@ -13,9 +14,10 @@ export function unzipFile(file, data, setData) {
     //se você apenas referenciar o data, ele não vai mudar a referencia, logo não vai atualizar
     //o estado. O ruim é perdere memória =), para não fazer assim a gente teria que implementar
     //algum outro estado que sinalizasse ou forçasse o update
-    console.log(data)
+
+    //console.log(data)
     let dataLet = [...data]
-    console.log(dataLet)
+    //console.log(dataLet)
 
     //Aqui o arquivo é lido como um buffer
     const bufferReader = new FileReader()
@@ -36,7 +38,7 @@ export function unzipFile(file, data, setData) {
             ! nome.fzb
             */
 
-            console.log(filename)
+            //console.log(filename)
            
 
             //E adicionado a variavel temporaria formando um objeto composto pelo nome do arquivo e seu conteudo em texto
@@ -46,7 +48,7 @@ export function unzipFile(file, data, setData) {
             let componentName
             let contentType
 
-            console.log(cortado)
+            //console.log(cortado)
 
             //Condicional para dividir os arquivos entre Svgs, fzb e fzp
             if (!cortado[1]){
@@ -70,15 +72,20 @@ export function unzipFile(file, data, setData) {
             
 
             //Condional para testar se ja existe um objeto que condiz ao componente atual
-            console.log(contentType)
+            //console.log(dataLet)
+            //console.log(contentType)
             if (contentType === 'fzb') {
-                console.log(dataLet)
+              //console.log('caso 1')
+              
               // ! O ERRO ESTÁ AQUI
-              //Nesse caso ja existe um objeto guardando os fzbs
+              /* Nesse caso ja existe um objeto guardando os fzbs
               let index = dataLet.findIndex(e => e.componentName === `${cortado[0]}_fzbList`)
               dataLet[index][contentType] = fileData
+              */
 
             } else if (dataLet.some(e => e.componentName === componentName)) {
+
+              //console.log('caso 2')
 
               //Nesse caso ja existe um objeto guardando o componente atual então apenas adicionamos um novo svg nele
 
@@ -86,6 +93,8 @@ export function unzipFile(file, data, setData) {
               dataLet[index][contentType] = fileData
 
             } else {
+
+              //console.log('caso 3')
 
               //Nesse caso ainda não existe um objeto que corresponda ao componente atual então é criado um 
 
@@ -111,6 +120,7 @@ export function unzipFile(file, data, setData) {
             
             setData(dataLet)
             
+            
           })
         })
       })
@@ -135,7 +145,9 @@ export async function handleFileDrop(e, data, setData) {
       if (typeof item === 'object') {
 
         //Função que extrai e adiciona os arquivos a variavel data
-        await unzipFile(item, data, setData)  
+        console.log(data)
+        await unzipFile(item, data, setData)
+        console.log(data)  
       }
     }
     
