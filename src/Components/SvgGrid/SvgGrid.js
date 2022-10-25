@@ -7,18 +7,16 @@ import { AppContext } from '../../App';
 export default function SvgGrid() {
     const parser = new DOMParser();
 
-    const {data} = React.useContext(AppContext)
+    const { data } = React.useContext(AppContext)
 
     // Checar https://stackoverflow.com/questions/55823296/reactjs-prevstate-in-the-new-usestate-react-hook
 
     return (
         <div className='Grid'>
             {data.map(d => {
-                console.log(d)
                 if (!d.icon) { return }
                 const doc = parser.parseFromString(d.icon, 'text/html')
                 const currentSvg = doc.getElementsByTagName('svg')[0]
-                console.log(currentSvg)
                 return (
                     <SvgGridItem
                         key={d.componentName}

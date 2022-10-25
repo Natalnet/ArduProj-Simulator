@@ -61,7 +61,7 @@ export function unzipFile(file, data, setData) {
               //componentName = cortado[2].slice(0,-(cortado[1].length))
               //componentName = componentName.substring(0,20)
               componentName = cortado[1].substring(0,20)
-              contentType = cortado[0]
+              contentType = cortado[0].split('/')[1]
 
             } else {
 
@@ -77,7 +77,7 @@ export function unzipFile(file, data, setData) {
             if (contentType === 'fzb') {
               //console.log('caso 1')
               
-              // ! O ERRO ESTÁ AQUI
+              
               /* Nesse caso ja existe um objeto guardando os fzbs
               let index = dataLet.findIndex(e => e.componentName === `${cortado[0]}_fzbList`)
               dataLet[index][contentType] = fileData
@@ -118,8 +118,9 @@ export function unzipFile(file, data, setData) {
 
             //Aqui transferimos para a variavel global
             
-            setData(dataLet)
             
+            setData([...dataLet])
+           
             
           })
         })
@@ -145,9 +146,7 @@ export async function handleFileDrop(e, data, setData) {
       if (typeof item === 'object') {
 
         //Função que extrai e adiciona os arquivos a variavel data
-        console.log(data)
         await unzipFile(item, data, setData)
-        console.log(data)  
       }
     }
     
