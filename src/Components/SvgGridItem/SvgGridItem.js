@@ -5,15 +5,15 @@ import uuid from 'react-uuid'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag, useGesture } from '@use-gesture/react'
 
-export default function SvgGridItem( {svg, name, breadboard, part}) {
+export default function SvgGridItem( {svg, name, breadboard, part, pageAlignment}) {
 
     
-    const {setDragMap, dragMap, alignment, setEditorComponent, editorComponent} = React.useContext(AppContext)
+    const {setDragMap, dragMap, setEditorComponent, editorComponent} = React.useContext(AppContext)
 
     function dragMapHandler() {
         
-        if(alignment == 'simulador'){
-            console.log(breadboard)
+        if(pageAlignment == 'simulador'){
+            console.log(pageAlignment)
             let tempMap = [...dragMap]
             let id = uuid()
             tempMap.push({componentName: name, breadboard:breadboard, part:part, id:id})

@@ -104,7 +104,7 @@ export default function SideBar(pageAlignment) {
 
 	const screenDisplay = () => {
 		if (screen == 'components') {
-			return <SvgGrid data={data} />
+			return <SvgGrid data={data} pageAlignment={pageAlignment} />
 		} else {
 			return <ToolsGrid />
 		}
@@ -131,7 +131,8 @@ export default function SideBar(pageAlignment) {
 					top: '1rem',
 					right: '-1.25rem'
 				}}
-				onClick={() => {console.log(data)}}
+				//TODO ADICIONAR A FUNÇÃO PARA LIGAR O SIMULADOR AQUI
+				onClick={() => {}}
 			>
 				<PlayArrowRoundedIcon />
 			</Fab>

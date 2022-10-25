@@ -22,13 +22,13 @@ function App() {
 
     const [data, setData] = React.useState([])
 
-    const [alignment, setAlignment] = React.useState('simulador')
+    //const [alignment, setAlignment] = React.useState('simulador')
 
     const [editorComponent, setEditorComponent] = React.useState()
 
     return (
         <div className="App" >
-            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, editorComponent, setEditorComponent }}>
+            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, editorComponent, setEditorComponent }}>
                 <Routes>
                     <Route path='/' element={<Simulador />} />
                     <Route path='editor' element={<Editor />} />

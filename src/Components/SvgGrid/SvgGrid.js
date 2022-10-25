@@ -4,7 +4,7 @@ import './SvgGridStyle.css'
 import { AppContext } from '../../App';
 
 
-export default function SvgGrid() {
+export default function SvgGrid(pageAlignment) {
     const parser = new DOMParser();
 
     const { data } = React.useContext(AppContext)
@@ -24,6 +24,7 @@ export default function SvgGrid() {
                         name={d.componentName}
                         breadboard={d.breadboard}
                         part={d.part}
+                        pageAlignment={pageAlignment}
                     />
                 )
             })}
