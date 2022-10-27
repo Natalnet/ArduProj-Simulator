@@ -38,17 +38,12 @@ export function unzipFile(file, data, setData) {
             ! nome.fzb
             */
 
-            //console.log(filename)
-           
-
             //E adicionado a variavel temporaria formando um objeto composto pelo nome do arquivo e seu conteudo em texto
 
             let cortado = filename.split('.')
             
             let componentName
             let contentType
-
-            //console.log(cortado)
 
             //Condicional para dividir os arquivos entre Svgs, fzb e fzp
             if (!cortado[1]){
@@ -61,7 +56,15 @@ export function unzipFile(file, data, setData) {
               //componentName = cortado[2].slice(0,-(cortado[1].length))
               //componentName = componentName.substring(0,20)
               componentName = cortado[1].substring(0,20)
-              contentType = cortado[0].split('/')[1]
+
+              var directoryName = cortado[0].split('/')
+
+              //? O filename pode possuir ou não o nome da pasta onde ele esta inserido por isso esse teste. Não sei ao certo o que define isso.
+              if(directoryName[1]){
+                contentType = directoryName[1]
+              } else {
+                contentType = directoryName[0]
+              }
 
             } else {
 
@@ -72,20 +75,14 @@ export function unzipFile(file, data, setData) {
             
 
             //Condional para testar se ja existe um objeto que condiz ao componente atual
-            //console.log(dataLet)
-            //console.log(contentType)
             if (contentType === 'fzb') {
-              //console.log('caso 1')
-              
-              
+
               /* Nesse caso ja existe um objeto guardando os fzbs
               let index = dataLet.findIndex(e => e.componentName === `${cortado[0]}_fzbList`)
               dataLet[index][contentType] = fileData
               */
 
             } else if (dataLet.some(e => e.componentName === componentName)) {
-
-              //console.log('caso 2')
 
               //Nesse caso ja existe um objeto guardando o componente atual então apenas adicionamos um novo svg nele
 
@@ -94,8 +91,6 @@ export function unzipFile(file, data, setData) {
 
             } else {
 
-              //console.log('caso 3')
-
               //Nesse caso ainda não existe um objeto que corresponda ao componente atual então é criado um 
 
               //Objeto temporario para guardar as variaveis de nome e o arquivo html convertido em texto
@@ -103,21 +98,13 @@ export function unzipFile(file, data, setData) {
               tempObj.componentName = componentName
               tempObj[contentType] = fileData
 
-              //console.log('filedada:')
-              //console.log(fileData)
-
-              //console.log('tempObj')
-              //console.log(tempObj)
-
               dataLet.push(tempObj)
-              
             }
             
           })
           .then( () => {
 
             //Aqui transferimos para a variavel global
-            
             
             setData([...dataLet])
            

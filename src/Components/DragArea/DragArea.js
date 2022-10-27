@@ -33,7 +33,6 @@ export default function DragArea() {
   return (
     <div className='DragAreaDiv'>
       {dragMap.map(d => {
-        console.log(d)
         return(
           <DragComponentIndex 
             name={d.componentName}

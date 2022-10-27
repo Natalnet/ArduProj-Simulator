@@ -9,6 +9,7 @@ import { Fab } from '@material-ui/core';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import DisplaySettingsRoundedIcon from '@mui/icons-material/DisplaySettingsRounded';
+import { EditorContext } from '../../Pages/Editor/Editor';
 
 import code_default from '../../Functions/default_code';
 import WorkerBuilder from '../ArduinoSimulator/worker-builder';
@@ -19,7 +20,8 @@ export default function SideBar(pageAlignment) {
 
 	//Arquivos importados
 
-	const { data, setData, setDragMap, dragMap, } = React.useContext(AppContext)
+	const { data, setData, setDragMap, dragMap, alignment } = React.useContext(AppContext)
+	const { editorCode } = React.useContext(EditorContext)
 
 	//const [alignment, setAlignment] = React.useState(pageAlignment)
 
@@ -39,63 +41,61 @@ export default function SideBar(pageAlignment) {
 		} else { setEntrada(0) }
 	}
 
-	function createLed() {
-		console.log(entrada)
-		/*
-		changeColor(entrada,dragMap[0].id)
-		if (entrada === 0) {
-		  setEntrada(1)
-		} else {setEntrada(0)}
-		*/
+	function startSimulation() {
+		if (alignment == 'simulador') {
+			console.log("Compiling code " + code_default);
+			fetch('http://localhost:3001/compile-wasm',
+				{
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					method: 'POST',
+					body: JSON.stringify({ 'code': code_default })
+				}
+			)
+				.then(async (response) => {
+					const resJson = await response.json();
+					//lastExecuted = resJson.res;
+					//executedCode = code_default;
+					console.log(resJson, `http://localhost:3001/${resJson.res.jsfile}`);
+					/*versão com js global*/
+					//loadJS(`http://localhost:3001/${resJson.res.jsfile}`);
 
-		console.log("Compiling code " + code_default);
-		fetch('http://localhost:3001/compile-wasm',
-			{
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				method: 'POST',
-				body: JSON.stringify({ 'code': code_default })
-			}
-		)
-			.then(async (response) => {
-				const resJson = await response.json();
-				//lastExecuted = resJson.res;
-				//executedCode = code_default;
-				console.log(resJson, `http://localhost:3001/${resJson.res.jsfile}`);
-				/*versão com js global*/
-				//loadJS(`http://localhost:3001/${resJson.res.jsfile}`);
+					/*versão com workers*/
+					var instance = new WorkerBuilder(Worker);
+					instance.onmessage = (msg) => {
 
-				/*versão com workers*/
-				var instance = new WorkerBuilder(Worker);
-				instance.onmessage = (msg) => {
+						if (msg.data.type === 'stateUpdate') {
+							var pinStates = JSON.parse(msg.data.pinValues);
+							/*TODO: @Mario adiciona aqui a lógica para mudar a cor do led*/
+						}
+					};
+					instance.addEventListener("error", (event) => {
+						console.log("error while loading " + event.message + " on " + event.filename + "::" + event.lineno);
+						instance.terminate();
+					});
+					if (arduino !== undefined)
+						arduino.terminate()
 
-					if (msg.data.type === 'stateUpdate') {
-						var pinStates = JSON.parse(msg.data.pinValues);
-						/*TODO: @Mario adiciona aqui a lógica para mudar a cor do led*/
-					}
-				};
-				instance.addEventListener("error", (event) => {
-					console.log("error while loading " + event.message + " on " + event.filename + "::" + event.lineno);
-					instance.terminate();
+					arduino = instance
+					arduino.postMessage({ start: `http://localhost:3001/${resJson.res.jsfile}` });
+				})
+				.then(data => console.log(data))
+				.catch((error) => {
+					setRunning(false);
+					console.error('Error:', error);
 				});
-				if (arduino !== undefined)
-					arduino.terminate()
+		} else {
+			var func = Function(editorCode)
+			func()
+		}
 
-				arduino = instance
-				arduino.postMessage({ start: `http://localhost:3001/${resJson.res.jsfile}` });
-			})
-			.then(data => console.log(data))
-			.catch((error) => {
-				setRunning(false);
-				console.error('Error:', error);
-			});
 
 	}
 
 	//Função que testa se a pagina esta no simulador ou editor e adiciona o dropzone baseado nisso
 	const hasDropZone = () => {
-		if (pageAlignment.pageAlignment == 'simulador') {
+		if (alignment == 'simulador') {
 			return <DropZone data={data} setData={setData} />
 		} else {
 			return <DropZone data={data} setData={setData} />
@@ -104,7 +104,7 @@ export default function SideBar(pageAlignment) {
 
 	const screenDisplay = () => {
 		if (screen == 'components') {
-			return <SvgGrid data={data} pageAlignment={pageAlignment} />
+			return <SvgGrid data={data} />
 		} else {
 			return <ToolsGrid />
 		}
@@ -112,10 +112,9 @@ export default function SideBar(pageAlignment) {
 
 	//Função que testa se a pagina esta no simulador ou editor e adiciona o toolsButton baseado nisso
 	const hasTools = () => {
-		if (pageAlignment.pageAlignment === 'simulador') {
+		if (alignment === 'simulador') {
 			return
 		} else {
-			console.log(pageAlignment)
 			return (<ToolsButton screen={screen} setScreen={setScreen} />)
 		}
 	}
@@ -132,7 +131,7 @@ export default function SideBar(pageAlignment) {
 					right: '-1.25rem'
 				}}
 				//TODO ADICIONAR A FUNÇÃO PARA LIGAR O SIMULADOR AQUI
-				onClick={() => {}}
+				onClick={() => { startSimulation() }}
 			>
 				<PlayArrowRoundedIcon />
 			</Fab>
@@ -144,6 +143,7 @@ export default function SideBar(pageAlignment) {
 					top: '5rem',
 					right: '-1.25rem'
 				}}
+				onClick={() => { console.log(editorCode) }}
 			>
 				<SaveRoundedIcon />
 			</Fab>

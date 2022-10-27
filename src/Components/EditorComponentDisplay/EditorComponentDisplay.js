@@ -30,6 +30,7 @@ export default function EditorComponentDisplay() {
                 width={svg.width.baseVal.value}
                 height={svg.height.baseVal.value}
                 dangerouslySetInnerHTML={{ __html: svg.innerHTML }}
+                id='displayedSvg'
             />)
         } else {
             return(
@@ -41,7 +42,7 @@ export default function EditorComponentDisplay() {
 
     return (
         <div>
-            <Card sx={{ maxWidth: 345 }} justifyContent="center">
+            <Card sx={{ maxWidth: 345, minWidth: 50, maxHeight: 345, minHeight:50 }} justifyContent="center">
                 {hasEditorComponent()}
             </Card>
         </div>

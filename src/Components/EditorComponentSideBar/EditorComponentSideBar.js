@@ -5,12 +5,17 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools"
+import { EditorContext } from '../../Pages/Editor/Editor';
+import defaultLedCode from '../../Functions/defaultLedCode';
 
 
 export default function EditorComponentSideBar() {
 
+    const { setEditorCode } = React.useContext(EditorContext)
+
+
     function onChange(newValue) {
-        console.log("change", newValue);
+        setEditorCode(newValue)
     }
 
     return (
@@ -25,6 +30,7 @@ export default function EditorComponentSideBar() {
                     height='29rem'
                     width='18rem'
                     wrapEnabled='true'
+                    defaultValue={defaultLedCode}
                 />
             </div>
         </div>
