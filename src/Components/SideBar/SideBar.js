@@ -16,12 +16,12 @@ import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
 import ToolsGrid from '../ToolsGrid/ToolsGrid';
 
-export default function SideBar(pageAlignment) {
+export default function SideBar({editorCode}) {
 
 	//Arquivos importados
 
 	const { data, setData, setDragMap, dragMap, alignment } = React.useContext(AppContext)
-	const { editorCode } = React.useContext(EditorContext)
+	//const { editorCode } = React.useContext(EditorContext)
 
 	//const [alignment, setAlignment] = React.useState(pageAlignment)
 
@@ -86,6 +86,7 @@ export default function SideBar(pageAlignment) {
 					console.error('Error:', error);
 				});
 		} else {
+			//TODO: TRANSFORMAR ESSA FUNÇÃO NUMA PROMISSE
 			var func = Function(editorCode)
 			func()
 		}

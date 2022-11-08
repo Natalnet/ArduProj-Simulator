@@ -14,6 +14,7 @@ export default function ToolsArea() {
                     id={t.id}
                     color={t.color}
                     icon={t.icon}
+                    type={t.type}
                     />
                 )
             })}

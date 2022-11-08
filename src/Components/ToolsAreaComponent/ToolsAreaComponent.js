@@ -12,6 +12,23 @@ export default function ToolsAreaComponent(props) {
         height: '3rem'
     }))
 
+    function openScreen() {
+        //TODO: criar transição com css ou usar o useSpring
+        let animated = document.getElementById(`toolsDiv/${props.id}`)
+        let aberto = false
+        animated.style.width == '3rem' ? aberto = false : aberto = true
+        if(!aberto){
+            animated.style.width = '12rem'
+            animated.style.height = '9rem'
+
+            return 'children'
+        } else {
+            animated.style.width = '3rem'
+            animated.style.height = '3rem'
+        }
+        
+    }
+
     function DragComponent() {
 
         const bind = useDrag((params) => {
@@ -33,46 +50,68 @@ export default function ToolsAreaComponent(props) {
 
 
         )
-        return (
-            <animated.div
-                {...bind()}
-                style={{
-                    x, y, width, height,
-                    pointerEvents: 'auto',
-                    backgroundColor: props.color,
-                    borderRadius: '15%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}
-                id={`toolsDiv/${props.id}`}
-            >
-                {props.icon}
-                <div
+        if (props.type == 'wire') {
+            return (
+                <animated.div
+                    {...bind()}
                     style={{
+                        x, y, width, height,
+                        pointerEvents: 'auto',
                         backgroundColor: props.color,
-                        width: '1rem',
-                        height: '1rem',
-                        borderRadius: '100%',
-                        position: 'absolute',
-                        right: '-.5rem',
+                        borderRadius: '15%',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center'
                     }}
+                    id={`toolsDiv/${props.id}`}
                 >
+                    {props.icon}
                     <div
                         style={{
-                            backgroundColor: 'white',
-                            width: '.6rem',
-                            height: '.6rem',
+                            backgroundColor: props.color,
+                            width: '1rem',
+                            height: '1rem',
                             borderRadius: '100%',
-
-
+                            position: 'absolute',
+                            right: '-.5rem',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
                         }}
-                    />
-                </div>
-            </animated.div>)
+                    >
+                        <div
+                            style={{
+                                backgroundColor: 'white',
+                                width: '.6rem',
+                                height: '.6rem',
+                                borderRadius: '100%',
+
+
+                            }}
+                        />
+                    </div>
+                </animated.div>)
+        } else {
+            //TODO: Colocar o codigo para precisar segurar pra abrir a tela
+            return (
+                <animated.div
+                    {...bind()}
+                    style={{
+                        x, y, width, height,
+                        pointerEvents: 'auto',
+                        backgroundColor: props.color,
+                        borderRadius: '15%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    id={`toolsDiv/${props.id}`}
+                    onClick={()=>{openScreen()}}
+                >
+                    {props.icon}
+                </animated.div>)
+        }
+
     }
 
     return (

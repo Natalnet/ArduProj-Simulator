@@ -11,7 +11,7 @@ export default function Simulador() {
 
   return (
     <>
-      <SideBar pageAlignment="simulador" />
+      <SideBar editorCode="nada" />
       <DragArea />
     </>
   )

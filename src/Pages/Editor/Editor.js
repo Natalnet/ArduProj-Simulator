@@ -22,7 +22,7 @@ export default function Editor() {
     return (
         <div className='Editor'>
             <EditorContext.Provider value={{ toolsMap, setToolsMap, editorCode, setEditorCode }}>
-                <SideBar pageAlignment='editor' />
+                <SideBar editorCode={editorCode} />
                 <ToolsArea />
                 <EditorComponentDisplay />
                 <EditorComponentSideBar />

@@ -11,6 +11,7 @@ import PowerIcon from '@mui/icons-material/Power';
 import PowerOffIcon from '@mui/icons-material/PowerOff';
 import SaveIcon from '@mui/icons-material/Save';
 import { AppContext } from '../../App'
+import { createConnectors } from '../../Functions/Functions';
 
 export default function EditorComponentDisplay() {
 
@@ -29,7 +30,7 @@ export default function EditorComponentDisplay() {
                 className='Svg'
                 width={svg.width.baseVal.value}
                 height={svg.height.baseVal.value}
-                dangerouslySetInnerHTML={{ __html: svg.innerHTML }}
+                dangerouslySetInnerHTML={{ __html: createConnectors(editorComponent.part,editorComponent.breadboard, 'displayedSvg').svg }}
                 id='displayedSvg'
             />)
         } else {
