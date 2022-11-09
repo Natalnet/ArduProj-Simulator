@@ -12,38 +12,48 @@ import PowerOffIcon from '@mui/icons-material/PowerOff';
 import SaveIcon from '@mui/icons-material/Save';
 import { AppContext } from '../../App'
 import { createConnectors } from '../../Functions/Functions';
+import { EditorContext } from '../../Pages/Editor/Editor';
 
 export default function EditorComponentDisplay() {
 
     const { editorComponent } = React.useContext(AppContext)
+    const { connectorList, setConnectorList } = React.useContext(EditorContext)
 
-    const parser = new DOMParser();
+    const parser = new DOMParser()
 
-
+    const connectorListCallBack = React.useCallback(() => {}, []);
 
     function hasEditorComponent() {
         if (editorComponent) {
-            const doc = parser.parseFromString(editorComponent.breadboard, 'text/html')
-            const svg = doc.getElementsByTagName('svg')[0]
-            return(
-            <svg
-                className='Svg'
-                width={svg.width.baseVal.value}
-                height={svg.height.baseVal.value}
-                dangerouslySetInnerHTML={{ __html: createConnectors(editorComponent.part,editorComponent.breadboard, 'displayedSvg').svg }}
-                id='displayedSvg'
-            />)
+            var localSvgData = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg')
+
+            console.log(localSvgData.connectorList)
+            console.log(connectorList)
+
+            //! ERRO VVV
+            //! Quando eu chamo esse hook o componente rerenderiza e cria um loop infinito
+            //React.useMemo(() => setConnectorList(localSvgData.connectorList), [localSvgData.connectorList])
+
+
+            return (
+                <svg
+                    className='Svg'
+                    width={localSvgData.svg.width.baseVal.value}
+                    height={localSvgData.svg.height.baseVal.value}
+                    dangerouslySetInnerHTML={{ __html: localSvgData.svg.innerHTML }}
+                    id='displayedSvg'
+                />)
         } else {
-            return(
-            <Typography variant="h5" component="div">
-                Selecione um componente a esquerda.
-            </Typography>)
+            return (
+                <Typography variant="h5" component="div">
+                    Selecione um componente a esquerda.
+                </Typography>)
         }
     }
 
     return (
         <div>
-            <Card sx={{ maxWidth: 345, minWidth: 50, maxHeight: 345, minHeight:50 }} justifyContent="center">
+            <Card sx={{ maxWidth: 345, minWidth: 50, maxHeight: 345, minHeight: 50 }} justifyContent="center">
                 {hasEditorComponent()}
             </Card>
         </div>

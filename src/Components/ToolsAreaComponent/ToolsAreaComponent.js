@@ -1,9 +1,14 @@
 import React from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag, useGesture } from '@use-gesture/react'
+import { EditorContext } from '../../Pages/Editor/Editor'
 
 
 export default function ToolsAreaComponent(props) {
+
+    const { connectorList } = React.useContext(EditorContext)
+
+    const [screenOpened, setScreenOpened] = React.useState(false)
 
     const [{ x, y, width, height }, api] = useSpring(() => ({
         x: 0,
@@ -13,11 +18,12 @@ export default function ToolsAreaComponent(props) {
     }))
 
     function openScreen() {
+        setScreenOpened(true)
         //TODO: criar transição com css ou usar o useSpring
         let animated = document.getElementById(`toolsDiv/${props.id}`)
         let aberto = false
         animated.style.width == '3rem' ? aberto = false : aberto = true
-        if(!aberto){
+        if (!aberto) {
             animated.style.width = '12rem'
             animated.style.height = '9rem'
 
@@ -26,7 +32,21 @@ export default function ToolsAreaComponent(props) {
             animated.style.width = '3rem'
             animated.style.height = '3rem'
         }
-        
+
+    }
+
+    function isOpened() {
+        if (screenOpened) {
+            //! MAP NÃO ESTA FUNCIONANDO
+            connectorList.map(c => {
+                console.log(c)
+                return (
+                    <p>{c.name}</p>
+                )
+            })
+        } else {
+            return (props.icon)
+        }
     }
 
     function DragComponent() {
@@ -37,11 +57,11 @@ export default function ToolsAreaComponent(props) {
                 y: params.offset[1]
             })
 
-            /*
-            if(params.tap && params.elapsedTime >= 500 && params.event.target.className.baseVal === 'connector') {
-              lineFunc(params.event.target,lines,setLines)
+
+            if (params.tap && params.elapsedTime >= 500 && props.type === 'screen') {
+                openScreen()
             }
-            */
+
 
 
 
@@ -106,9 +126,8 @@ export default function ToolsAreaComponent(props) {
                         alignItems: 'center'
                     }}
                     id={`toolsDiv/${props.id}`}
-                    onClick={()=>{openScreen()}}
                 >
-                    {props.icon}
+                    {isOpened}
                 </animated.div>)
         }
 

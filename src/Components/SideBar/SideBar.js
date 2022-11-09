@@ -16,7 +16,7 @@ import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
 import ToolsGrid from '../ToolsGrid/ToolsGrid';
 
-export default function SideBar({editorCode}) {
+export default function SideBar({ editorCode }) {
 
 	//Arquivos importados
 
@@ -86,9 +86,19 @@ export default function SideBar({editorCode}) {
 					console.error('Error:', error);
 				});
 		} else {
-			//TODO: TRANSFORMAR ESSA FUNÇÃO NUMA PROMISSE
-			var func = Function(editorCode)
-			func()
+			if (running) {
+				setRunning(false)
+			} else {
+				//TODO: TRANSFORMAR ESSA FUNÇÃO NUMA PROMISSE
+				setRunning(true)
+				var func = Function(editorCode)
+				console.log('tesaaaaahtrhtr')
+				while(running){
+					console.log('teseeee')
+					func()
+				}
+			}
+
 		}
 
 
@@ -103,14 +113,6 @@ export default function SideBar({editorCode}) {
 		}
 	}
 
-	const screenDisplay = () => {
-		if (screen == 'components') {
-			return <SvgGrid data={data} />
-		} else {
-			return <ToolsGrid />
-		}
-	}
-
 	//Função que testa se a pagina esta no simulador ou editor e adiciona o toolsButton baseado nisso
 	const hasTools = () => {
 		if (alignment === 'simulador') {
@@ -119,6 +121,7 @@ export default function SideBar({editorCode}) {
 			return (<ToolsButton screen={screen} setScreen={setScreen} />)
 		}
 	}
+
 
 
 	return (
@@ -134,7 +137,7 @@ export default function SideBar({editorCode}) {
 				//TODO ADICIONAR A FUNÇÃO PARA LIGAR O SIMULADOR AQUI
 				onClick={() => { startSimulation() }}
 			>
-				<PlayArrowRoundedIcon />
+				{running ? <SaveRoundedIcon /> : <PlayArrowRoundedIcon />}
 			</Fab>
 			<Fab
 				className='FabButton'
@@ -149,7 +152,7 @@ export default function SideBar({editorCode}) {
 				<SaveRoundedIcon />
 			</Fab>
 			{hasDropZone()}
-			{screenDisplay()}
+			{screen == 'components' ? <SvgGrid data={data} /> : <ToolsGrid />}
 			{hasTools()}
 			<Fab
 				className='FabButton'
