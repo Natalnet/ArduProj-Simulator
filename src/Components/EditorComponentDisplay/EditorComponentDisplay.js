@@ -21,19 +21,32 @@ export default function EditorComponentDisplay() {
 
     const parser = new DOMParser()
 
-    const connectorListCallBack = React.useCallback(() => {}, []);
+    const connectorListCallBack = React.useCallback(() => { }, []);
+
+    const [localSvgData, setLocalSvgData] = React.useState()
+
+    const teste = React.useRef()
+
+    console.log(editorComponent)
+    React.useEffect(() => {
+
+    }, [editorComponent])
+
 
     function hasEditorComponent() {
         if (editorComponent) {
             var localSvgData = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg')
 
             console.log(localSvgData.connectorList)
-            console.log(connectorList)
+
 
             //! ERRO VVV
             //! Quando eu chamo esse hook o componente rerenderiza e cria um loop infinito
             //React.useMemo(() => setConnectorList(localSvgData.connectorList), [localSvgData.connectorList])
 
+            //setConnectorList(prev => { if (prev != localSvgData.connectorList) { return localSvgData.connectorList } })
+
+            console.log(connectorList)
 
             return (
                 <svg
@@ -57,5 +70,6 @@ export default function EditorComponentDisplay() {
                 {hasEditorComponent()}
             </Card>
         </div>
+
     )
 }

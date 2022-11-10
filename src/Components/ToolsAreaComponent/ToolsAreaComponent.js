@@ -2,6 +2,7 @@ import React from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag, useGesture } from '@use-gesture/react'
 import { EditorContext } from '../../Pages/Editor/Editor'
+import ToolsConnectorList from '../ToolsConnectorList/ToolsConnectorList'
 
 
 export default function ToolsAreaComponent(props) {
@@ -10,44 +11,33 @@ export default function ToolsAreaComponent(props) {
 
     const [screenOpened, setScreenOpened] = React.useState(false)
 
+    const [child, setChild] = React.useState(props.icon)
+
+    
+
+    function openScreen() {
+
+        setScreenOpened(true)
+        //TODO: criar transição com css ou usar o useSpring
+        let animated = document.getElementById(`toolsDiv/${props.id}`)
+        animated.style.width == '3rem' ? setScreenOpened(false) : setScreenOpened(true)
+        if (!screenOpened) {
+            animated.style.width = '12rem'
+            animated.style.height = '9rem'
+            setChild(props.icon)
+        } else {
+            animated.style.width = '3rem'
+            animated.style.height = '3rem'
+            setChild(<ToolsConnectorList />)
+        }
+    }
+
     const [{ x, y, width, height }, api] = useSpring(() => ({
         x: 0,
         y: 0,
         width: '3rem',
         height: '3rem'
     }))
-
-    function openScreen() {
-        setScreenOpened(true)
-        //TODO: criar transição com css ou usar o useSpring
-        let animated = document.getElementById(`toolsDiv/${props.id}`)
-        let aberto = false
-        animated.style.width == '3rem' ? aberto = false : aberto = true
-        if (!aberto) {
-            animated.style.width = '12rem'
-            animated.style.height = '9rem'
-
-            return 'children'
-        } else {
-            animated.style.width = '3rem'
-            animated.style.height = '3rem'
-        }
-
-    }
-
-    function isOpened() {
-        if (screenOpened) {
-            //! MAP NÃO ESTA FUNCIONANDO
-            connectorList.map(c => {
-                console.log(c)
-                return (
-                    <p>{c.name}</p>
-                )
-            })
-        } else {
-            return (props.icon)
-        }
-    }
 
     function DragComponent() {
 
@@ -56,19 +46,11 @@ export default function ToolsAreaComponent(props) {
                 x: params.offset[0],
                 y: params.offset[1]
             })
-
-
             if (params.tap && params.elapsedTime >= 500 && props.type === 'screen') {
                 openScreen()
             }
-
-
-
-
         },
             ({ down, movement: [mx, my] }) => api.start({ x: down ? mx : 0, y: down ? my : 0, scale: down ? 1.2 : 1 })
-
-
         )
         if (props.type == 'wire') {
             return (
@@ -112,7 +94,6 @@ export default function ToolsAreaComponent(props) {
                     </div>
                 </animated.div>)
         } else {
-            //TODO: Colocar o codigo para precisar segurar pra abrir a tela
             return (
                 <animated.div
                     {...bind()}
@@ -127,7 +108,7 @@ export default function ToolsAreaComponent(props) {
                     }}
                     id={`toolsDiv/${props.id}`}
                 >
-                    {isOpened}
+                    {screenOpened ? <ToolsConnectorList /> : props.icon }
                 </animated.div>)
         }
 

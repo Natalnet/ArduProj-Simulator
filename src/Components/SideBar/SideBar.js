@@ -9,6 +9,7 @@ import { Fab } from '@material-ui/core';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import DisplaySettingsRoundedIcon from '@mui/icons-material/DisplaySettingsRounded';
+import StopRoundedIcon from '@mui/icons-material/StopRounded';
 import { EditorContext } from '../../Pages/Editor/Editor';
 
 import code_default from '../../Functions/default_code';
@@ -21,15 +22,13 @@ export default function SideBar({ editorCode }) {
 	//Arquivos importados
 
 	const { data, setData, setDragMap, dragMap, alignment } = React.useContext(AppContext)
-	//const { editorCode } = React.useContext(EditorContext)
-
-	//const [alignment, setAlignment] = React.useState(pageAlignment)
 
 	const [entrada, setEntrada] = React.useState(0)
 
 	const [screen, setScreen] = React.useState('components')
 
-	const [running, setRunning] = React.useState(false)
+	const [running, setRunning] = React.useState()
+
 
 	var arduino = undefined; //variavel para guardar a instancia em execução
 
@@ -42,6 +41,7 @@ export default function SideBar({ editorCode }) {
 	}
 
 	function startSimulation() {
+		console.log(running)
 		if (alignment == 'simulador') {
 			console.log("Compiling code " + code_default);
 			fetch('http://localhost:3001/compile-wasm',
@@ -87,16 +87,43 @@ export default function SideBar({ editorCode }) {
 				});
 		} else {
 			if (running) {
+				console.log('stop running')
 				setRunning(false)
 			} else {
+				console.log('play running')
 				//TODO: TRANSFORMAR ESSA FUNÇÃO NUMA PROMISSE
+				console.log(running)
 				setRunning(true)
+				console.log('setando')
+				console.log(running)
+
+
 				var func = Function(editorCode)
-				console.log('tesaaaaahtrhtr')
-				while(running){
-					console.log('teseeee')
-					func()
+
+				const elementCode = (ms) => {
+					return new Promise((resolve, reject) => {
+						setTimeout(() => {
+							resolve(func())
+						}, ms)
+					})
 				}
+
+				const runCode = async () => {
+
+					let counter = 1
+					console.log(running)
+
+					while (!running) {
+						await elementCode(1000)
+						console.log(`post id ${counter}`)
+						console.log(running)
+						counter++
+					}
+
+				}
+
+				runCode()
+
 			}
 
 		}
@@ -137,7 +164,7 @@ export default function SideBar({ editorCode }) {
 				//TODO ADICIONAR A FUNÇÃO PARA LIGAR O SIMULADOR AQUI
 				onClick={() => { startSimulation() }}
 			>
-				{running ? <SaveRoundedIcon /> : <PlayArrowRoundedIcon />}
+				{running ? <StopRoundedIcon /> : <PlayArrowRoundedIcon />}
 			</Fab>
 			<Fab
 				className='FabButton'
