@@ -17,11 +17,13 @@ import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
 import ToolsGrid from '../ToolsGrid/ToolsGrid';
 
-export default function SideBar({ editorCode }) {
+export default function SideBar({ editorCode, editorComponent, connectorList }) {
 
 	//Arquivos importados
 
 	const { data, setData, setDragMap, dragMap, alignment } = React.useContext(AppContext)
+	
+	
 
 	const [entrada, setEntrada] = React.useState(0)
 
@@ -32,6 +34,38 @@ export default function SideBar({ editorCode }) {
 
 	var arduino = undefined; //variavel para guardar a instancia em execução
 
+	const elementCode = (func,ms) => {
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve(func())
+			}, ms)
+		})
+	}
+
+	const runCode = async (func, {signal}) => {
+		let counter = 1
+		console.log(signal)
+
+		
+		try{
+			while (running) {
+
+				if(signal.aborted){
+					break
+				}
+	
+				await elementCode(func,1000, {signal})
+				console.log(`post id ${counter}`)
+				console.log(signal.aborted)
+				counter++
+			}
+		}	catch(err)	{
+			console.log(err)
+		}
+		
+
+	}
+
 	function testButton() {
 		console.log(entrada)
 		changeColor(entrada, dragMap[0].id)
@@ -40,6 +74,20 @@ export default function SideBar({ editorCode }) {
 		} else { setEntrada(0) }
 	}
 
+	let abortController =  new AbortController() 
+
+	React.useEffect(() => {
+		//
+		if(running){
+			startSimulation()
+		} else {
+
+			stopSimulation()
+		}
+		
+	}, [running])
+
+	
 	function startSimulation() {
 		console.log(running)
 		if (alignment == 'simulador') {
@@ -86,50 +134,39 @@ export default function SideBar({ editorCode }) {
 					console.error('Error:', error);
 				});
 		} else {
-			if (running) {
-				console.log('stop running')
-				setRunning(false)
-			} else {
+			
 				console.log('play running')
 				//TODO: TRANSFORMAR ESSA FUNÇÃO NUMA PROMISSE
 				console.log(running)
-				setRunning(true)
+				//setRunning(true)
 				console.log('setando')
 				console.log(running)
 
+				
+
 
 				var func = Function(editorCode)
+				
+				const abortSignal = abortController.signal
 
-				const elementCode = (ms) => {
-					return new Promise((resolve, reject) => {
-						setTimeout(() => {
-							resolve(func())
-						}, ms)
-					})
-				}
+				
 
-				const runCode = async () => {
+				runCode(func, {signal: abortController.signal})
 
-					let counter = 1
-					console.log(running)
-
-					while (!running) {
-						await elementCode(1000)
-						console.log(`post id ${counter}`)
-						console.log(running)
-						counter++
-					}
-
-				}
-
-				runCode()
-
-			}
+			
 
 		}
 
 
 	}
+
+	function stopSimulation() {
+		abortController.abort()
+		console.log('abort')
+		console.log(abortController.signal.aborted)
+		
+	}
+
 
 	//Função que testa se a pagina esta no simulador ou editor e adiciona o dropzone baseado nisso
 	const hasDropZone = () => {
@@ -162,7 +199,7 @@ export default function SideBar({ editorCode }) {
 					right: '-1.25rem'
 				}}
 				//TODO ADICIONAR A FUNÇÃO PARA LIGAR O SIMULADOR AQUI
-				onClick={() => { startSimulation() }}
+				onClick={() => { setRunning(!running) }}
 			>
 				{running ? <StopRoundedIcon /> : <PlayArrowRoundedIcon />}
 			</Fab>
@@ -174,7 +211,7 @@ export default function SideBar({ editorCode }) {
 					top: '5rem',
 					right: '-1.25rem'
 				}}
-				onClick={() => { console.log(editorCode) }}
+				onClick={() => { console.log(editorComponent) }}
 			>
 				<SaveRoundedIcon />
 			</Fab>
@@ -189,6 +226,7 @@ export default function SideBar({ editorCode }) {
 					bottom: '2rem',
 					right: '-1.25rem'
 				}}
+				onClick={() => { console.log(connectorList) }}
 			>
 				<DisplaySettingsRoundedIcon />
 			</Fab>

@@ -16,8 +16,7 @@ import { EditorContext } from '../../Pages/Editor/Editor';
 
 export default function EditorComponentDisplay() {
 
-    const { editorComponent } = React.useContext(AppContext)
-    const { connectorList, setConnectorList } = React.useContext(EditorContext)
+    const { editorComponent, connectorList, setConnectorList } = React.useContext(EditorContext)
 
     const parser = new DOMParser()
 
@@ -27,17 +26,11 @@ export default function EditorComponentDisplay() {
 
     const teste = React.useRef()
 
-    console.log(editorComponent)
-    React.useEffect(() => {
-
-    }, [editorComponent])
-
-
     function hasEditorComponent() {
         if (editorComponent) {
             var localSvgData = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg')
 
-            console.log(localSvgData.connectorList)
+            //console.log(localSvgData.connectorList)
 
 
             //! ERRO VVV
@@ -46,7 +39,7 @@ export default function EditorComponentDisplay() {
 
             //setConnectorList(prev => { if (prev != localSvgData.connectorList) { return localSvgData.connectorList } })
 
-            console.log(connectorList)
+            //setConnectorList(localSvgData.connectorList)
 
             return (
                 <svg

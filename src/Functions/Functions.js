@@ -237,7 +237,7 @@ export async function handleFileDrop(e, data, setData) {
       svgConnector.parentElement.insertBefore(svgConnector, null)
       */
     }
-    console.log(svgPuro)
+    //console.log(svgPuro)
 
     return({
       svg:svgPuro,

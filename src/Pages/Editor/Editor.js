@@ -6,6 +6,7 @@ import ToolsArea from '../../Components/ToolsArea/ToolsArea'
 import './EditorStyle.css'
 import { AppContext } from '../../App'
 import defaultLedCode from '../../Functions/defaultLedCode'
+import { createConnectors } from '../../Functions/Functions'
 
 export const EditorContext = React.createContext(null)
 
@@ -17,27 +18,24 @@ export default function Editor() {
 
     const [editorCode, setEditorCode] = React.useState(defaultLedCode)
 
-    const [connectorList, setConnectorList] = React.useState([
-        {
-            id: "connector0",
-            name: "cathode",
-            svgId: "connector0pin",
-            type: "male"
-        },
-        {
-            id: "connector1",
-            name: "anode",
-            svgId: "connector1pin",
-            type: "male"
+    const [connectorList, setConnectorList] = React.useState()
+
+    const [editorComponent, setEditorComponent] = React.useState()
+
+    
+
+    React.useEffect(() => {
+        if(editorComponent){
+            setConnectorList(createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg').connectorList)
         }
-    ])
+    },[editorComponent])
 
     setAlignment('editor')
 
     return (
         <div className='Editor'>
-            <EditorContext.Provider value={{ toolsMap, setToolsMap, editorCode, setEditorCode, connectorList, setConnectorList }}>
-                <SideBar editorCode={editorCode} />
+            <EditorContext.Provider value={{ toolsMap, setToolsMap, editorCode, setEditorCode, connectorList, setConnectorList, editorComponent, setEditorComponent }}>
+                <SideBar editorCode={editorCode} editorComponent={editorComponent} connectorList={connectorList}  />
                 <ToolsArea />
                 <EditorComponentDisplay />
                 <EditorComponentSideBar />
