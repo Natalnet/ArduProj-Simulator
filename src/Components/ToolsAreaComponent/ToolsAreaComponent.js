@@ -13,10 +13,33 @@ export default function ToolsAreaComponent(props) {
 
     const [child, setChild] = React.useState(props.icon)
 
-    
 
-    function openScreen() {
 
+    function screenHandler(command) {
+        console.log(command)
+        if (!command) {
+            if (screenOpened) {
+                command = 'close'
+            } else {
+                command = 'open'
+            }
+        }
+
+        console.log('comando pos att :' + command)
+        let animated = document.getElementById(`toolsDiv/${props.id}`)
+
+        if (command == 'close') {
+            animated.style.width = '10rem'
+            animated.style.height = '3rem'
+            setChild(props.icon)
+            setScreenOpened(false)
+        } else if (command == 'open') {
+            animated.style.width = '12rem'
+            animated.style.height = '9rem'
+            setChild(<ToolsConnectorList />)
+            setScreenOpened(true)
+        }
+        /*
         setScreenOpened(true)
         //TODO: criar transição com css ou usar o useSpring
         let animated = document.getElementById(`toolsDiv/${props.id}`)
@@ -30,6 +53,7 @@ export default function ToolsAreaComponent(props) {
             animated.style.height = '3rem'
             setChild(<ToolsConnectorList />)
         }
+        */
     }
 
     const [{ x, y, width, height }, api] = useSpring(() => ({
@@ -39,6 +63,14 @@ export default function ToolsAreaComponent(props) {
         height: '3rem'
     }))
 
+    const openButton = () => {
+        return (
+            <>
+                {props.icon}
+            </>
+        )
+    }
+
     function DragComponent() {
 
         const bind = useDrag((params) => {
@@ -46,8 +78,12 @@ export default function ToolsAreaComponent(props) {
                 x: params.offset[0],
                 y: params.offset[1]
             })
-            if (params.tap && params.elapsedTime >= 500 && props.type === 'screen') {
-                openScreen()
+            if (props.type === 'screen') {
+                if (params.tap && params.elapsedTime >= 500) {
+                    screenHandler()
+                } else if (params.delta[0] != 0 && params.delta[1] != 0) { //TODO: Testar offset em vez de movment
+                    screenHandler('close')
+                }
             }
         },
             ({ down, movement: [mx, my] }) => api.start({ x: down ? mx : 0, y: down ? my : 0, scale: down ? 1.2 : 1 })
@@ -108,7 +144,7 @@ export default function ToolsAreaComponent(props) {
                     }}
                     id={`toolsDiv/${props.id}`}
                 >
-                    {screenOpened ? <ToolsConnectorList /> : props.icon }
+                    {screenOpened ? <ToolsConnectorList /> : props.icon}
                 </animated.div>)
         }
 

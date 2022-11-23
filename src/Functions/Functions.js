@@ -225,7 +225,8 @@ export async function handleFileDrop(e, data, setData) {
         id:connector.getAttribute('id'),
         svgId:p.getAttribute('svgId'),
         type:connector.getAttribute('type'),
-        name:connector.getAttribute('name')
+        name:connector.getAttribute('name'),
+        value: false
       })
       
       //? Arrumar bug dos highlight - Em progresso

@@ -14,8 +14,13 @@ export default function SvgGrid() {
     return (
         <div className='Grid'>
             {data.map(d => {
-                if (!d.icon) { return }
-                const doc = parser.parseFromString(d.icon, 'text/html')
+                let icone
+                if (d.icon) { 
+                    icone = d.icon
+                 } else {
+                    icone = d.breadboard
+                 }
+                const doc = parser.parseFromString(icone, 'text/html')
                 const currentSvg = doc.getElementsByTagName('svg')[0]
                 return (
                     <SvgGridItem

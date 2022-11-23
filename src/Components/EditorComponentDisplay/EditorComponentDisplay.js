@@ -30,17 +30,6 @@ export default function EditorComponentDisplay() {
         if (editorComponent) {
             var localSvgData = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg')
 
-            //console.log(localSvgData.connectorList)
-
-
-            //! ERRO VVV
-            //! Quando eu chamo esse hook o componente rerenderiza e cria um loop infinito
-            //React.useMemo(() => setConnectorList(localSvgData.connectorList), [localSvgData.connectorList])
-
-            //setConnectorList(prev => { if (prev != localSvgData.connectorList) { return localSvgData.connectorList } })
-
-            //setConnectorList(localSvgData.connectorList)
-
             return (
                 <svg
                     className='Svg'

@@ -31,47 +31,15 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 
 	const [running, setRunning] = React.useState()
 
+	const [intervalId, setIntervalId] = React.useState()
+
 
 	var arduino = undefined; //variavel para guardar a instancia em execução
 
-	const elementCode = (func,ms) => {
-		return new Promise((resolve, reject) => {
-			setTimeout(() => {
-				resolve(func())
-			}, ms)
-		})
-	}
-
-	const runCode = async (func, {signal}) => {
-		let counter = 1
-		console.log(signal)
-
-		
-		try{
-			while (running) {
-
-				if(signal.aborted){
-					break
-				}
-	
-				await elementCode(func,1000, {signal})
-				console.log(`post id ${counter}`)
-				console.log(signal.aborted)
-				counter++
-			}
-		}	catch(err)	{
-			console.log(err)
-		}
-		
-
-	}
-
 	function testButton() {
-		console.log(entrada)
-		changeColor(entrada, dragMap[0].id)
-		if (entrada === 0) {
-			setEntrada(1)
-		} else { setEntrada(0) }
+		let func = new Function("input",editorCode)
+		let algo = 'alogggg'
+		func(algo)
 	}
 
 	let abortController =  new AbortController() 
@@ -79,11 +47,20 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 	React.useEffect(() => {
 		//
 		if(running){
-			startSimulation()
-		} else {
-
-			stopSimulation()
-		}
+			let bodyEditorCode = editorCode.slice(13,-2)
+			let func = new Function("input",bodyEditorCode)
+			let count = 0;
+			let funcId = setInterval(() => {
+				if (running) {
+					func(connectorList)
+					console.log(count)
+					count++
+				}
+			}, 500)
+			return () => {
+				clearInterval(funcId)
+			}
+		} 
 		
 	}, [running])
 
@@ -135,24 +112,11 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 				});
 		} else {
 			
-				console.log('play running')
-				//TODO: TRANSFORMAR ESSA FUNÇÃO NUMA PROMISSE
-				console.log(running)
-				//setRunning(true)
-				console.log('setando')
-				console.log(running)
-
-				
-
-
-				var func = Function(editorCode)
-				
-				const abortSignal = abortController.signal
-
-				
-
-				runCode(func, {signal: abortController.signal})
-
+				if (running) {
+					setRunning(false)
+				} else {
+					setRunning(true)
+				}
 			
 
 		}
@@ -161,9 +125,11 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 	}
 
 	function stopSimulation() {
-		abortController.abort()
-		console.log('abort')
-		console.log(abortController.signal.aborted)
+		//abortController.abort()
+		//console.log('abort')
+		//console.log(abortController.signal.aborted)
+
+		clearInterval(intervalId)
 		
 	}
 
@@ -211,7 +177,7 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 					top: '5rem',
 					right: '-1.25rem'
 				}}
-				onClick={() => { console.log(editorComponent) }}
+				onClick={() => { testButton() }}
 			>
 				<SaveRoundedIcon />
 			</Fab>

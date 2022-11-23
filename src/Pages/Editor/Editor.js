@@ -20,22 +20,32 @@ export default function Editor() {
 
     const [connectorList, setConnectorList] = React.useState()
 
+    const [connectorValues, setConnectorValues] = React.useState()
+
     const [editorComponent, setEditorComponent] = React.useState()
 
-    
+
 
     React.useEffect(() => {
-        if(editorComponent){
+        if (editorComponent) {
             setConnectorList(createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg').connectorList)
+
         }
-    },[editorComponent])
+    }, [editorComponent])
+
 
     setAlignment('editor')
 
     return (
         <div className='Editor'>
-            <EditorContext.Provider value={{ toolsMap, setToolsMap, editorCode, setEditorCode, connectorList, setConnectorList, editorComponent, setEditorComponent }}>
-                <SideBar editorCode={editorCode} editorComponent={editorComponent} connectorList={connectorList}  />
+            <EditorContext.Provider value={{
+                toolsMap, setToolsMap,
+                editorCode, setEditorCode,
+                connectorList, setConnectorList,
+                editorComponent, setEditorComponent,
+                connectorValues, setConnectorValues
+            }}>
+                <SideBar editorCode={editorCode} editorComponent={editorComponent} connectorList={connectorList} />
                 <ToolsArea />
                 <EditorComponentDisplay />
                 <EditorComponentSideBar />
