@@ -5,6 +5,7 @@ import { EditorContext } from '../../Pages/Editor/Editor'
 import ToolsConnectorList from '../ToolsConnectorList/ToolsConnectorList'
 
 
+
 export default function ToolsAreaComponent(props) {
 
     const { connectorList } = React.useContext(EditorContext)
@@ -144,6 +145,7 @@ export default function ToolsAreaComponent(props) {
                     }}
                     id={`toolsDiv/${props.id}`}
                 >
+                    
                     {screenOpened ? <ToolsConnectorList /> : props.icon}
                 </animated.div>)
         }

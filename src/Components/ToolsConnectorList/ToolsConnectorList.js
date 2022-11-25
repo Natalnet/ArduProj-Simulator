@@ -13,7 +13,17 @@ export default function ToolsConnectorList(props) {
 
 
     return (
-        <FormGroup>
+        <FormGroup
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                p: 1,
+                m: 1,
+                flexWrap: 'wrap',
+                gap:1
+            }}
+        >
             {connectorList.map(c => {
 
                 const handleCheck = (e) => {
@@ -22,17 +32,24 @@ export default function ToolsConnectorList(props) {
 
                 console.log(connectorValues)
                 return (
-                    <FormControlLabel control={
-                        <TextField
-                            id="outlined-basic"
-                            label={c.id.charAt(0).toUpperCase() + c.id.slice(1)}
-                            variant="outlined"
-                            sx={{
-                                width: '80%',
-                                height: '80%',
-                                position: 'relative',
-                                marginLeft: '2rem'
-                            }} />}
+                    <FormControlLabel
+                        sx={{
+                            flexShrink: 1
+                        }}
+                        control={
+                            <TextField
+                                id="outlined-basic"
+                                label={c.id.charAt(0).toUpperCase() + c.id.slice(1)}
+                                variant="outlined"
+                                color="error"
+                                defaultValue={0}
+                                key={c.id}
+                                sx={{
+                                    width: '80%',
+                                    height: '80%',
+                                    position: 'relative',
+                                    marginLeft: '2rem'
+                                }} />}
                         onChange={(event) => { handleCheck(event) }}
                     />
                 )

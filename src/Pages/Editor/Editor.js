@@ -20,7 +20,7 @@ export default function Editor() {
 
     const [connectorList, setConnectorList] = React.useState()
 
-    const [connectorValues, setConnectorValues] = React.useState()
+    const [connectorValues, setConnectorValues] = React.useState({})
 
     const [editorComponent, setEditorComponent] = React.useState()
 
@@ -28,8 +28,17 @@ export default function Editor() {
 
     React.useEffect(() => {
         if (editorComponent) {
-            setConnectorList(createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg').connectorList)
+            let connectorsHolder = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg').connectorList
 
+            setConnectorList(connectorsHolder)
+
+            let valuesHolder = {}
+            connectorsHolder.forEach(element => {
+                console.log(element)
+                valuesHolder[element.id] = 0
+            })
+
+            setConnectorValues(valuesHolder)
         }
     }, [editorComponent])
 
@@ -45,7 +54,7 @@ export default function Editor() {
                 editorComponent, setEditorComponent,
                 connectorValues, setConnectorValues
             }}>
-                <SideBar editorCode={editorCode} editorComponent={editorComponent} connectorList={connectorList} />
+                <SideBar editorCode={editorCode} editorComponent={editorComponent} connectorList={connectorList} connectorValues={connectorValues} />
                 <ToolsArea />
                 <EditorComponentDisplay />
                 <EditorComponentSideBar />

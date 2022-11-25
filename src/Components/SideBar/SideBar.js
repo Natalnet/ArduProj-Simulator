@@ -11,60 +11,70 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import DisplaySettingsRoundedIcon from '@mui/icons-material/DisplaySettingsRounded';
 import StopRoundedIcon from '@mui/icons-material/StopRounded';
 import { EditorContext } from '../../Pages/Editor/Editor';
+import Snackbar from '@mui/material/Snackbar';
+import Slide from '@mui/material/Slide';
+
 
 import code_default from '../../Functions/default_code';
 import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
 import ToolsGrid from '../ToolsGrid/ToolsGrid';
 
-export default function SideBar({ editorCode, editorComponent, connectorList }) {
+export default function SideBar({ editorCode, editorComponent, connectorList, connectorValues }) {
 
 	//Arquivos importados
 
 	const { data, setData, setDragMap, dragMap, alignment } = React.useContext(AppContext)
-	
-	
-
-	const [entrada, setEntrada] = React.useState(0)
 
 	const [screen, setScreen] = React.useState('components')
 
-	const [running, setRunning] = React.useState()
+	const [running, setRunning] = React.useState(false)
 
 	const [intervalId, setIntervalId] = React.useState()
+
+	const [warningSnackBarState, setWarningSnackBarState] = React.useState(false)
+
+	const [clock, setClock] = React.useState({})
 
 
 	var arduino = undefined; //variavel para guardar a instancia em execução
 
 	function testButton() {
-		let func = new Function("input",editorCode)
+		let func = new Function("input", editorCode)
 		let algo = 'alogggg'
 		func(algo)
 	}
 
-	let abortController =  new AbortController() 
+	React.useEffect(() => {
+		setClock({tempo:0})
+	}, [])
 
 	React.useEffect(() => {
 		//
-		if(running){
-			let bodyEditorCode = editorCode.slice(13,-2)
-			let func = new Function("input",bodyEditorCode)
+		if (running) {
+			
+			let bodyEditorCode = editorCode.slice(13, -2)
+			let func = new Function("input", bodyEditorCode)
 			let count = 0;
 			let funcId = setInterval(() => {
 				if (running) {
-					func(connectorList)
-					console.log(count)
+					func(connectorValues)
+					console.log(clock.tempo)
 					count++
+					setClock({...clock, tempo:clock.tempo++})
 				}
 			}, 500)
 			return () => {
 				clearInterval(funcId)
+				setClock({tempo: 0})
 			}
-		} 
-		
+		}
+
 	}, [running])
 
 	
+
+
 	function startSimulation() {
 		console.log(running)
 		if (alignment == 'simulador') {
@@ -111,27 +121,27 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 					console.error('Error:', error);
 				});
 		} else {
-			
+			if(editorComponent){
+				console.log(running)
 				if (running) {
 					setRunning(false)
 				} else {
 					setRunning(true)
 				}
-			
-
+			} else {
+				setWarningSnackBarState(true)
+				setTimeout(() => {setWarningSnackBarState(false)}, 1000)
+			}
 		}
-
-
 	}
 
 	function stopSimulation() {
-		//abortController.abort()
-		//console.log('abort')
-		//console.log(abortController.signal.aborted)
-
 		clearInterval(intervalId)
-		
 	}
+
+	function SlideTransition(props) {
+		return <Slide {...props} direction="up" />;
+	  }
 
 
 	//Função que testa se a pagina esta no simulador ou editor e adiciona o dropzone baseado nisso
@@ -154,6 +164,8 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 
 
 
+
+
 	return (
 		<div className="SideBar" >
 			<Fab
@@ -164,7 +176,6 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 					top: '1rem',
 					right: '-1.25rem'
 				}}
-				//TODO ADICIONAR A FUNÇÃO PARA LIGAR O SIMULADOR AQUI
 				onClick={() => { setRunning(!running) }}
 			>
 				{running ? <StopRoundedIcon /> : <PlayArrowRoundedIcon />}
@@ -177,7 +188,7 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 					top: '5rem',
 					right: '-1.25rem'
 				}}
-				onClick={() => { testButton() }}
+				onClick={() => { console.log(editorComponent) }}
 			>
 				<SaveRoundedIcon />
 			</Fab>
@@ -196,6 +207,24 @@ export default function SideBar({ editorCode, editorComponent, connectorList }) 
 			>
 				<DisplaySettingsRoundedIcon />
 			</Fab>
+			<Snackbar
+				anchorOrigin={ {vertical:'bottom', horizontal:'center'} }
+				open={running}
+				message={`Tempo de simulação: ${clock.tempo}s`}
+				//* Fazer isso funcionar seria bom: TransitionComponent={SlideTransition()}
+				sx={{
+					display: 'flex',
+					justifyContent: 'center'
+				}}
+			/>
+			<Snackbar
+				anchorOrigin={ {vertical:'center', horizontal:'center'} }
+				open={warningSnackBarState}
+				message="Você precisa escolher um componente primeiro"
+				severity="error"
+				autoHideDuration={3000}
+				
+			/>
 		</div>
 	)
 }

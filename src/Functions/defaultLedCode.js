@@ -8,16 +8,15 @@ export default `main(input){
     var onColor = '#e60000'
     var offColor = '330000'
     
-    console.log(input)
-    
-    if (inputTemp) {
+    if (input.connector0 == 1) {
         led.setAttribute('fill', onColor)
     } else {
         led.setAttribute('fill', offColor)
     }
     
     var output = {
-        state: inputTemp
+        ...input,
+        [input.connector1]: input.connector0
     }
     
     return output
