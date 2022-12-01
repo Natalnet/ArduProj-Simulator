@@ -24,6 +24,8 @@ export default function Editor() {
 
     const [editorComponent, setEditorComponent] = React.useState()
 
+    const [pinsConfiguration, setPinsConfiguration] = React.useState()
+
 
 
     React.useEffect(() => {
@@ -35,7 +37,10 @@ export default function Editor() {
             let valuesHolder = {}
             connectorsHolder.forEach(element => {
                 console.log(element)
-                valuesHolder[element.id] = 0
+                valuesHolder[element.id] = {
+                    value:0,
+                    type:'inalterado'
+                }
             })
 
             setConnectorValues(valuesHolder)
@@ -52,9 +57,18 @@ export default function Editor() {
                 editorCode, setEditorCode,
                 connectorList, setConnectorList,
                 editorComponent, setEditorComponent,
-                connectorValues, setConnectorValues
+                connectorValues, setConnectorValues,
+                pinsConfiguration, setPinsConfiguration
             }}>
-                <SideBar editorCode={editorCode} editorComponent={editorComponent} connectorList={connectorList} connectorValues={connectorValues} />
+                <SideBar
+                    editorCode={editorCode}
+                    editorComponent={editorComponent}
+                    connectorList={connectorList}
+                    connectorValues={connectorValues}
+                    pinsConfiguration={pinsConfiguration}
+                    setPinsConfiguration={setPinsConfiguration}
+                    setConnectorValues={setConnectorValues}
+                />
                 <ToolsArea />
                 <EditorComponentDisplay />
                 <EditorComponentSideBar />

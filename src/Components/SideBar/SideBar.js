@@ -20,7 +20,7 @@ import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
 import ToolsGrid from '../ToolsGrid/ToolsGrid';
 
-export default function SideBar({ editorCode, editorComponent, connectorList, connectorValues }) {
+export default function SideBar(props) {
 
 	//Arquivos importados
 
@@ -40,39 +40,61 @@ export default function SideBar({ editorCode, editorComponent, connectorList, co
 	var arduino = undefined; //variavel para guardar a instancia em execução
 
 	function testButton() {
-		let func = new Function("input", editorCode)
+		let func = new Function("input", props.editorCode)
 		let algo = 'alogggg'
 		func(algo)
 	}
 
 	React.useEffect(() => {
-		setClock({tempo:0})
+		setClock({ tempo: 0 })
 	}, [])
 
 	React.useEffect(() => {
-		//
 		if (running) {
-			
-			let bodyEditorCode = editorCode.slice(13, -2)
+			//TODO: Mudar a simulação para atualizar quando os connectors mudam. Usar o UseEffect para rodar com o connectorValues.
+
+			let configLocation = props.editorCode.search('configPins')
+			let mainLocation = props.editorCode.search('main')
+
+			let mainCodeLength = props.editorCode.length - mainLocation
+
+			let configCode = props.editorCode.slice(configLocation + 13, -mainCodeLength - 5)
+
+
+			let bodyEditorCode = props.editorCode.slice(mainLocation + 13, -2)
+			//TODO: Chamar configPins
+
+
+			let configPins = new Function(configCode)
+			let configHolder = configPins()
+
+			let connectorValuesHOLDER = props.connectorValues
+
+			Object.keys(configHolder).map((c) => {
+				connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
+			})
+
+			props.setConnectorValues(connectorValuesHOLDER)
+
 			let func = new Function("input", bodyEditorCode)
 			let count = 0;
 			let funcId = setInterval(() => {
 				if (running) {
-					func(connectorValues)
-					console.log(clock.tempo)
+					let output = func(connectorValuesHOLDER)
+					props.setConnectorValues(output)
 					count++
-					setClock({...clock, tempo:clock.tempo++})
+					setClock({ ...clock, tempo: clock.tempo++ })
 				}
 			}, 500)
 			return () => {
 				clearInterval(funcId)
-				setClock({tempo: 0})
+				setClock({ tempo: 0 })
 			}
 		}
 
 	}, [running])
 
-	
+
 
 
 	function startSimulation() {
@@ -121,7 +143,7 @@ export default function SideBar({ editorCode, editorComponent, connectorList, co
 					console.error('Error:', error);
 				});
 		} else {
-			if(editorComponent){
+			if (props.editorComponent) {
 				console.log(running)
 				if (running) {
 					setRunning(false)
@@ -130,7 +152,7 @@ export default function SideBar({ editorCode, editorComponent, connectorList, co
 				}
 			} else {
 				setWarningSnackBarState(true)
-				setTimeout(() => {setWarningSnackBarState(false)}, 1000)
+				setTimeout(() => { setWarningSnackBarState(false) }, 1000)
 			}
 		}
 	}
@@ -141,7 +163,7 @@ export default function SideBar({ editorCode, editorComponent, connectorList, co
 
 	function SlideTransition(props) {
 		return <Slide {...props} direction="up" />;
-	  }
+	}
 
 
 	//Função que testa se a pagina esta no simulador ou editor e adiciona o dropzone baseado nisso
@@ -188,7 +210,7 @@ export default function SideBar({ editorCode, editorComponent, connectorList, co
 					top: '5rem',
 					right: '-1.25rem'
 				}}
-				onClick={() => { console.log(editorComponent) }}
+				onClick={() => { console.log(props.connectorValues) }}
 			>
 				<SaveRoundedIcon />
 			</Fab>
@@ -203,12 +225,12 @@ export default function SideBar({ editorCode, editorComponent, connectorList, co
 					bottom: '2rem',
 					right: '-1.25rem'
 				}}
-				onClick={() => { console.log(connectorList) }}
+				onClick={() => { console.log(props.connectorList) }}
 			>
 				<DisplaySettingsRoundedIcon />
 			</Fab>
 			<Snackbar
-				anchorOrigin={ {vertical:'bottom', horizontal:'center'} }
+				anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
 				open={running}
 				message={`Tempo de simulação: ${clock.tempo}s`}
 				//* Fazer isso funcionar seria bom: TransitionComponent={SlideTransition()}
@@ -218,12 +240,12 @@ export default function SideBar({ editorCode, editorComponent, connectorList, co
 				}}
 			/>
 			<Snackbar
-				anchorOrigin={ {vertical:'center', horizontal:'center'} }
+				anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
 				open={warningSnackBarState}
 				message="Você precisa escolher um componente primeiro"
 				severity="error"
 				autoHideDuration={3000}
-				
+
 			/>
 		</div>
 	)

@@ -8,7 +8,11 @@ import { height } from '@mui/system';
 
 export default function ToolsConnectorList(props) {
 
-    const { connectorList, setConnectorList, connectorValues, setConnectorValues } = React.useContext(EditorContext)
+    const {
+        connectorList, setConnectorList,
+        connectorValues, setConnectorValues,
+        pinsConfiguration, setPinsConfiguration
+    } = React.useContext(EditorContext)
 
 
 
@@ -21,16 +25,23 @@ export default function ToolsConnectorList(props) {
                 p: 1,
                 m: 1,
                 flexWrap: 'wrap',
-                gap:1
+                gap: 1
             }}
         >
             {connectorList.map(c => {
 
-                const handleCheck = (e) => {
-                    setConnectorValues({ ...connectorValues, [c.id]: e.target.value })
+                
+                if (connectorValues[c.id].type == 'in' && props.name == 'outDisplay') {
+                    return
+                } else if (connectorValues[c.id].type == 'out' && props.name == 'inDisplay') {
+                    return
                 }
 
-                console.log(connectorValues)
+                const handleCheck = (e) => {
+                    setConnectorValues({ ...connectorValues, [c.id]: { type: connectorValues[c.id].type, value: e.target.value } })
+                }
+
+
                 return (
                     <FormControlLabel
                         sx={{
@@ -50,6 +61,8 @@ export default function ToolsConnectorList(props) {
                                     position: 'relative',
                                     marginLeft: '2rem'
                                 }} />}
+                                value={connectorValues[c.id].value}
+                                disabled={props.name == 'outDisplay'}
                         onChange={(event) => { handleCheck(event) }}
                     />
                 )

@@ -10,11 +10,12 @@ export default function ToolsArea() {
         <div className='DragAreaDiv'>
             {toolsMap.map(t => {
                 return (
-                    <ToolsAreaComponent 
-                    id={t.id}
-                    color={t.color}
-                    icon={t.icon}
-                    type={t.type}
+                    <ToolsAreaComponent
+                        id={t.id}
+                        color={t.color}
+                        icon={t.icon}
+                        type={t.type}
+                        name={t.name}
                     />
                 )
             })}

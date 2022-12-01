@@ -1,4 +1,13 @@
-export default `main(input){
+export default `configPins(){
+    //Configure as estradas e saidas do componente aqui.
+    return({
+        connector0: 'in',
+        connector1: 'out'
+    })
+    
+}
+
+main(input){
     //Troque o '#color_path32' pelo Id correspondente do componente que você deseja alterar a cor
     var led = document.getElementById('displayedSvg').querySelector('#color_path32')
     
@@ -16,8 +25,10 @@ export default `main(input){
     
     var output = {
         ...input,
-        [input.connector1]: input.connector0
-    }
+        ['connector1']: {
+            value:input.connector0.value,
+            type:input.connector1.type
+    }}
     
     return output
 }`

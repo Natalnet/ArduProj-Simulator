@@ -8,13 +8,10 @@ import ToolsConnectorList from '../ToolsConnectorList/ToolsConnectorList'
 
 export default function ToolsAreaComponent(props) {
 
-    const { connectorList } = React.useContext(EditorContext)
 
     const [screenOpened, setScreenOpened] = React.useState(false)
 
     const [child, setChild] = React.useState(props.icon)
-
-
 
     function screenHandler(command) {
         console.log(command)
@@ -146,7 +143,7 @@ export default function ToolsAreaComponent(props) {
                     id={`toolsDiv/${props.id}`}
                 >
                     
-                    {screenOpened ? <ToolsConnectorList /> : props.icon}
+                    {screenOpened ? <ToolsConnectorList name={props.name}/> : props.icon}
                 </animated.div>)
         }
 

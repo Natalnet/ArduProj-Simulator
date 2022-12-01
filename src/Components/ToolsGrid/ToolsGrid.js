@@ -14,7 +14,6 @@ export default function ToolsGrid() {
         {
 
             name: 'digital',
-            sigla: 'D',
             color: 'orangered',
             type:'wire',
             icon: <ArrowRightAltRoundedIcon fontSize='large' />
@@ -23,7 +22,6 @@ export default function ToolsGrid() {
         {
 
             name: 'analogico',
-            sigla: 'A',
             color: 'black',
             type:'wire',
             icon: <GestureRoundedIcon fontSize='large' />
@@ -31,8 +29,7 @@ export default function ToolsGrid() {
         },
         {
 
-            name: 'f',
-            sigla: 'F',
+            name: 'inDisplay',
             color: 'blue',
             type:'screen',
             icon: <TuneRoundedIcon fontSize='large' />
@@ -40,8 +37,7 @@ export default function ToolsGrid() {
         },
         {
 
-            name: 'display',
-            sigla: 'Di',
+            name: 'outDisplay',
             color: 'green',
             type:'screen',
             icon: <TuneRoundedIcon fontSize='large' />
@@ -53,7 +49,7 @@ export default function ToolsGrid() {
         
             let tempMap = [...toolsMap]
             let id = uuid()
-            tempMap.push({componentName: component.name, color:component.color,type:component.type, icon:component.icon, id:id})
+            tempMap.push({name: component.name, color:component.color,type:component.type, icon:component.icon, id:id})
 
             setToolsMap(tempMap)
 
