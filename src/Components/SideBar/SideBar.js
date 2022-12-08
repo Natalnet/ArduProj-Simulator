@@ -13,6 +13,7 @@ import StopRoundedIcon from '@mui/icons-material/StopRounded';
 import { EditorContext } from '../../Pages/Editor/Editor';
 import Snackbar from '@mui/material/Snackbar';
 import Slide from '@mui/material/Slide';
+import { editorCodeCaller } from '../../Functions/Functions';
 
 
 import code_default from '../../Functions/default_code';
@@ -52,40 +53,22 @@ export default function SideBar(props) {
 	React.useEffect(() => {
 		if (running) {
 			//TODO: Mudar a simulação para atualizar quando os connectors mudam. Usar o UseEffect para rodar com o connectorValues.
-
-			let configLocation = props.editorCode.search('configPins')
-			let mainLocation = props.editorCode.search('main')
-
-			let mainCodeLength = props.editorCode.length - mainLocation
-
-			let configCode = props.editorCode.slice(configLocation + 13, -mainCodeLength - 5)
-
-
-			let bodyEditorCode = props.editorCode.slice(mainLocation + 13, -2)
-			//TODO: Chamar configPins
-
-
-			let configPins = new Function(configCode)
-			let configHolder = configPins()
-
-			let connectorValuesHOLDER = props.connectorValues
-
-			Object.keys(configHolder).map((c) => {
-				connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
-			})
-
-			props.setConnectorValues(connectorValuesHOLDER)
-
-			let func = new Function("input", bodyEditorCode)
 			let count = 0;
+			let connectorValuesHOLDER = props.connectorValues
+			let func = editorCodeCaller(connectorValuesHOLDER, props.editorCode).main
 			let funcId = setInterval(() => {
 				if (running) {
-					let output = func(connectorValuesHOLDER)
-					props.setConnectorValues(output)
+					let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
+
+					Object.keys(configHolder).map((c) => {
+						connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
+					})
+
+					props.setConnectorValues(connectorValuesHOLDER)
 					count++
 					setClock({ ...clock, tempo: clock.tempo++ })
 				}
-			}, 500)
+			}, 1000)
 			return () => {
 				clearInterval(funcId)
 				setClock({ tempo: 0 })
@@ -94,7 +77,39 @@ export default function SideBar(props) {
 
 	}, [running])
 
+	React.useEffect(() => {
+		if (running) {
 
+			//TODO: Mudar a simulação para atualizar quando os connectors mudam. Usar o UseEffect para rodar com o connectorValues.
+			let connectorValuesHOLDER = props.connectorValues
+
+			let codeOutPuts = editorCodeCaller(connectorValuesHOLDER, props.editorCode)
+
+			let configHolder = codeOutPuts.configPins
+
+
+			Object.keys(configHolder).map((c) => {
+				connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
+			})
+
+			let output = codeOutPuts.main
+			props.setConnectorValues(output)
+
+		}
+
+	}, [props.connectorValues])
+
+
+	function updateConfigPins() {
+		let configHolder = editorCodeCaller(undefined ,props.editorCode).configPins
+		let connectorValuesHOLDER = props.connectorValues
+
+		Object.keys(configHolder).map((c) => {
+			connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
+		})
+
+		props.setConnectorValues(connectorValuesHOLDER)
+	}
 
 
 	function startSimulation() {
@@ -225,7 +240,7 @@ export default function SideBar(props) {
 					bottom: '2rem',
 					right: '-1.25rem'
 				}}
-				onClick={() => { console.log(props.connectorList) }}
+				onClick={() => { updateConfigPins() }}
 			>
 				<DisplaySettingsRoundedIcon />
 			</Fab>

@@ -2,31 +2,29 @@ export default `configPins(){
     //Configure as estradas e saidas do componente aqui.
     return({
         connector0: 'in',
-        connector1: 'out'
+        connector1: 'out',
+        connector0: 'out',
+        connector1: 'out',
     })
-    
 }
 
 main(input){
     //Troque o '#color_path32' pelo Id correspondente do componente que você deseja alterar a cor
-    var led = document.getElementById('displayedSvg').querySelector('#color_path32')
+    var button = document.getElementById('displayedSvg').querySelector('[fill=#735348]')
     
     //Selecione as devidas cores em HEX
-    var onColor = '#e60000'
-    var offColor = '#330000'
+    var onColor = '#16100e'
+    var offColor = '#735348'
     
     if (input.connector0.value == 1) {
-        led.setAttribute('fill', onColor)
+        button.setAttribute('fill', onColor)
     } else {
-        led.setAttribute('fill', offColor)
+        button.setAttribute('fill', offColor)
     }
     
     var output = {
-        ...input,
-        ['connector1']: {
-            value:input.connector0.value,
-            type:input.connector1.type
-    }}
+        ...input
+    }
     
     return output
 }`

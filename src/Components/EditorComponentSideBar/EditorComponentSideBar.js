@@ -11,7 +11,7 @@ import defaultLedCode from '../../Functions/defaultLedCode';
 
 export default function EditorComponentSideBar() {
 
-    const { setEditorCode } = React.useContext(EditorContext)
+    const { editorCode ,setEditorCode } = React.useContext(EditorContext)
 
 
     function onChange(newValue) {
@@ -30,7 +30,7 @@ export default function EditorComponentSideBar() {
                     height='29rem'
                     width='18rem'
                     wrapEnabled='true'
-                    defaultValue={defaultLedCode}
+                    defaultValue={editorCode}
                 />
             </div>
         </div>

@@ -6,7 +6,8 @@ import ToolsArea from '../../Components/ToolsArea/ToolsArea'
 import './EditorStyle.css'
 import { AppContext } from '../../App'
 import defaultLedCode from '../../Functions/defaultLedCode'
-import { createConnectors } from '../../Functions/Functions'
+import { createConnectors, editorCodeCaller } from '../../Functions/Functions'
+import defaultButtonCode from '../../Functions/defaultButtonCode'
 
 export const EditorContext = React.createContext(null)
 
@@ -30,6 +31,8 @@ export default function Editor() {
 
     React.useEffect(() => {
         if (editorComponent) {
+
+            //Codigo para atualizar os connectors quando o componente é selecionado
             let connectorsHolder = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg').connectorList
 
             setConnectorList(connectorsHolder)
@@ -43,7 +46,14 @@ export default function Editor() {
                 }
             })
 
-            setConnectorValues(valuesHolder)
+            //Codigo para chamar o configPins assim que o componente é selecionado
+            let configHolder = editorCodeCaller(valuesHolder,editorCode).configPins
+
+			Object.keys(configHolder).map((c) => {
+				valuesHolder = { ...valuesHolder, [c]: { value: valuesHolder[c].value, type: configHolder[c] } }
+			})
+
+			setConnectorValues(valuesHolder)
         }
     }, [editorComponent])
 
