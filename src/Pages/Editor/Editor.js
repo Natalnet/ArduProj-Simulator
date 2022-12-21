@@ -17,7 +17,7 @@ export default function Editor() {
 
     const [toolsMap, setToolsMap] = React.useState([])
 
-    const [editorCode, setEditorCode] = React.useState(defaultLedCode)
+    const [editorCode, setEditorCode] = React.useState(defaultButtonCode)
 
     const [connectorList, setConnectorList] = React.useState()
 
@@ -39,21 +39,46 @@ export default function Editor() {
 
             let valuesHolder = {}
             connectorsHolder.forEach(element => {
-                console.log(element)
                 valuesHolder[element.id] = {
-                    value:0,
-                    type:'inalterado'
+                    value: 0,
+                    type: 'inalterado'
                 }
             })
 
             //Codigo para chamar o configPins assim que o componente é selecionado
-            let configHolder = editorCodeCaller(valuesHolder,editorCode).configPins
+            let configHolder = editorCodeCaller(valuesHolder, editorCode).configPins
 
-			Object.keys(configHolder).map((c) => {
-				valuesHolder = { ...valuesHolder, [c]: { value: valuesHolder[c].value, type: configHolder[c] } }
-			})
 
-			setConnectorValues(valuesHolder)
+            Object.keys(configHolder).map((c) => {
+                if (c == 'events') {
+                    Object.keys(configHolder.events).map((e) => {
+                        valuesHolder = { ...valuesHolder, events: {...valuesHolder.events ,[e]: [false, configHolder.events[e], undefined] } }
+                    })
+                    
+                } else {
+                    valuesHolder = { ...valuesHolder, [c]: { value: valuesHolder[c].value, type: configHolder[c] } }
+                }
+                
+            })
+            
+
+            if (configHolder.events) {
+                let componentCall = document.getElementById('displayedSvg')
+                
+                Object.keys(configHolder.events).map((k) => {
+                    componentCall.addEventListener(configHolder.events[k], e => {
+                        let arrHolder = valuesHolder.events[k]
+                        arrHolder[0] = !arrHolder[0]
+                        arrHolder[2] = e
+                        console.log(e)
+                        valuesHolder.events[k] = arrHolder
+                        setConnectorValues(valuesHolder)
+                    })
+                })
+                
+            }
+            console.log(valuesHolder)
+            setConnectorValues(valuesHolder)
         }
     }, [editorComponent])
 

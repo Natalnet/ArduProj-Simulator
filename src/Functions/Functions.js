@@ -210,8 +210,8 @@ export function createConnectors(partComponent, breadboard, id) {
 
         //Elemento que é um conector baseado no part
         const svgConnector = svgPuro.getElementById(connectorSvgId)
-        
-        if(!svgConnector){
+
+        if (!svgConnector) {
             break
         }
 
@@ -252,30 +252,50 @@ export function createConnectors(partComponent, breadboard, id) {
 }
 
 
-export function editorCodeCaller(input = undefined,editorCode) {
+export function editorCodeCaller(input = undefined, editorCode) {
 
-    
-    let configLocation = editorCode.search('configPins')
-    let mainLocation = editorCode.search('main')
 
-    let bodyEditorCode = editorCode.slice(mainLocation + 13, -2)
+    let configLocation = editorCode.search('//configPinsCode')
+    let mainLocation = editorCode.search('//mainCode')
+
+    let bodyEditorCode = editorCode.slice(mainLocation + 23, -2)
 
     let mainCodeLength = editorCode.length - mainLocation
 
-    let configCode = editorCode.slice(configLocation + 13, -mainCodeLength - 5)
+    let configCode = editorCode.slice(configLocation + 30, -mainCodeLength - 3)
 
     let configPins = new Function(configCode)
-    let mainCode = new Function("input",bodyEditorCode)
+    let mainCode = new Function("input", bodyEditorCode)
 
-    if(!input){
+    if (!input) {
         let configHolder = configPins()
-        return({main:undefined, configPins:configHolder})
+        return ({ main: undefined, configPins: configHolder })
     }
 
     let mainCodeF = mainCode(input)
     let configHolder = configPins()
-    
 
 
-    return({main:mainCodeF, configPins:configHolder})
+
+    return ({ main: mainCodeF, configPins: configHolder })
+}
+
+export function updateConnectorsValues(valuesHolder, editorCode) {
+
+    let configHolder = editorCodeCaller(valuesHolder, editorCode).configPins
+
+    Object.keys(configHolder).map((c) => {
+        if (c == 'events') {
+            /*
+            Object.keys(configHolder.events).map((e) => {
+                valuesHolder = { ...valuesHolder, events: { ...valuesHolder.events, [e]: [false, configHolder.events[e], undefined] } }
+            })
+*/
+        } else {
+            valuesHolder = { ...valuesHolder, [c]: { value: valuesHolder[c].value, type: configHolder[c] } }
+        }
+
+    })
+
+    return valuesHolder
 }

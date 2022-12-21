@@ -16,15 +16,11 @@ import { EditorContext } from '../../Pages/Editor/Editor';
 
 export default function EditorComponentDisplay() {
 
-    const { editorComponent, connectorList, setConnectorList } = React.useContext(EditorContext)
+    const { editorComponent, connectorValues, setConnectorValues, } = React.useContext(EditorContext)
 
-    const parser = new DOMParser()
-
-    const connectorListCallBack = React.useCallback(() => { }, []);
 
     const [localSvgData, setLocalSvgData] = React.useState()
 
-    const teste = React.useRef()
 
     function hasEditorComponent() {
         if (editorComponent) {

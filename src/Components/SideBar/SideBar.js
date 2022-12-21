@@ -13,7 +13,7 @@ import StopRoundedIcon from '@mui/icons-material/StopRounded';
 import { EditorContext } from '../../Pages/Editor/Editor';
 import Snackbar from '@mui/material/Snackbar';
 import Slide from '@mui/material/Slide';
-import { editorCodeCaller } from '../../Functions/Functions';
+import { editorCodeCaller, updateConnectorsValues } from '../../Functions/Functions';
 
 
 import code_default from '../../Functions/default_code';
@@ -52,19 +52,21 @@ export default function SideBar(props) {
 
 	React.useEffect(() => {
 		if (running) {
-			//TODO: Mudar a simulação para atualizar quando os connectors mudam. Usar o UseEffect para rodar com o connectorValues.
 			let count = 0;
+			console.log(props.connectorValues)
 			let connectorValuesHOLDER = props.connectorValues
 			let func = editorCodeCaller(connectorValuesHOLDER, props.editorCode).main
 			let funcId = setInterval(() => {
 				if (running) {
 					let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
 
+					props.setConnectorValues(updateConnectorsValues(props.connectorValues, props.editorCode)) 
+					/*
 					Object.keys(configHolder).map((c) => {
 						connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
 					})
-
-					props.setConnectorValues(connectorValuesHOLDER)
+					*/
+					//props.setConnectorValues(connectorValuesHOLDER)
 					count++
 					setClock({ ...clock, tempo: clock.tempo++ })
 				}
@@ -199,7 +201,13 @@ export default function SideBar(props) {
 		}
 	}
 
-
+	const testFunc = () => {
+		console.log(props.connectorValues)
+		Object.keys(props.connectorValues.events).map((c) => {
+			//console.log(props.connectorValues.events[c])
+			
+		})
+	}
 
 
 
@@ -225,7 +233,7 @@ export default function SideBar(props) {
 					top: '5rem',
 					right: '-1.25rem'
 				}}
-				onClick={() => { console.log(props.connectorValues) }}
+				onClick={() => { testFunc() }}
 			>
 				<SaveRoundedIcon />
 			</Fab>
