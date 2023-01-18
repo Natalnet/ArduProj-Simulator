@@ -141,9 +141,26 @@ export async function handleFileDrop(e, data, setData) {
 }
 
 
-export function lineFunc(target, lines, setLines) {
+export function lineFunc(target, lines, setLines, dragMap, setDragMap) {
 
     let tempLines = lines
+    let tempDragMap = dragMap
+    let tempConnectorsEndIndex
+
+    let targetDragMap = dragMap.filter((i) => {
+        return i.id === target.id.split('/')[1]
+    })[0]
+
+    let targetConnector = targetDragMap.connectors.filter((c, index) => {
+        if (c.svgId === target.id.split('/')[0]) {
+            tempConnectorsEndIndex = index
+        }
+        return c.svgId === target.id.split('/')[0]
+    })[0]
+
+    console.log(targetConnector)
+
+    if (targetConnector.connectedTo) throw Error('Conector ja esta sendo usado')
 
     if (Object.values(tempLines).some(l => l.id === 'Em aberto')) {
 
@@ -153,6 +170,42 @@ export function lineFunc(target, lines, setLines) {
         tempLines[index].id = `line/${tempLines[index]['startLine']}/${tempLines[index]['endLine']}`
         tempLines[index].position = function () { this.position() }
         setLines(tempLines)
+
+
+        // Logica para procurar o connector que inicia a linha e atualizar o valor de connectedTo nele
+        let targetDragMapStart = dragMap.filter((i) => {
+            return i.id === tempLines[index]['startLine'].split('/')[1]
+        })[0]
+    
+        let tempConnectorsStartIndex
+        let targetConnectorStart = targetDragMapStart.connectors.filter((c, indexc) => {
+            if (c.svgId === tempLines[index]['startLine'].split('/')[0]) {
+                tempConnectorsStartIndex = indexc
+            }
+            return c.svgId === tempLines[index]['startLine'].split('/')[0]
+        })[0]
+
+        targetConnectorStart.connectedTo = tempLines[index]['startLine']
+        let tempIndexStart = tempDragMap.findIndex((e) => {
+            return e === targetDragMapStart
+        })
+
+        tempDragMap[tempIndexStart].connectors[tempConnectorsStartIndex].connectedTo = tempLines[index]['endLine']
+
+
+        // Logica para procurar o connector que termina a linha e atualizar o valor de connectedTo nele
+        targetConnector.connectedTo = target.id
+        let tempIndexEnd = tempDragMap.findIndex((e) => {
+            console.log(e)
+            console.log(targetDragMap)
+            return e === targetDragMap
+        })
+
+        tempDragMap[tempIndexEnd].connectors[tempConnectorsEndIndex].connectedTo = tempLines[index]['startLine']
+
+
+        setDragMap(tempDragMap)
+
         makeLine(lines)
     } else {
 
@@ -231,7 +284,8 @@ export function createConnectors(partComponent, breadboard, id) {
             svgId: p.getAttribute('svgId'),
             type: connector.getAttribute('type'),
             name: connector.getAttribute('name'),
-            value: false
+            value: null,
+            connectedTo: null
         })
 
         //? Arrumar bug dos highlight - Em progresso

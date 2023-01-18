@@ -11,7 +11,7 @@ import PowerIcon from '@mui/icons-material/Power';
 import PowerOffIcon from '@mui/icons-material/PowerOff';
 import SaveIcon from '@mui/icons-material/Save';
 import { AppContext } from '../../App'
-import { createConnectors } from '../../Functions/Functions';
+import { createConnectors } from '../../helpers/functionHelpers';
 import { EditorContext } from '../../Pages/Editor/Editor';
 
 export default function EditorComponentDisplay() {

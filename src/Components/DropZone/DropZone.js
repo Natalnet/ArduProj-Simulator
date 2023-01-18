@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import './DropZoneStyle.css'
-import { handleFileDrop } from '../../Functions/Functions';
+import { handleFileDrop } from '../../helpers/functionHelpers';
 import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
 
 export default function DropZoneIndex(props) {

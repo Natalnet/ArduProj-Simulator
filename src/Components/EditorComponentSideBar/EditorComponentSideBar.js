@@ -6,12 +6,12 @@ import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools"
 import { EditorContext } from '../../Pages/Editor/Editor';
-import defaultLedCode from '../../Functions/defaultLedCode';
+import defaultLedCode from '../../helpers/defaultLedCode';
 
 
 export default function EditorComponentSideBar() {
 
-    const { editorCode ,setEditorCode } = React.useContext(EditorContext)
+    const { editorCode, setEditorCode } = React.useContext(EditorContext)
 
 
     function onChange(newValue) {
@@ -27,7 +27,7 @@ export default function EditorComponentSideBar() {
                     onChange={onChange}
                     name="UNIQUE_ID_OF_DIV"
                     editorProps={{ $blockScrolling: true }}
-                    height='29rem'
+                    height='95vh'
                     width='18rem'
                     wrapEnabled='true'
                     defaultValue={editorCode}

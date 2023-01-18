@@ -5,9 +5,9 @@ import SideBar from '../../Components/SideBar/SideBar'
 import ToolsArea from '../../Components/ToolsArea/ToolsArea'
 import './EditorStyle.css'
 import { AppContext } from '../../App'
-import defaultLedCode from '../../Functions/defaultLedCode'
-import { createConnectors, editorCodeCaller } from '../../Functions/Functions'
-import defaultButtonCode from '../../Functions/defaultButtonCode'
+import defaultLedCode from '../../helpers/defaultLedCode'
+import { createConnectors, editorCodeCaller } from '../../helpers/functionHelpers'
+import defaultButtonCode from '../../helpers/defaultButtonCode'
 
 export const EditorContext = React.createContext(null)
 
@@ -49,22 +49,27 @@ export default function Editor() {
             let configHolder = editorCodeCaller(valuesHolder, editorCode).configPins
 
 
-            Object.keys(configHolder).map((c) => {
-                if (c == 'events') {
-                    Object.keys(configHolder.events).map((e) => {
-                        valuesHolder = { ...valuesHolder, events: {...valuesHolder.events ,[e]: [false, configHolder.events[e], undefined] } }
-                    })
-                    
-                } else {
-                    valuesHolder = { ...valuesHolder, [c]: { value: valuesHolder[c].value, type: configHolder[c] } }
-                }
-                
-            })
-            
+            try {
+                Object.keys(configHolder).map((c) => {
+                    if (c == 'events') {
+                        Object.keys(configHolder.events).map((e) => {
+                            valuesHolder = { ...valuesHolder, events: { ...valuesHolder.events, [e]: [false, configHolder.events[e], undefined] } }
+                        })
+
+                    } else {
+                        valuesHolder = { ...valuesHolder, [c]: { value: valuesHolder[c].value, type: configHolder[c] } }
+                    }
+
+                })
+            } catch (error) {
+                console.log(error)
+            }
+
+
 
             if (configHolder.events) {
                 let componentCall = document.getElementById('displayedSvg')
-                
+
                 Object.keys(configHolder.events).map((k) => {
                     componentCall.addEventListener(configHolder.events[k], e => {
                         let arrHolder = valuesHolder.events[k]
@@ -75,9 +80,7 @@ export default function Editor() {
                         setConnectorValues(valuesHolder)
                     })
                 })
-                
             }
-            console.log(valuesHolder)
             setConnectorValues(valuesHolder)
         }
     }, [editorComponent])

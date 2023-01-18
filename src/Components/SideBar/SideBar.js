@@ -3,7 +3,7 @@ import './SideBarStyle.css'
 import DropZone from '../DropZone/DropZone';
 import SvgGrid from '../SvgGrid/SvgGrid';
 import { AppContext } from '../../App'
-import { changeColor } from '../../Functions/Behavior';
+import { changeColor } from '../../helpers/Behavior';
 import ToolsButton from '../ToolsButton/ToolsButton';
 import { Fab } from '@material-ui/core';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
@@ -13,10 +13,10 @@ import StopRoundedIcon from '@mui/icons-material/StopRounded';
 import { EditorContext } from '../../Pages/Editor/Editor';
 import Snackbar from '@mui/material/Snackbar';
 import Slide from '@mui/material/Slide';
-import { editorCodeCaller, updateConnectorsValues } from '../../Functions/Functions';
+import { editorCodeCaller, updateConnectorsValues } from '../../helpers/functionHelpers';
 
 
-import code_default from '../../Functions/default_code';
+import code_default from '../../helpers/default_code';
 import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
 import ToolsGrid from '../ToolsGrid/ToolsGrid';
@@ -25,7 +25,7 @@ export default function SideBar(props) {
 
 	//Arquivos importados
 
-	const { data, setData, setDragMap, dragMap, alignment } = React.useContext(AppContext)
+	const { data, setData, setDragMap, dragMap, alignment, lines } = React.useContext(AppContext)
 
 	const [screen, setScreen] = React.useState('components')
 
@@ -60,7 +60,7 @@ export default function SideBar(props) {
 				if (running) {
 					let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
 
-					props.setConnectorValues(updateConnectorsValues(props.connectorValues, props.editorCode)) 
+					props.setConnectorValues(updateConnectorsValues(props.connectorValues, props.editorCode))
 					/*
 					Object.keys(configHolder).map((c) => {
 						connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
@@ -103,7 +103,7 @@ export default function SideBar(props) {
 
 
 	function updateConfigPins() {
-		let configHolder = editorCodeCaller(undefined ,props.editorCode).configPins
+		let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
 		let connectorValuesHOLDER = props.connectorValues
 
 		Object.keys(configHolder).map((c) => {
@@ -202,11 +202,8 @@ export default function SideBar(props) {
 	}
 
 	const testFunc = () => {
-		console.log(props.connectorValues)
-		Object.keys(props.connectorValues.events).map((c) => {
-			//console.log(props.connectorValues.events[c])
-			
-		})
+		console.log(lines)
+		console.log(dragMap)
 	}
 
 

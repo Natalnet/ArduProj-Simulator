@@ -1,27 +1,18 @@
 import React from 'react'
-import './SvgGridItemStyle.css'
-import { AppContext } from '../../App'
-import uuid from 'react-uuid'
+import '../SvgGridItem/SvgGridItemStyle.css'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { createConnectors } from '../../helpers/functionHelpers'
+import { EditorContext } from '../../Pages/Editor/Editor'
+
+export default function SvgGridItemEditor({ svg, name, breadboard, part }) {
 
 
-export default function SvgGridItem({ svg, name, breadboard, part }) {
 
-
-    const { setDragMap, dragMap } = React.useContext(AppContext)
-
+    const { setEditorComponent } = React.useContext(EditorContext)
     
 
     function dragMapHandler() {
-            let tempMap = [...dragMap]
-            let id = uuid()
-            let connectors = createConnectors(part, breadboard, id).connectorList
-            tempMap.push({ componentName: name, breadboard: breadboard, part: part, id: id, connectors: connectors })
-
-            setDragMap(tempMap)
-       
+            setEditorComponent({ componentName: name, breadboard: breadboard, part: part })
     }
 
     const [{ x, y, scale, zindex }, api] = useSpring(() => ({
