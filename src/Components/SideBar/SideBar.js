@@ -242,7 +242,7 @@ export default function SideBar(props) {
 				size='small'
 				style={{
 					position: 'absolute',
-					bottom: '2rem',
+					bottom: '3rem',
 					right: '-1.25rem'
 				}}
 				onClick={() => { updateConfigPins() }}
