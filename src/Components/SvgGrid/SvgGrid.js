@@ -1,4 +1,5 @@
 import React from 'react'
+import {createPortal} from 'react-dom'
 import SvgGridItem from '../SvgGridItem/SvgGridItem';
 import './SvgGridStyle.css'
 import { AppContext } from '../../App';
@@ -26,14 +27,15 @@ export default function SvgGrid() {
                 const doc = parser.parseFromString(icone, 'text/html')
                 const currentSvg = doc.getElementsByTagName('svg')[0]
                 if (alignment === 'simulador') {
-                    return (
+                    return createPortal(
                         <SvgGridItem
                             key={d.componentName}
                             svg={currentSvg}
                             name={d.componentName}
                             breadboard={d.breadboard}
                             part={d.part}
-                        />
+                        />,
+                        document.querySelector('.SideBar')
                     )
                 } else {
                     return (

@@ -40,6 +40,7 @@ export default function DragArea() {
             part={d.part}
             id={d.id}
             key={d.id}
+            position={d.position}
             updatePositionCallback={updatePosition}
 
           />

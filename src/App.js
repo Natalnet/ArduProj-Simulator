@@ -1,10 +1,7 @@
 import './App.css';
 import React, { useState } from 'react'
-import SideBar from './Components/SideBar/SideBar';
-import DragArea from './Components/DragArea/DragArea';
 
 import { Route, BrowserRouter as Router, Routes, Switch } from 'react-router-dom';
-import Home from './Pages/Simulador/Simulador';
 import Editor from './Pages/Editor/Editor';
 import Simulador from './Pages/Simulador/Simulador';
 

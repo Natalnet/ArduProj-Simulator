@@ -1,17 +1,17 @@
 .DropZone {
-    width: 8rem;
-    height: 8rem;
-    margin-top: 4vh;
-    margin-bottom: 4vh;
+    margin: 0 auto;
+    width: 90%;
+    height: 90%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-flow: column nowrap;
     font-size: 24px;
     color: #555555;
-    border: 2px hsl(0, 73%, 45%) dashed;
+    border: 2px hsl(0, 0%, 36%) dashed;
     border-radius: 12px;
     user-select: none;
+    position:relative;
 }
 
 .DropZone > span {
@@ -19,6 +19,8 @@
     height: fit-content;
     align-items: center;
 }
+
+
 
 .DragOver {
     color: white;

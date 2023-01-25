@@ -210,13 +210,17 @@ export default function SideBar(props) {
 
 	return (
 		<div className="SideBar" >
+			<div className='DropZoneHolder'>
+				{hasDropZone()}
+			</div>
 			<Fab
 				className='FabButton'
 				size='small'
 				style={{
 					position: 'absolute',
-					top: '1rem',
-					right: '-1.25rem'
+					top: '11rem',
+					right: '-1.25rem',
+					zIndex:1
 				}}
 				onClick={() => { setRunning(!running) }}
 			>
@@ -227,14 +231,14 @@ export default function SideBar(props) {
 				size='small'
 				style={{
 					position: 'absolute',
-					top: '5rem',
-					right: '-1.25rem'
+					top: '15rem',
+					right: '-1.25rem',
+					zIndex:1
 				}}
 				onClick={() => { testFunc() }}
 			>
 				<SaveRoundedIcon />
 			</Fab>
-			{hasDropZone()}
 			{screen == 'components' ? <SvgGrid data={data} /> : <ToolsGrid />}
 			{hasTools()}
 			<Fab
@@ -243,7 +247,8 @@ export default function SideBar(props) {
 				style={{
 					position: 'absolute',
 					bottom: '3rem',
-					right: '-1.25rem'
+					right: '-1.25rem',
+					zIndex:1
 				}}
 				onClick={() => { updateConfigPins() }}
 			>
