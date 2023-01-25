@@ -5,12 +5,13 @@ import uuid from 'react-uuid'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import { createConnectors } from '../../helpers/functionHelpers'
+import { addConnectortToMatrix } from '../../helpers/connectivitysMatricesHelper'
 
 
 export default function SvgGridItem({ svg, name, breadboard, part }) {
 
 
-    const { setDragMap, dragMap } = React.useContext(AppContext)
+    const { setDragMap, dragMap, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap } = React.useContext(AppContext)
 
     
 
@@ -19,7 +20,12 @@ export default function SvgGridItem({ svg, name, breadboard, part }) {
             let id = uuid()
             let connectors = createConnectors(part, breadboard, id).connectorList
             tempMap.push({ componentName: name, breadboard: breadboard, part: part, id: id, connectors: connectors })
+            console.log(connectors)
 
+            let matrixParams = addConnectortToMatrix(id, connectors, connectivityMtx, connectivityMtxMap )
+
+            setConnectivityMtx(matrixParams.matrix)
+            setConnectivityMtxMap(matrixParams.maping) 
             setDragMap(tempMap)
        
     }
