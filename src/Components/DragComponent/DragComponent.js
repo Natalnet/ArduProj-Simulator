@@ -16,7 +16,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
 
     //Função que seleciona os elementos no svg responsaveis pelos conectores e adiciona a classe 'connector' a eles
-    function createConnectors() {
+    function createSvgComponent() {
         for (let index = 0; connectorsDoc.getElementsByTagName('connector')[index]; index++) {
 
             let breadboardView = connectorsDoc.getElementsByTagName('breadboardView')[1]
@@ -35,7 +35,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
             svgConnector.setAttribute('pointer-events', 'fill')
 
-            svgConnector.parentElement.appendChild(svgConnector)
+            currentSvg.appendChild(svgConnector)
 
             //? Arrumar bug dos highlight - Em progresso
             /* 
@@ -50,21 +50,23 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
         return (currentSvg.innerHTML)
     }
 
-    const [{ x, y, width, height }, api] = useSpring(() => ({
+    const [{ x, y, width, height, offset }, api] = useSpring(() => ({
         x: position[0],
         y: position[1],
         width: currentSvg.width.baseVal.value ? currentSvg.width.baseVal.value : currentSvg.height.baseVal.value,
-        height: currentSvg.height.baseVal.value ? currentSvg.height.baseVal.value : currentSvg.width.baseVal.value
+        height: currentSvg.height.baseVal.value ? currentSvg.height.baseVal.value : currentSvg.width.baseVal.value,
+        offset: position
     }))
 
     function DragComponent() {
 
         const bind = useDrag((params) => {
+  
             api.start({
                 scale: params.down ? 1.2 : 1,
                 zIndex: params.down ? 5 : 2,
-                x: position[0],
-                y: position[1],
+                x: params.offset[0],
+                y: params.offset[1]
             })
 
             api.set({
@@ -101,7 +103,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
                 <svg
                     className='dragSvg'
-                    dangerouslySetInnerHTML={{ __html: createConnectors() }}
+                    dangerouslySetInnerHTML={{ __html: createSvgComponent() }}
                     width={currentSvg.width.baseVal.value}
                     height={currentSvg.height.baseVal.value}
                     viewBox={currentSvg.viewBox}

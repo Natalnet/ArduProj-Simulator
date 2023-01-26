@@ -67,6 +67,7 @@ export default function SvgGridItem({ svg, name, breadboard, part }) {
                             className='SvgDiv'
                             width={svg.width.baseVal.value}
                             height={svg.height.baseVal.value}
+                            preserveAspectRatio
                         >
                             <svg
                                 className='Svg'
