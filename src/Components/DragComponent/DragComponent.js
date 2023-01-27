@@ -37,20 +37,12 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
             currentSvg.appendChild(svgConnector)
 
-            //? Arrumar bug dos highlight - Em progresso
-            /* 
-            svgConnector.removeAttribute('style')
-    
-            svgConnector.setAttribute('fill','none') 
-    
-            svgConnector.parentElement.insertBefore(svgConnector, null)
-            */
         }
 
         return (currentSvg.innerHTML)
     }
 
-    const [{ x, y, width, height, offset }, api] = useSpring(() => ({
+    const [{ x, y, width, height, offset, scale, zIndex }, api] = useSpring(() => ({
         x: position[0],
         y: position[1],
         width: currentSvg.width.baseVal.value ? currentSvg.width.baseVal.value : currentSvg.height.baseVal.value,
@@ -62,18 +54,22 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
         const bind = useDrag((params) => {
   
+            // Função de inicialização do componente
+            //! Bug: scale só funciona depois de adicionar mais um componente e zindex não funciona
             api.start({
-                scale: params.down ? 1.2 : 1,
-                zIndex: params.down ? 5 : 2,
+                scale: params.down ? 1.3 : 1,
+                zIndex: params.down ? 5 : 1,
                 x: params.offset[0],
                 y: params.offset[1]
             })
 
+            //Função que atualiza a posição do componente
             api.set({
                 x: params.offset[0],
                 y: params.offset[1]
             })
 
+            // Função para excluir o componente se ele for dropado na SideBar
             if (params.down === false) {
                 let droppedOver = document.elementsFromPoint(params.xy[0], params.xy[1])
 
@@ -86,10 +82,12 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
                 
             }
 
+            // Função para criação de linhas ao realizar um clique longo num conector
             if (params.tap && params.elapsedTime >= 500 && params.event.target.className.baseVal === 'connector') {
                 lineFunc(params.event.target, lines, setLines, dragMap, setDragMap)
             }
 
+            //Função para atualizar a posição da linha
             updatePositionCallback(params.currentTarget.id)
 
         },
@@ -99,7 +97,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
         )
         return (
-            <animated.div {...bind()} style={{ x, y, width, height, pointerEvents: 'auto' }} id={`animatedDiv/${id}`} className='animatedSvgDiv' >
+            <animated.div {...bind()} style={{ x, y, width, height, scale, zIndex, pointerEvents: 'auto' }} id={`animatedDiv/${id}`} className='animatedSvgDiv' >
 
                 <svg
                     className='dragSvg'
@@ -108,7 +106,6 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
                     height={currentSvg.height.baseVal.value}
                     viewBox={currentSvg.viewBox}
 
-                //viewBox={currentSvg.getAttribute(viewBox)}
                 />
 
             </animated.div>)
@@ -131,8 +128,8 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
             }
         })
 
-        console.log(toCleanList)
-
+        
+        // Aqui verificamos se algum dos componentes que não foram removidos estava conectado no componente removido e atualizamos seu campo connectedTo para null
         toCleanList.forEach((l) => {
             console.log(l)
             let splitedL = l.split('/')
@@ -164,9 +161,6 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
         toRemoveLines.forEach(i => {
             i.LeaderLine.remove()
         })
-
-
-
 
 
         //E aqui remove a linha do lines

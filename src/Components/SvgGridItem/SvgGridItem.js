@@ -17,20 +17,24 @@ export default function SvgGridItem({ svg, name, breadboard, part }) {
 
 
     function dragMapHandler(xy) {
+
+        // Aqui é criado um novo componente como objeto
         let tempMap = [...dragMap]
         let id = uuid()
         let connectors = createConnectors(part, breadboard, id).connectorList
         tempMap.push({ componentName: name, breadboard: breadboard, part: part, id: id, connectors: connectors, position: xy })
 
+        // É chamada a função helper para a atualização da matriz de conectividade e do seu maping
         let matrixParams = addConnectortToMatrix(id, connectors, connectivityMtx, connectivityMtxMap)
 
+        //Atualização dos states do contexto
         setConnectivityMtx(matrixParams.matrix)
         setConnectivityMtxMap(matrixParams.maping)
         setDragMap(tempMap)
 
     }
 
-    const [{ x, y, scale, zindex }, api] = useSpring(() => ({
+    const [{ x, y, scale, zIndex }, api] = useSpring(() => ({
         x: 0,
         y: 0
     }))
@@ -40,19 +44,14 @@ export default function SvgGridItem({ svg, name, breadboard, part }) {
             x: params.down ? params.movement[0] : 0, 
             y: params.down ? params.movement[1]: 0, 
             scale: params.down ? 1.2 : 1, 
-            zIndex: params.down ? 5 : 2 })
+            zIndex: params.down ? 5 : 0 })
 
         if (params.down === false) {
             console.log(params)
             dragMapHandler(params.xy)
         }
         
-    },
-        (params) => api.start({ 
-            x: params.down ? params.movement[0] : 0, 
-            y: params.down ? params.movement[1]: 0, 
-            scale: params.down ? 1.2 : 1, 
-            zIndex: params.down ? 5 : 2 })
+    }
     )
 
 
@@ -60,7 +59,7 @@ export default function SvgGridItem({ svg, name, breadboard, part }) {
     return (
         <>
             {createPortal(
-                <animated.div {...bind()} style={{ x, y, scale, zindex, pointerEvents: 'auto' }} className={'animatedSvgGridItem'}>
+                <animated.div {...bind()} style={{ x, y, scale, zIndex, pointerEvents: 'auto' }} className={'animatedSvgGridItem'}>
                     <div className='ItemDiv' onClick={() => {  }}>
 
                         <div

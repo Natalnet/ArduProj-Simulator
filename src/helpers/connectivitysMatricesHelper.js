@@ -4,6 +4,8 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
     let tempConnectorMtx = connectorMtx
     let tempConnectorMtxMap = connectorMtxMap
 
+    //! trocar o array por um objeto
+    //! trocar true ou false por 1 e 0
 
     // Aqui é criada a matriz de conectividade
     // Os valores iniciais são sempre falsos 
@@ -36,6 +38,9 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
     connectorList.forEach(connector => {
         tempConnectorMtxMap.push(`${connector.svgId}/${componentId}`)
     })
+
+    console.log(tempConnectorMtx)
+    console.log(tempConnectorMtxMap)
 
     return ({ matrix: tempConnectorMtx, maping: tempConnectorMtxMap })
 
