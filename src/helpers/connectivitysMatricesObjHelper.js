@@ -4,34 +4,39 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
     let tempConnectorMtx = connectorMtx
     let tempConnectorMtxMap = connectorMtxMap
 
-    console.log(connectorList)
-
-    //! trocar o array por um objeto
-    //! trocar true ou false por 1 e 0
-
     // Aqui é criada a matriz de conectividade
     // Os valores iniciais são sempre falsos 
     // No caso dela ser nula é passado uma matriz com colunas e linhas do tamanho do primeiro componente adicionado
-    if (connectorMtx.length === 0) {
-        let row = Array(connectorList.length).fill(0)
-        tempConnectorMtx = Array(connectorList.length).fill(row)
+    if (Object.keys(connectorMtx).length === 0) {
+        let row = {}
+
+        connectorList.map(connector => {
+            console.log(connector)
+            row = { ...row, [`${connector.svgId}/${componentId}`]: 0 }
+        })
+
+        connectorList.map(connector => {
+            tempConnectorMtx = { ...tempConnectorMtx, [`${connector.svgId}/${componentId}`]: row }
+        })
     } else {
         // Caso ela não seja nula é copiado a parte ja preenchida da matriz e adicionado a suas linhas valores falsos representando os novos connectors
 
-        for (let index = 0; index < connectorMtx.length; index++) {
+        var row = {}
 
-            let inicialArray = tempConnectorMtx[index]
-            let finalArray = Array(connectorList.length).fill(0)
-            tempConnectorMtx[index] = [...inicialArray, ...finalArray]
-
-        }
+        Object.keys(tempConnectorMtx).map( k => {
+            for (let index = 0; index < connectorList.length; index++) {
+                tempConnectorMtx[k] = { ...tempConnectorMtx[k], [`${connectorList[index].svgId}/${componentId}`]: 0 }
+                row = tempConnectorMtx[k]
+            }
+        })
 
         // E depois é adicionado as colunas desses novos connectors a matriz
 
-        let maxLength = (connectorMtx.length + connectorList.length)
-        for (let index = connectorMtx.length; index < maxLength; index++ ) {
-            let row = Array(maxLength).fill(0)
-            tempConnectorMtx[index] = row
+        for (let index = 0; index < connectorList.length; index++) {
+            console.log(row)
+            Object.keys(row).forEach(k => row[k] = 0)
+            
+            tempConnectorMtx = { ...tempConnectorMtx, [`${connectorList[index].svgId}/${componentId}`]: row }
         }
     }
 

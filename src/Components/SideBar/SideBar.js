@@ -25,7 +25,7 @@ export default function SideBar(props) {
 
 	//Arquivos importados
 
-	const { data, setData, setDragMap, dragMap, alignment, lines } = React.useContext(AppContext)
+	const { data, setData, dragMap, alignment, lines} = React.useContext(AppContext)
 
 	const [screen, setScreen] = React.useState('components')
 
@@ -39,12 +39,6 @@ export default function SideBar(props) {
 
 
 	var arduino = undefined; //variavel para guardar a instancia em execução
-
-	function testButton() {
-		let func = new Function("input", props.editorCode)
-		let algo = 'alogggg'
-		func(algo)
-	}
 
 	React.useEffect(() => {
 		setClock({ tempo: 0 })
@@ -203,7 +197,6 @@ export default function SideBar(props) {
 
 	const testFunc = () => {
 		console.log(lines)
-		console.log(dragMap)
 	}
 
 

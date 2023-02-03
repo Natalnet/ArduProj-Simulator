@@ -1,6 +1,6 @@
 import React from 'react'
 import JSZip from 'jszip'
-import LeaderLine from 'react-leader-line'
+
 import { getSpeedDialIconUtilityClass } from '@mui/material'
 
 //Função responsavel por extrair arquivos do zip e adicionalos no data
@@ -140,109 +140,6 @@ export async function handleFileDrop(e, data, setData) {
 
 }
 
-
-export function lineFunc(target, lines, setLines, dragMap, setDragMap) {
-
-    let tempLines = lines
-    let tempDragMap = dragMap
-    let tempConnectorsEndIndex
-
-    let targetDragMap = dragMap.filter((i) => {
-        return i.id === target.id.split('/')[1]
-    })[0]
-
-    let targetConnector = targetDragMap.connectors.filter((c, index) => {
-        if (c.svgId === target.id.split('/')[0]) {
-            tempConnectorsEndIndex = index
-        }
-        return c.svgId === target.id.split('/')[0]
-    })[0]
-
-    console.log(targetConnector)
-
-    if (targetConnector.connectedTo) throw Error('Conector ja esta sendo usado')
-
-    if (Object.values(tempLines).some(l => l.id === 'Em aberto')) {
-
-        let index = Object.values(tempLines).findIndex(l => { return l.endLine === undefined })
-
-        tempLines[index].endLine = target.id
-        tempLines[index].id = `line/${tempLines[index]['startLine']}/${tempLines[index]['endLine']}`
-        tempLines[index].position = function () { this.position() }
-        setLines(tempLines)
-
-
-        // Logica para procurar o connector que inicia a linha e atualizar o valor de connectedTo nele
-        let targetDragMapStart = dragMap.filter((i) => {
-            return i.id === tempLines[index]['startLine'].split('/')[1]
-        })[0]
-    
-        let tempConnectorsStartIndex
-        let targetConnectorStart = targetDragMapStart.connectors.filter((c, indexc) => {
-            if (c.svgId === tempLines[index]['startLine'].split('/')[0]) {
-                tempConnectorsStartIndex = indexc
-            }
-            return c.svgId === tempLines[index]['startLine'].split('/')[0]
-        })[0]
-
-        targetConnectorStart.connectedTo = tempLines[index]['startLine']
-        let tempIndexStart = tempDragMap.findIndex((e) => {
-            return e === targetDragMapStart
-        })
-
-        tempDragMap[tempIndexStart].connectors[tempConnectorsStartIndex].connectedTo = tempLines[index]['endLine']
-
-
-        // Logica para procurar o connector que termina a linha e atualizar o valor de connectedTo nele
-        targetConnector.connectedTo = target.id
-        let tempIndexEnd = tempDragMap.findIndex((e) => {
-            console.log(e)
-            console.log(targetDragMap)
-            return e === targetDragMap
-        })
-
-        tempDragMap[tempIndexEnd].connectors[tempConnectorsEndIndex].connectedTo = tempLines[index]['startLine']
-
-
-        setDragMap(tempDragMap)
-
-        makeLine(lines)
-    } else {
-
-        tempLines.push({ startLine: `${target.id}`, id: 'Em aberto' })
-        setLines(tempLines)
-
-    }
-
-}
-
-export function makeLine(lines) {
-    if (!lines.some(l => l.id == 'Em aberto') && lines.length > 0) {
-
-        let lastLine = lines[lines.length - 1]
-
-        lines[lines.length - 1].LeaderLine = new LeaderLine(
-            LeaderLine.pointAnchor(document.getElementById(lastLine.startLine), {
-                x: '50%',
-                y: '50%'
-            }),
-            LeaderLine.pointAnchor(document.getElementById(lastLine.endLine), {
-                x: '50%',
-                y: '50%'
-            }),
-            {
-                path: 'grid',
-                startPlug: 'disc',
-                endPlug: 'disc',
-                color: 'red',
-                size: 3,
-                outline: true,
-                outlineColor: 'black'
-            }
-        )
-
-    }
-}
 
 
 export function createConnectors(partComponent, breadboard, id) {

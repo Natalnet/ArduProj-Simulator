@@ -4,6 +4,7 @@ import './DragAreaStyle.css'
 import LeaderLine from 'react-leader-line'
 import { AppContext } from '../../App'
 import { lineFunc } from '../../helpers/functionHelpers'
+import InvisibleDivsHolder from './InvisibleDivsHolder'
 
 export default function DragArea() {
 
@@ -46,6 +47,7 @@ export default function DragArea() {
           />
         )
       })}
+      <InvisibleDivsHolder />
     </div>
   )
 }

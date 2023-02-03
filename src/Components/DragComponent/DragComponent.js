@@ -3,11 +3,11 @@ import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import './DragComponentStyle.css'
 import { AppContext } from '../../App'
-import { lineFunc } from '../../helpers/functionHelpers'
+import { lineFunc } from '../../helpers/linesHelpers'
 
 export default function DragComponentIndex({ name, svg, part, id, updatePositionCallback, position }) {
 
-    const { dragMap, setDragMap, lines, setLines } = React.useContext(AppContext)
+    const { dragMap, setDragMap, lines, setLines, sectionsMap, setSectionsMap } = React.useContext(AppContext)
 
     const parser = new DOMParser();
     const connectorsDoc = parser.parseFromString(part, 'text/html')
@@ -42,7 +42,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
         return (currentSvg.innerHTML)
     }
 
-    const [{ x, y, width, height, offset, scale, zIndex }, api] = useSpring(() => ({
+    const [{ x, y, width, height, offset, zIndex }, api] = useSpring(() => ({
         x: position[0],
         y: position[1],
         width: currentSvg.width.baseVal.value ? currentSvg.width.baseVal.value : currentSvg.height.baseVal.value,
@@ -55,9 +55,8 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
         const bind = useDrag((params) => {
   
             // Função de inicialização do componente
-            //! Bug: scale só funciona depois de adicionar mais um componente e zindex não funciona
+            //! Bug: zindex não funciona
             api.start({
-                scale: params.down ? 1.3 : 1,
                 zIndex: params.down ? 5 : 1,
                 x: params.offset[0],
                 y: params.offset[1]
@@ -84,7 +83,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
             // Função para criação de linhas ao realizar um clique longo num conector
             if (params.tap && params.elapsedTime >= 500 && params.event.target.className.baseVal === 'connector') {
-                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap)
+                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap, false, sectionsMap, setSectionsMap)
             }
 
             //Função para atualizar a posição da linha
@@ -97,7 +96,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
         )
         return (
-            <animated.div {...bind()} style={{ x, y, width, height, scale, zIndex, pointerEvents: 'auto' }} id={`animatedDiv/${id}`} className='animatedSvgDiv' >
+            <animated.div {...bind()} style={{ x, y, width, height, zIndex, pointerEvents: 'auto' }} id={`animatedDiv/${id}`} className='animatedSvgDiv' >
 
                 <svg
                     className='dragSvg'

@@ -6,7 +6,7 @@ import uuid from 'react-uuid'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import { createConnectors } from '../../helpers/functionHelpers'
-import { addConnectortToMatrix } from '../../helpers/connectivitysMatricesHelper'
+import { addConnectortToMatrix } from '../../helpers/connectivitysMatricesObjHelper'
 
 
 export default function SvgGridItem({ svg, name, breadboard, part }) {
