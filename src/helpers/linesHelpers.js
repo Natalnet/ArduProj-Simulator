@@ -86,17 +86,7 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, isSection
         if (tempLines.sections) {
             tempSections = tempLines.sections
         }
-        /*
-        if (tempLines.sections.some(section => { return section.status === 'moving' })) {
-            tempLines.sections.map(section => { 
-                return(
-                    section.status === 'stoped'
-                )
-                 
-            }
-            )
-        }
-        */
+       
         let finalId = target.in
         if(target.id.split('/').length < 2) {
             finalId = `section/${target.id}`
@@ -105,8 +95,11 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, isSection
 
         tempLines.push({ startLine: `${target.id}`, id: 'Em aberto', sections: tempSections })
         console.log(tempLines)
-        setLines(tempLines)
+
+        setLines([...lines, tempLines])
         
+        //! Usar esse formato
+        //let temp = {...lines, novoObj}
 
     }
 

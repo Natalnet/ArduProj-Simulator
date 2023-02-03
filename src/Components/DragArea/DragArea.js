@@ -4,11 +4,11 @@ import './DragAreaStyle.css'
 import LeaderLine from 'react-leader-line'
 import { AppContext } from '../../App'
 import { lineFunc } from '../../helpers/functionHelpers'
-import InvisibleDivsHolder from './InvisibleDivsHolder'
+import InvisibleDivsHolder from '../InvisibleDivsHolder/InvisibleDivsHolder'
 
 export default function DragArea() {
 
-  const { dragMap, lines, setLines } = React.useContext(AppContext)
+  const { dragMap, lines } = React.useContext(AppContext)
 
   //Função para atualizar a linha quando o componente recebe um drag
   function updatePosition(targetId) {
@@ -34,6 +34,7 @@ export default function DragArea() {
   return (
     <div className='DragAreaDiv'>
       {dragMap.map(d => {
+        console.log(d)
         return (
           <DragComponentIndex
             name={d.componentName}

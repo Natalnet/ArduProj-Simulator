@@ -12,7 +12,7 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
 
         connectorList.map(connector => {
             console.log(connector)
-            row = { ...row, [`${connector.svgId}/${componentId}`]: 0 }
+            row = { ...row, [`${connector.svgId}/${componentId}`]: null }
         })
 
         connectorList.map(connector => {
@@ -25,7 +25,7 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
 
         Object.keys(tempConnectorMtx).map( k => {
             for (let index = 0; index < connectorList.length; index++) {
-                tempConnectorMtx[k] = { ...tempConnectorMtx[k], [`${connectorList[index].svgId}/${componentId}`]: 0 }
+                tempConnectorMtx[k] = { ...tempConnectorMtx[k], [`${connectorList[index].svgId}/${componentId}`]: null }
                 row = tempConnectorMtx[k]
             }
         })
@@ -34,7 +34,7 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
 
         for (let index = 0; index < connectorList.length; index++) {
             console.log(row)
-            Object.keys(row).forEach(k => row[k] = 0)
+            Object.keys(row).forEach(k => row[k] = null)
             
             tempConnectorMtx = { ...tempConnectorMtx, [`${connectorList[index].svgId}/${componentId}`]: row }
         }

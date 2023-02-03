@@ -1,10 +1,7 @@
 import React from 'react'
-import { AppContext } from '../../App'
 import InvisibleDiv from '../InvisibleDiv/InvisibleDiv'
 
-export default function InvisibleDivsHolder() {
-
-    const { lines } = React.useContext(AppContext)
+export default function InvisibleDivsSectionHolder({ sections }) {
 
     //Função para atualizar a linha quando o componente recebe um drag
     function updatePosition(targetId, lines) {
@@ -29,25 +26,16 @@ export default function InvisibleDivsHolder() {
     }
 
     return (
-        <div
-            id='invisibleDivsHolder'
-        >
-            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            {lines.map(line => {
-                console.log(line)
-                /*
-                return(
-                    line.sections.map(section => {
-                        console.log(section)
-                        return (
-                            <InvisibleDiv
-                                updatePositionCallback={updatePosition}
-                                sectionUuid={section.id}
-                            />
-                        )
-                    })
+        <div>
+            bbbbbbbbbbbbb
+            {sections.map(section => {
+                console.log(section)
+                return (
+                    <InvisibleDiv
+                        updatePositionCallback={updatePosition}
+                        sectionUuid={section.id}
+                    />
                 )
-                */
             })}
         </div>
     )
