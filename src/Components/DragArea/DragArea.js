@@ -11,30 +11,32 @@ export default function DragArea() {
   const { dragMap, lines } = React.useContext(AppContext)
 
   //Função para atualizar a linha quando o componente recebe um drag
-  function updatePosition(targetId) {
-    const elementId = targetId.split('/')[1]
-    let filteredLines = []
+  function updatePosition(componentId) {
+    //const elementId = targetId.split('/')[1]
+    let filteredSections = []
     //Aqui é pego todas as linhas que estão ligadas ao componente que esta se movendo.
-    lines.forEach(e => {
-      if (e.id && e.id != 'Em aberto') {
-        if (e.startLine.split('/')[1] == elementId || e.endLine.split('/')[1] == elementId) {
-          filteredLines.push(e)
-        }
+    lines.forEach(line => {
+      console.log(componentId)
+      console.log(line.startLine)
+      if (line.startLine.split('/')[1] === componentId || line.endLine.split('/')[1] === componentId) {
+        line.sections.forEach(section => {
+          filteredSections.push(section)
+        })
       }
     })
 
-    //Aqui é chamada a função que atualiza a LeaderLine
-    filteredLines.forEach(element => {
-      element.LeaderLine.position()
-    });
 
+    //Aqui é chamada a função que atualiza a LeaderLine
+    filteredSections.forEach(section => {
+      if (!section.leaderLine) return
+      section.leaderLine.position()
+    })
   }
 
 
   return (
     <div className='DragAreaDiv'>
       {dragMap.map(d => {
-        console.log(d)
         return (
           <DragComponentIndex
             name={d.componentName}
@@ -44,7 +46,6 @@ export default function DragArea() {
             key={d.id}
             position={d.position}
             updatePositionCallback={updatePosition}
-
           />
         )
       })}

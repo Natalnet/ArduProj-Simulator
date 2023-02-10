@@ -4,49 +4,83 @@ import { makeLine, lineFunc } from '../../helpers/linesHelpers'
 import { AppContext } from '../../App'
 
 
-export default function InvisibleDiv({ updatePositionCallback, sectionUuid }) {
-
+export default function InvisibleDiv({ updatePositionCallback, sectionUuid, section, line }) {
 
     const { dragMap, setDragMap, lines, setLines } = React.useContext(AppContext)
 
-
-    const mousePosition = useMousePosition
-
     const [isStoped, setIsStoped] = useState(false)
-    const [finalLocation, setFinalLocation] = useState(mousePosition)
+    const [finalLocation, setFinalLocation] = useState({ x: 0, y: 0 })
+    let tempPosition = useMousePosition()
 
-    updatePositionCallback(sectionUuid, lines)
+    updatePositionCallback(lines)
 
     React.useEffect(() => {
-        makeLine(lines, sectionUuid)
+        makeLine(lines, section)
     }, [])
 
-    function handleClick() {
-        console.log('clickaaa')
-        setIsStoped(true)
-        setFinalLocation(mousePosition)
+    var mousePosition = { x: 0, y: 0 }
 
-
-        lineFunc(document.getElementById(sectionUuid), lines, setLines, dragMap, setDragMap, true)
+    if (!isStoped) {
+        mousePosition = tempPosition
     }
 
+    function handleClick() {
+            setIsStoped(true)
+            setFinalLocation(mousePosition)
+
+            let clickedOver = document.elementsFromPoint(mousePosition.x, mousePosition.y)
+
+            let connectorCliked = clickedOver.find(element => {
+                return element.className.baseVal === 'connector'
+            })
+
+            if (connectorCliked) {
+                lineFunc(connectorCliked, lines, setLines, dragMap, setDragMap)
+            } else {
+                lineFunc(document.getElementById(sectionUuid), lines, setLines, dragMap, setDragMap, true)
+            }
+        
+
+
+
+    }
+
+    function cancelLines(event) {
+
+        event.preventDefault()
+        event.stopPropagation()
+
+        console.log('clcickl')
+        line.sections.forEach(section => {
+            section.leaderLine.remove()
+        })
+        
+
+        let filteredLines = lines.filter((listLine) => {
+            return !(listLine.id === line.id || listLine.id === line.id)
+        })
+
+        setLines(filteredLines)
+    }
 
 
     return (
         <div
             className='invisibleDiv'
-            id={sectionUuid}
+            id={`section/${sectionUuid}`}
             style={{
                 display: 'block',
                 position: 'fixed',
                 width: '5px',
                 height: '5px',
                 top: isStoped ? finalLocation.y : mousePosition.y,
-                left: isStoped ? finalLocation.x : mousePosition.x
+                left: isStoped ? finalLocation.x : mousePosition.x,
             }
             }
-            stoped={isStoped}
+            stoped={isStoped.toString()}
             onClick={handleClick}
+            onContextMenu={(e) => {cancelLines(e)}}
+
         />)
 }
 

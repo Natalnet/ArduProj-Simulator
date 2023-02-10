@@ -42,12 +42,11 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
         return (currentSvg.innerHTML)
     }
 
-    const [{ x, y, width, height, offset, zIndex }, api] = useSpring(() => ({
-        x: position[0],
-        y: position[1],
+    const [{ x, y, width, height, zIndex }, api] = useSpring(() => ({
+        x: 0,
+        y: 0,
         width: currentSvg.width.baseVal.value ? currentSvg.width.baseVal.value : currentSvg.height.baseVal.value,
         height: currentSvg.height.baseVal.value ? currentSvg.height.baseVal.value : currentSvg.width.baseVal.value,
-        offset: position
     }))
 
     function DragComponent() {
@@ -83,11 +82,11 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
             // Função para criação de linhas ao realizar um clique longo num conector
             if (params.tap && params.elapsedTime >= 500 && params.event.target.className.baseVal === 'connector') {
-                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap, false, sectionsMap, setSectionsMap)
+                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap)
             }
 
             //Função para atualizar a posição da linha
-            updatePositionCallback(params.currentTarget.id)
+            updatePositionCallback(id)
 
         },
             //? codigo morto? 
@@ -135,7 +134,6 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
             filteredMap.forEach((f) => {
                 if (f.id === splitedL[1]) {
                     f.connectors.forEach((c) => {
-
                         if (!c.connectedTo) return
                         console.log(c)
                         let splitedC = c.connectedTo.split('/')
@@ -149,29 +147,33 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
                 }
             })
         })
-
         setDragMap(filteredMap)
 
-
+        
         // Aqui remove o Leader Line
         let toRemoveLines = lines.filter((i) => {
             return i.startLine.split('/')[1] === id || i.endLine.split('/')[1] === id
         })
-        toRemoveLines.forEach(i => {
-            i.LeaderLine.remove()
+        
+        toRemoveLines.forEach(line => {
+            line.sections.forEach(section => {
+                section.leaderLine.remove()
+            })
         })
 
+        console.log('checkpoint')
 
         //E aqui remove a linha do lines
         let filteredLines = lines.filter((i) => {
             return !(i.startLine.split('/')[1] === id || i.endLine.split('/')[1] === id)
         })
 
+
         setLines(filteredLines)
     }
 
     return (
-        <div className='svgDiv' id={id} style={{ position: 'fixed', x: 400, y: -300, pointerEvents: 'none' }} onDoubleClick={() => { removeComponent() }}>
+        <div className='svgDiv' id={id} style={{ position: 'fixed', left: position[0], top: position[1], pointerEvents: 'none' }} onDoubleClick={() => { removeComponent() }}>
             {DragComponent()}
         </div>
     )

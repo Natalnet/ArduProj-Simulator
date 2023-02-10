@@ -1,4 +1,5 @@
 .DropZone {
+    margin-top:0;
     margin: 0 auto;
     width: 90%;
     height: 90%;
@@ -12,6 +13,7 @@
     border-radius: 12px;
     user-select: none;
     position:relative;
+    flex-grow:1;
 }
 
 .DropZone > span {

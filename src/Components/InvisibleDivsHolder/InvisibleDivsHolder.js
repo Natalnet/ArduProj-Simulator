@@ -1,13 +1,10 @@
-import React from 'react'
+import React,{ useId } from 'react'
 import { AppContext } from '../../App'
-import InvisibleDiv from '../InvisibleDiv/InvisibleDiv'
 import InvisibleDivsSectionHolder from '../InvisibleDivsSectionHolder/InvisibleDivsSectionHolder'
 
 export default function InvisibleDivsHolder() {
 
     const { lines } = React.useContext(AppContext)
-
-    console.log(lines)
 
     return (
         <div
@@ -15,7 +12,8 @@ export default function InvisibleDivsHolder() {
         >
             {
                 lines.map(line => {
-                    return <InvisibleDivsSectionHolder sections={line.sections} />
+                    console.log(line)
+                    return <InvisibleDivsSectionHolder key={useId} sections={line.sections} line={line} />
                 })
             }
         </div>
