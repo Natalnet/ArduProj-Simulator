@@ -3,8 +3,10 @@
     margin: 0 auto;
     margin-top: 1vh;
     margin-bottom: 1vh;
+    padding-top:.3vh;
+    padding-bottom:.3vh;
     width: 90%;
-    height: auto;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-content: center;

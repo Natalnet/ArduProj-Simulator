@@ -17,9 +17,10 @@
 }
 
 .DropZoneHolder{
-    margin-top:16px;
+    margin-top:0px;
     margin-bottom:16px;
     position:relative;
+    padding-top:16px;
     width:100%;
     height:20%;
     background-color:#090a11;

@@ -14,8 +14,6 @@ export default function SvgGridItem({ svg, name, breadboard, part }) {
 
     const { setDragMap, dragMap, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap } = React.useContext(AppContext)
 
-
-
     function dragMapHandler(xy) {
 
         // Aqui é criado um novo componente como objeto
@@ -34,47 +32,42 @@ export default function SvgGridItem({ svg, name, breadboard, part }) {
 
     }
 
-    const [{ x, y, scale, zIndex }, api] = useSpring(() => ({
+    const [{ x, y, scale, zIndex, height }, api] = useSpring(() => ({
         x: 0,
-        y: 0
+        y: 0,
+        height: '10%'
     }))
 
     const bind = useDrag((params) => {
-        api.start({ 
-            x: params.down ? params.movement[0] : 0, 
-            y: params.down ? params.movement[1]: 0, 
-            scale: params.down ? 1.2 : 1, 
-            zIndex: params.down ? 5 : 0 })
+        api.start({
+            x: params.down ? params.movement[0] : 0,
+            y: params.down ? params.movement[1] : 0,
+            scale: params.down ? 1.2 : 1,
+            zIndex: params.down ? 5 : 0
+        })
 
         if (params.down === false) {
-            console.log(params)
             dragMapHandler(params.xy)
         }
-        
+
     }
     )
 
-
+    const svgViewBox = `${svg.viewBox.baseVal.x} ${svg.viewBox.baseVal.y} ${svg.viewBox.baseVal.width} ${svg.viewBox.baseVal.height}`
 
     return (
         <>
             {createPortal(
-                <animated.div {...bind()} style={{ x, y, scale, zIndex, pointerEvents: 'auto' }} className={'animatedSvgGridItem'}>
-                    <div className='ItemDiv' onClick={() => {  }}>
-
-                        <div
-                            className='SvgDiv'
-                            width={svg.width.baseVal.value}
-                            height={svg.height.baseVal.value}
+                <animated.div {...bind()} style={{ x, y, scale, zIndex, height, pointerEvents: 'auto' }} className={'animatedSvgGridItem'}>
+                    <div className='ItemDiv'>
+                        <svg
+                            className='Svg'
+                            width='100%'
+                            height='100%'
+                            viewBox={svgViewBox.toString()}
                             preserveAspectRatio
-                        >
-                            <svg
-                                className='Svg'
-                                width={svg.width.baseVal.value}
-                                height={svg.height.baseVal.value}
-                                dangerouslySetInnerHTML={{ __html: svg.innerHTML }}
-                            />
-                        </div>
+                            dangerouslySetInnerHTML={{ __html: svg.innerHTML }}
+                        />
                     </div>
                 </animated.div>,
                 document.querySelector('.SideBar')

@@ -1,5 +1,6 @@
 import './App.css';
 import React, { useState } from 'react'
+import { createNanoEvents } from 'nanoevents'
 
 import { Route, BrowserRouter as Router, Routes, Switch } from 'react-router-dom';
 import Editor from './Pages/Editor/Editor';
@@ -23,11 +24,13 @@ function App() {
 
     const [connectivityMtxMap, setConnectivityMtxMap] = useState([])
 
+    const [emitter, setEmitter] = useState(createNanoEvents())
+
 
 
     return (
         <div className="App" >
-            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap}}>
+            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap, emitter, setEmitter}}>
                 <Routes>
                     <Route path='/' element={<Simulador />} />
                     <Route path='editor' element={<Editor />} />

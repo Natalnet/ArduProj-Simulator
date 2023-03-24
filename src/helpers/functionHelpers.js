@@ -51,7 +51,7 @@ export function unzipFile(file, data, setData) {
                             //A primeira leitura será sempre um arquivo vazio com o nome da pasta
                             return 0
 
-                        } else if (cortado[2] === 'svg' || cortado[2] === 'fzp') {
+                        } else if (cortado[2] === 'svg' || cortado[2] === 'fzp' || cortado[2] === 'js') {
 
                             //componentName = cortado[2].slice(0,-(cortado[1].length))
                             //componentName = componentName.substring(0,20)

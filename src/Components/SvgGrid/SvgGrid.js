@@ -1,5 +1,5 @@
 import React from 'react'
-import {createPortal} from 'react-dom'
+import { createPortal } from 'react-dom'
 import SvgGridItem from '../SvgGridItem/SvgGridItem';
 import './SvgGridStyle.css'
 import { AppContext } from '../../App';
@@ -18,14 +18,13 @@ export default function SvgGrid() {
     return (
         <div className='Grid'>
             {data.map(d => {
-                let icone
-                if (d.icon) {
-                    icone = d.icon
-                } else {
-                    icone = d.breadboard
-                }
-                const doc = parser.parseFromString(icone, 'text/html')
+
+                const doc = parser.parseFromString(d.breadboard, 'text/html')
                 const currentSvg = doc.getElementsByTagName('svg')[0]
+                let behavior = ''
+                if (d.behavior) {
+                    behavior = d.behavior
+                }
                 if (alignment === 'simulador') {
                     return createPortal(
                         <SvgGridItem
@@ -34,6 +33,7 @@ export default function SvgGrid() {
                             name={d.componentName}
                             breadboard={d.breadboard}
                             part={d.part}
+                            behavior={behavior}
                         />,
                         document.querySelector('.SideBar')
                     )
@@ -45,6 +45,7 @@ export default function SvgGrid() {
                             name={d.componentName}
                             breadboard={d.breadboard}
                             part={d.part}
+                            behavior={behavior}
                         />
                     )
                 }

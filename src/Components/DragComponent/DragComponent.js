@@ -7,7 +7,7 @@ import { lineFunc } from '../../helpers/linesHelpers'
 
 export default function DragComponentIndex({ name, svg, part, id, updatePositionCallback, position }) {
 
-    const { dragMap, setDragMap, lines, setLines, sectionsMap, setSectionsMap } = React.useContext(AppContext)
+    const { dragMap, setDragMap, lines, setLines, sectionsMap, setSectionsMap, emitter, data } = React.useContext(AppContext)
 
     const parser = new DOMParser();
     const connectorsDoc = parser.parseFromString(part, 'text/html')
@@ -82,7 +82,10 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
             // Função para criação de linhas ao realizar um clique longo num conector
             if (params.tap && params.elapsedTime >= 500 && params.event.target.className.baseVal === 'connector') {
-                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap)
+                console.log('novanova')
+                
+                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap, emitter, data)
+                emitter.emit('conexaoNova', dragMap[0].id )
             }
 
             //Função para atualizar a posição da linha
@@ -171,6 +174,20 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
         setLines(filteredLines)
     }
+
+
+    function createEmitters() {
+        // battery2xAA LED-5mm-red-leg
+        let index = dragMap.findIndex( element => {
+            return(element.id === id)
+        })
+
+        if(dragMap[index].componentName === 'battery2xAA') {
+            //dragMap[index].connectors
+        }
+    }
+
+    
 
     return (
         <div className='svgDiv' id={id} style={{ position: 'fixed', left: position[0], top: position[1], pointerEvents: 'none' }} onDoubleClick={() => { removeComponent() }}>

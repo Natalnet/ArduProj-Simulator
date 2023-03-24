@@ -6,7 +6,7 @@ import { AppContext } from '../../App'
 
 export default function InvisibleDiv({ updatePositionCallback, sectionUuid, section, line }) {
 
-    const { dragMap, setDragMap, lines, setLines } = React.useContext(AppContext)
+    const { dragMap, setDragMap, lines, setLines, emitter } = React.useContext(AppContext)
 
     const [isStoped, setIsStoped] = useState(false)
     const [finalLocation, setFinalLocation] = useState({ x: 0, y: 0 })
@@ -35,14 +35,12 @@ export default function InvisibleDiv({ updatePositionCallback, sectionUuid, sect
             })
 
             if (connectorCliked) {
+
                 lineFunc(connectorCliked, lines, setLines, dragMap, setDragMap)
+                
             } else {
                 lineFunc(document.getElementById(sectionUuid), lines, setLines, dragMap, setDragMap, true)
             }
-        
-
-
-
     }
 
     function cancelLines(event) {
@@ -75,6 +73,7 @@ export default function InvisibleDiv({ updatePositionCallback, sectionUuid, sect
                 height: '5px',
                 top: isStoped ? finalLocation.y : mousePosition.y,
                 left: isStoped ? finalLocation.x : mousePosition.x,
+                zIndex: -5
             }
             }
             stoped={isStoped.toString()}

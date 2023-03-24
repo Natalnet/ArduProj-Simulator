@@ -4,15 +4,16 @@ import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import { EditorContext } from '../../Pages/Editor/Editor'
 
-export default function SvgGridItemEditor({ svg, name, breadboard, part }) {
+export default function SvgGridItemEditor({ svg, name, breadboard, part, behavior }) {
 
 
 
-    const { setEditorComponent } = React.useContext(EditorContext)
+    const { setEditorComponent, setEditorCode } = React.useContext(EditorContext)
     
 
     function dragMapHandler() {
-            setEditorComponent({ componentName: name, breadboard: breadboard, part: part })
+            setEditorComponent({ componentName: name, breadboard: breadboard, part: part, behavior: behavior })
+            setEditorCode(behavior)
     }
 
     const [{ x, y, scale, zindex }, api] = useSpring(() => ({

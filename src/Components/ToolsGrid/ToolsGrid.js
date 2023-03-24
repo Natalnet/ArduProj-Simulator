@@ -61,7 +61,7 @@ export default function ToolsGrid() {
             {tools.map((t, index) => {
                 return (
                     <div
-                        className='ItemDiv'
+                        className='ToolsItemDiv'
                         key={index}
                         style={{
                             backgroundColor: t.color,

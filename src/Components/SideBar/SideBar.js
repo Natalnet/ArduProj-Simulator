@@ -2,30 +2,34 @@ import React from 'react'
 import './SideBarStyle.css'
 import DropZone from '../DropZone/DropZone';
 import SvgGrid from '../SvgGrid/SvgGrid';
-import { AppContext } from '../../App'
-import { changeColor } from '../../helpers/Behavior';
 import ToolsButton from '../ToolsButton/ToolsButton';
+import ToolsGrid from '../ToolsGrid/ToolsGrid';
+
+import { AppContext } from '../../App'
+import { EditorContext } from '../../Pages/Editor/Editor';
+import { changeColor } from '../../helpers/Behavior';
+import { editorCodeCaller, updateConnectorsValues } from '../../helpers/functionHelpers';
+
 import { Fab } from '@material-ui/core';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import DisplaySettingsRoundedIcon from '@mui/icons-material/DisplaySettingsRounded';
 import StopRoundedIcon from '@mui/icons-material/StopRounded';
-import { EditorContext } from '../../Pages/Editor/Editor';
 import Snackbar from '@mui/material/Snackbar';
 import Slide from '@mui/material/Slide';
-import { editorCodeCaller, updateConnectorsValues } from '../../helpers/functionHelpers';
 
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 import code_default from '../../helpers/default_code';
 import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
-import ToolsGrid from '../ToolsGrid/ToolsGrid';
 
 export default function SideBar(props) {
 
 	//Arquivos importados
 
-	const { data, setData, dragMap, alignment, lines} = React.useContext(AppContext)
+	const { data, setData, dragMap, alignment, lines, emitter } = React.useContext(AppContext)
 
 	const [screen, setScreen] = React.useState('components')
 
@@ -55,12 +59,7 @@ export default function SideBar(props) {
 					let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
 
 					props.setConnectorValues(updateConnectorsValues(props.connectorValues, props.editorCode))
-					/*
-					Object.keys(configHolder).map((c) => {
-						connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
-					})
-					*/
-					//props.setConnectorValues(connectorValuesHOLDER)
+
 					count++
 					setClock({ ...clock, tempo: clock.tempo++ })
 				}
@@ -195,10 +194,27 @@ export default function SideBar(props) {
 		}
 	}
 
-	const testFunc = () => {
-		console.log(lines)
-	}
+	const saveButton = () => {
+		if (alignment === 'editor') {
+			const jszip = new JSZip()
 
+			console.log(data)
+			console.log(props.editorComponent)
+
+			data.forEach(component => {
+				jszip.file(`breadboard.${component.componentName}.svg`, component.breadboard)
+				jszip.file(`part.${component.componentName}.fzp`, component.part)
+				jszip.file(`behavior.${component.componentName}.js`, component.behavior)
+			})
+
+			jszip.generateAsync({ type: 'blob' })
+				.then(function (blob) {
+					saveAs(blob, 'customElement.zip')
+				})
+		} else {
+			emitter.emit(lines[0].id,1)
+		}
+	}
 
 
 	return (
@@ -213,7 +229,7 @@ export default function SideBar(props) {
 					position: 'absolute',
 					top: '11rem',
 					right: '-1.25rem',
-					zIndex:1
+					zIndex: 1
 				}}
 				onClick={() => { setRunning(!running) }}
 			>
@@ -226,9 +242,9 @@ export default function SideBar(props) {
 					position: 'absolute',
 					top: '15rem',
 					right: '-1.25rem',
-					zIndex:1
+					zIndex: 1
 				}}
-				onClick={() => { testFunc() }}
+				onClick={() => { saveButton() }}
 			>
 				<SaveRoundedIcon />
 			</Fab>
@@ -241,7 +257,7 @@ export default function SideBar(props) {
 					position: 'absolute',
 					bottom: '3rem',
 					right: '-1.25rem',
-					zIndex:1
+					zIndex: 1
 				}}
 				onClick={() => { updateConfigPins() }}
 			>

@@ -3,10 +3,11 @@ import useMousePosition from './linePositionHook'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom/client';
 import uuid from 'react-uuid';
+import { editorCodeCaller } from './functionHelpers';
 
 
 
-export function lineFunc(target, lines, setLines, dragMap, setDragMap, isSection = false) {
+export function lineFunc(target, lines, setLines, dragMap, setDragMap, emitter, data, isSection = false) {
 
     console.log('linefunc')
 
@@ -37,7 +38,6 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, isSection
     //Essa primeira seção do codigo corresponde ao caso do caminho da linha ter sido devidamente fechado
     if (Object.values(tempLines).some(l => l.status === 'Em aberto') && (!isSection)) {
 
-        console.log('fechado')
 
         let index = Object.values(tempLines).findIndex(l => { return l.endLine === undefined })
 
@@ -73,14 +73,10 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, isSection
         // Logica para procurar o connector que termina a linha e atualizar o valor de connectedTo nele
         targetConnector.connectedTo = target.id
         let tempIndexEnd = tempDragMap.findIndex((e) => {
-            console.log(e)
-            console.log(targetDragMap)
             return e === targetDragMap
         })
 
         tempDragMap[tempIndexEnd].connectors[tempConnectorsEndIndex].connectedTo = tempLines[index]['startLine']
-
-        console.log(targetDragMap)
 
         let tempSection
 
@@ -94,6 +90,12 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, isSection
         })
 
         makeLine(tempLines, tempSection)
+
+        let newLineWithEmitters = makeEmitters(tempLines[index], emitter, tempDragMap[tempIndexEnd].componentName, data)
+
+        tempLines[index] = newLineWithEmitters
+
+        console.log(tempLines)
 
         setDragMap(tempDragMap)
         setLines(tempLines)
@@ -142,6 +144,8 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, isSection
 
         tempSections.push({ startLine: target.id, endLine: `section/${sectionUuid}`, id: sectionUuid, status: 'moving' })
 
+
+
         tempLines.push({ startLine: `${target.id}`, status: 'Em aberto', id: uuid(), sections: tempSections })
 
         setLines([...tempLines])
@@ -156,10 +160,6 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, isSection
 
 
 export function makeLine(lines, section = false) {
-
-    console.log('makeline')
-
-    console.log(section)
 
     if (!lines.some(l => l.status == 'Em aberto') && lines.length > 0 && (!section)) {
         console.log('codigo morto?')
@@ -188,7 +188,7 @@ export function makeLine(lines, section = false) {
             */
     } else {
         lines[lines.length - 1].sections.map(section => {
-            if (section.status === 'moving' ) {
+            if (section.status === 'moving') {
                 section.leaderLine = new LeaderLine(
                     LeaderLine.pointAnchor(document.getElementById(section.startLine), {
                         x: '50%',
@@ -231,6 +231,26 @@ export function makeLine(lines, section = false) {
                     }
                 )
             }
-        }) 
+        })
     }
+}
+
+function makeEmitters(newClosedLine, emitter, componentName, data) {
+
+    let emitterEndComponent = data.find(component => { return (component.componentName = componentName) })
+
+    emitter.on(newClosedLine.id, input => {
+        //let func = editorCodeCaller(input, emitterEndComponent.behavior).main
+        //func()
+        console.log(input)
+    })
+
+    function emitFunc(input) {
+        emitter.emit(newClosedLine.id, input)
+    }
+
+    newClosedLine.emit = emitFunc
+
+    return (newClosedLine)
+
 }

@@ -33,7 +33,6 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
         // E depois é adicionado as colunas desses novos connectors a matriz
 
         for (let index = 0; index < connectorList.length; index++) {
-            console.log(row)
             Object.keys(row).forEach(k => row[k] = null)
             
             tempConnectorMtx = { ...tempConnectorMtx, [`${connectorList[index].svgId}/${componentId}`]: row }
@@ -44,9 +43,6 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
     connectorList.forEach(connector => {
         tempConnectorMtxMap.push(`${connector.svgId}/${componentId}`)
     })
-
-    console.log(tempConnectorMtx)
-    console.log(tempConnectorMtxMap)
 
     return ({ matrix: tempConnectorMtx, maping: tempConnectorMtxMap })
 
