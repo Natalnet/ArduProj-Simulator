@@ -24,12 +24,13 @@ import { saveAs } from 'file-saver';
 import code_default from '../../helpers/default_code';
 import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
+import { simulationController } from '../../helpers/simulationController';
 
 export default function SideBar(props) {
 
 	//Arquivos importados
 
-	const { data, setData, dragMap, alignment, lines, emitter } = React.useContext(AppContext)
+	const { data, setData, dragMap, alignment, lines, emitter, connectivityMtxMap, connectivityMtx } = React.useContext(AppContext)
 
 	const [screen, setScreen] = React.useState('components')
 
@@ -59,6 +60,8 @@ export default function SideBar(props) {
 					let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
 
 					props.setConnectorValues(updateConnectorsValues(props.connectorValues, props.editorCode))
+
+					//console.log(connectorValues)
 
 					count++
 					setClock({ ...clock, tempo: clock.tempo++ })
@@ -216,6 +219,14 @@ export default function SideBar(props) {
 		}
 	}
 
+	const test = () => {
+		console.log(dragMap)
+		console.log(connectivityMtx)
+		console.log(lines)
+		console.log(data)
+		simulationController(connectivityMtx, connectivityMtxMap, dragMap, data)
+	}
+
 
 	return (
 		<div className="SideBar" >
@@ -244,7 +255,7 @@ export default function SideBar(props) {
 					right: '-1.25rem',
 					zIndex: 1
 				}}
-				onClick={() => { saveButton() }}
+				onClick={() => { test() }}
 			>
 				<SaveRoundedIcon />
 			</Fab>

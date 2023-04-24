@@ -205,30 +205,28 @@ export function createConnectors(partComponent, breadboard, id) {
 
 export function editorCodeCaller(input = undefined, editorCode) {
 
+    let splitedCode = editorCode.split('main(input){')
 
-    let configLocation = editorCode.search('//configPinsCode')
-    let mainLocation = editorCode.search('//mainCode')
+    let mainCode = splitedCode[1].slice(0,-1)
 
-    let bodyEditorCode = editorCode.slice(mainLocation + 23, -2)
-
-    let mainCodeLength = editorCode.length - mainLocation
-
-    let configCode = editorCode.slice(configLocation + 30, -mainCodeLength - 3)
+    let configCode = splitedCode[0].slice(13,-6)
 
     let configPins = new Function(configCode)
-    let mainCode = new Function("input", bodyEditorCode)
+
+    let mainFunc = new Function("input", mainCode)
+
 
     if (!input) {
         let configHolder = configPins()
         return ({ main: undefined, configPins: configHolder })
     }
 
-    let mainCodeF = mainCode(input)
+    let mainCodeF = mainFunc(input)
     let configHolder = configPins()
 
 
 
-    return ({ main: mainCodeF, configPins: configHolder })
+    return ({ main: mainCode, configPins: configCode })
 }
 
 export function updateConnectorsValues(valuesHolder, editorCode) {

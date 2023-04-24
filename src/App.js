@@ -6,6 +6,7 @@ import { Route, BrowserRouter as Router, Routes, Switch } from 'react-router-dom
 import Editor from './Pages/Editor/Editor';
 import Simulador from './Pages/Simulador/Simulador';
 
+//import { led, bateria } from './@types/exportData';
 
 export const AppContext = React.createContext(null)
 

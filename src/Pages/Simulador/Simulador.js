@@ -12,7 +12,7 @@ export default function Simulador() {
 
   return (
     <>
-      <SideBar editorCode="nada" />
+      <SideBar />
       <DragArea />
     </>
   )

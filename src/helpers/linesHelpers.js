@@ -91,9 +91,9 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, emitter, 
 
         makeLine(tempLines, tempSection)
 
-        let newLineWithEmitters = makeEmitters(tempLines[index], emitter, tempDragMap[tempIndexEnd].componentName, data)
+        //let newLineWithEmitters = makeEmitters(tempLines[index], emitter, tempDragMap[tempIndexEnd].componentName, data)
 
-        tempLines[index] = newLineWithEmitters
+        //tempLines[index] = newLineWithEmitters
 
         console.log(tempLines)
 
