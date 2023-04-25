@@ -44,6 +44,17 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
         tempConnectorMtxMap.push(`${connector.svgId}/${componentId}`)
     })
 
-    return ({ matrix: tempConnectorMtx, maping: tempConnectorMtxMap })
+    
+    let eletronicMtx = []
+    for(let i = 0; i < tempConnectorMtxMap.length; i++){
+        eletronicMtx.push([])
+        for(let j = 0; j < tempConnectorMtxMap.length; j++){
+            eletronicMtx[i].push(null)
+        }
+    }
+    
+    
+
+    return ({ matrix: tempConnectorMtx, maping: tempConnectorMtxMap, eletronicMatrix: eletronicMtx })
 
 }

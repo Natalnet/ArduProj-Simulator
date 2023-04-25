@@ -7,7 +7,7 @@ import { editorCodeCaller } from './functionHelpers';
 
 
 
-export function lineFunc(target, lines, setLines, dragMap, setDragMap, emitter, data, isSection = false) {
+export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, connectivityMtx, connectivityMtxMap, isSection = false) {
 
     console.log('linefunc')
 
@@ -99,6 +99,8 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, emitter, 
 
         setDragMap(tempDragMap)
         setLines(tempLines)
+
+        attConnectivityMtx(tempLines, connectivityMtx, tempDragMap, connectivityMtxMap)
 
     } else if (Object.values(tempLines).some(l => l.status === 'Em aberto') && (isSection)) {
         //Aqui temos a adição de mais uma section
@@ -253,4 +255,106 @@ function makeEmitters(newClosedLine, emitter, componentName, data) {
 
     return (newClosedLine)
 
+}
+
+function attConnectivityMtx(lines, connectivityMtx, dragMap, connectivityMtxMap){
+
+    lines.forEach(line => {
+        //! Erro aqui
+        console.log('startline', line.startLine)
+        console.log('endline', line.endLine)
+        connectivityMtx[line.startLine][line.endLine] = 1
+        connectivityMtx[line.endLine][line.startLine] = 1
+    })
+
+    console.log(connectivityMtx)
+
+    const toBeLookedComponentsSet = new Set()
+    lines.forEach(line => {
+        let id
+        id = line.startLine.split('/')[1]
+        toBeLookedComponentsSet.add(id)
+        id = line.endLine.split('/')[1]
+        toBeLookedComponentsSet.add(id)
+    })
+
+    let filteredDragMap
+    filteredDragMap = dragMap.filter(component => {
+        return toBeLookedComponentsSet.has(component.id)
+    })
+
+    let fifo = []
+    let queue = []
+
+    fifo.push(filteredDragMap[0])
+    queue.push(filteredDragMap[0])
+
+    console.log('fifo:')
+    console.log(fifo)
+
+    console.log('queue:')
+    console.log(queue)
+
+    while(fifo.length > 0){
+        let currentComponent = fifo.shift()
+        //! Erro aqui
+        console.log(currentComponent)
+        let queueAux = []
+        currentComponent.connectors.forEach(connector => {
+            let component = dragMap.find(component => { return (component.id === connector.connectedTo) })
+            if(!queue.includes(component)){
+                queueAux.push(component)
+                fifo.push(component)
+            }
+        })
+        queue.push(queueAux)
+    }
+
+    console.log('queue:')
+    console.log(queue)
+    /*
+    //! Erro nessa logica?????????????
+    filteredDragMap.forEach((component) => {
+    
+     let behaviorFunctions = editorCodeCaller(undefined, component.behavior)
+     let configOutput = behaviorFunctions.configPins
+
+    let configOutputPinKeys = Object.keys(configOutput)
+
+    configOutputPinKeys.forEach(pin => {
+        let pinId = `${pin}/${component.id}`
+        connectivityMtxMap.forEach(upper => {
+            console.log(upper)
+            console.log(pinId)
+            console.log(connectivityMtxMap)
+
+            if (connectivityMtx[pinId][upper] !== null) {
+                if(configOutput.pinId === 'in'){
+                    connectivityMtx[pinId][upper] = -1
+                } else if(configOutput.pinId === 'out'){
+                    connectivityMtx[pinId][upper] = 1
+                } else {
+                    connectivityMtx[pinId][upper] = 0
+                }
+        }})
+    })
+
+    configOutputPinKeys.forEach(pin => {
+        let pinId = `${pin}/${component.id}`
+        connectivityMtxMap.forEach(lefter => {
+            if (connectivityMtx[lefter][pinId] !== null) {
+                if(configOutput.pinId === 'in'){
+                    connectivityMtx[lefter][pinId] = 1
+                } else if(configOutput.pinId === 'out'){
+                    connectivityMtx[lefter][pinId] = -1
+                } else {
+                    connectivityMtx[lefter][pinId] = 0
+                }
+        }})
+    })
+
+    })
+*/
+    console.log('connectivityMtx:')
+    console.log(connectivityMtx)
 }

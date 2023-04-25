@@ -7,7 +7,7 @@ import { lineFunc } from '../../helpers/linesHelpers'
 
 export default function DragComponentIndex({ name, svg, part, id, updatePositionCallback, position }) {
 
-    const { dragMap, setDragMap, lines, setLines, sectionsMap, setSectionsMap, emitter, data } = React.useContext(AppContext)
+    const { dragMap, setDragMap, lines, setLines, connectivityMtx, connectivityMtxMap, data } = React.useContext(AppContext)
 
     const parser = new DOMParser();
     const connectorsDoc = parser.parseFromString(part, 'text/html')
@@ -84,8 +84,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
             if (params.tap && params.elapsedTime >= 500 && params.event.target.className.baseVal === 'connector') {
                 console.log('novanova')
                 
-                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap, emitter, data)
-                emitter.emit('conexaoNova', dragMap[0].id )
+                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap, data, connectivityMtx, connectivityMtxMap)
             }
 
             //Função para atualizar a posição da linha

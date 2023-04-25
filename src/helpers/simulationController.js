@@ -1,113 +1,100 @@
 import { editorCodeCaller } from "./functionHelpers"
 
-export function simulationController(connectivityMtx, connectivityMtxMap, dragMap, data) {
-    let left = 0, upper = 0
+export function simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx) {
+    let lefterConnector = 0, upperConnector = 0
 
-    let mtxKeys = Object.keys(connectivityMtx)
-    let mtxValues = Object.values(connectivityMtx)
+    let eletronicMtxHOLDER = eletronicMtx
 
-    console.log(mtxKeys, mtxValues)
+    eletronicMtxHOLDER[0][2] = 1
+    console.log('eletronicMtxHOLDER:')
+    console.log(eletronicMtxHOLDER)
 
-    let connectivityMtxArray = []
-
-    mtxValues.map( arr => {
-        connectivityMtxArray.push(Object.values(arr))
-    })
-
-    connectivityMtxArray[0][2] = 1
-
-    console.log(connectivityMtxArray)
-
-    for (let leftLoop = 0; leftLoop < connectivityMtxMap.length; leftLoop++) {
-        for (let upperLoop = 0; upperLoop < connectivityMtxMap.length; upperLoop++) {
-            if(connectivityMtxArray[leftLoop][upperLoop] > 0) {
-                left = leftLoop
-                upper = upperLoop
+    //Loop para encontrar em que parte da matrix eletronica a corrente esta sendo passada sendo a linha aquele que esta passando a corrente e a coluna aquele que a está recebendo.
+    for (let lefterConnectorLoop = 0; lefterConnectorLoop < connectivityMtxMap.length; lefterConnectorLoop++) {
+        for (let upperConnectorLoop = 0; upperConnectorLoop < connectivityMtxMap.length; upperConnectorLoop++) {
+            if(eletronicMtxHOLDER[lefterConnectorLoop][upperConnectorLoop] > 0) {
+                lefterConnector = lefterConnectorLoop
+                upperConnector = upperConnectorLoop
             }
         }
     }
 
-    /*
-    console.log(`keys certas:` + mtxKeys[1] + mtxKeys[2])
+    console.log('lefterConnector:',lefterConnector,'upperConnector:', upperConnector)
 
-    console.log(connectivityMtx)
-
-    console.log(connectivityMtx[mtxKeys[1]])
-
-    connectivityMtx[mtxKeys[1]][mtxKeys[2]] = 5
-
-
-    for ( let loopUpper = 0; loopUpper < mtxKeys.length; loopUpper++) {
-        for ( let loopLeft = 0; loopLeft < mtxKeys.length; loopLeft++) {
-            console.log(mtxKeys[loopUpper].split('/')[1])
-            console.log(mtxKeys[loopLeft].split('/')[1])
-            if(mtxKeys[loopUpper].split('/')[1] != mtxKeys[loopLeft].split('/'[1])){
-                console.log(loopUpper + ` ` + loopLeft + `:`  +connectivityMtx[mtxKeys[loopUpper]][mtxKeys[loopLeft]])
-            if(connectivityMtx[mtxKeys[loopUpper]][mtxKeys[loopLeft]] > 0) {
-                console.log(mtxKeys[loopUpper])
-                console.log(mtxKeys[loopLeft])
-                upper = loopUpper
-                left = loopLeft
-            }
-            }
-        }
-    }
-
-    
-    */
-
-    let nextComponentInLineID = connectivityMtxMap[upper].split('/')[1]
+    //Busca do codigo de comportamento do componente que esta sendo passado a corrente (componente que possui o connector com o id igual ao upperConnector)
+  
+    let nextComponentInLineID = connectivityMtxMap[upperConnector].split('/')[1]
 
     let nextComponentInLineDRAGMAP = dragMap.find( dragMapComponent => dragMapComponent.id === nextComponentInLineID)
     
     let nextComponentInLineDATA = data.find( dataComponent => dataComponent.componentName === nextComponentInLineDRAGMAP.componentName)
 
+    //Tratamento de erro para um possivel caso do codigo do componente não estar presente
     if(!nextComponentInLineDATA.behavior){
         console.log('Não há condigo.')
         return
     }
 
+    //* Input hardcoded
     let input = {value: 0, id: nextComponentInLineID}
 
-    console.log(nextComponentInLineDATA.componentName)
-
+    // Codigo do componente que esta sendo passado a corrente sendo chamado
     let behaviorFunctions = editorCodeCaller(input, nextComponentInLineDATA.behavior)
-
-    console.log(behaviorFunctions)
-
     let mainFunc = new Function("input", behaviorFunctions.main)
-
     let output = mainFunc(input)
 
     console.log(output)
 
-    //connectivityMtxArray[left][upper] = 0
+    console.log(nextComponentInLineID)
 
+    // Busca dos index dos connectors que estão passando e recebendo a corrente eletronica no proximo loop
     let connectorsKeysArray = Object.keys(output.connectors)
-    connectorsKeysArray.forEach((pin, index) => {
+    connectorsKeysArray.forEach((pin) => {
         let connectorID = `${pin}/${nextComponentInLineID}`
-        let connectorINDEX = connectivityMtxMap.findIndex(connector => { 
+        let connectorINDEXLEFTerConnector = connectivityMtxMap.findIndex(connector => { 
+            console.log('connectorIndexLEFTerConnector:')
             console.log(connector)
             console.log(connectorID)
 
             return connector == connectorID})
+       
         let dragComponent = dragMap.filter( component => {
             return component.id === nextComponentInLineID
         })
-        console.log(dragComponent)
+        console.log('dragComponent:',dragComponent)
+
         let dragComponentConnector = dragComponent[0].connectors.filter( connector => {
-            console.log(connector.id)
+            console.log(connector.svgId)
             console.log(pin)
-            return connector.id === pin
+            return connector.svgId === pin
         })
-        let connectedToINDEX = connectivityMtxMap.findIndex(connector => { 
+        console.log('dragComponentConnector:',dragComponentConnector)
+        let connectedToINDEXUPPERConnector = connectivityMtxMap.findIndex(connector => { 
             console.log(connector)
-            console.log(dragComponentConnector)
-            return connector === dragComponentConnector[0].connectedTo})
-        if(connectedToINDEX>=0){
-            console.log(connectorINDEX)
-            connectivityMtxArray[connectorINDEX][connectedToINDEX] = output.connectors[pin]
+            console.log(dragComponentConnector[0].connectedTo)
+            return connector === dragComponentConnector[0].connectedTo
+        })
+        
+        // Esvaziamento da matriz eletronica para poder inserir o output
+        let eletronicMtxHOLDER = []
+        for(let i = 0; i < connectivityMtxMap.length; i++){
+            eletronicMtxHOLDER.push([])
+            for(let j = 0; j < connectivityMtxMap.length; j++){
+                eletronicMtxHOLDER[i].push(null)
+            }
         }
+
+        // Inserção do output na matriz eletronica
+        if(connectedToINDEXUPPERConnector>=0){
+            console.log(connectorINDEXLEFTerConnector)
+            eletronicMtxHOLDER[connectorINDEXLEFTerConnector][connectedToINDEXUPPERConnector] = output.connectors[pin]
+        }
+
+        console.log('connectivityMtxMap:')
+        console.log(connectivityMtxMap)
+
+        console.log('eletronicMtxHOLDER:')
+        console.log(eletronicMtxHOLDER)
         
     });
 

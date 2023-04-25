@@ -30,7 +30,7 @@ export default function SideBar(props) {
 
 	//Arquivos importados
 
-	const { data, setData, dragMap, alignment, lines, emitter, connectivityMtxMap, connectivityMtx } = React.useContext(AppContext)
+	const { data, setData, dragMap, alignment, lines, emitter, connectivityMtxMap, connectivityMtx, eletronicMtx } = React.useContext(AppContext)
 
 	const [screen, setScreen] = React.useState('components')
 
@@ -220,11 +220,15 @@ export default function SideBar(props) {
 	}
 
 	const test = () => {
+		console.log('dragMap:')
 		console.log(dragMap)
+		console.log('connectivityMtx:')
 		console.log(connectivityMtx)
+		console.log('lines:')
 		console.log(lines)
+		console.log('data:')
 		console.log(data)
-		simulationController(connectivityMtx, connectivityMtxMap, dragMap, data)
+		simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx)
 	}
 
 

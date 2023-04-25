@@ -9,10 +9,10 @@ import { createConnectors } from '../../helpers/functionHelpers'
 import { addConnectortToMatrix } from '../../helpers/connectivitysMatricesObjHelper'
 
 
-export default function SvgGridItem({ svg, name, breadboard, part }) {
+export default function SvgGridItem({ svg, name, breadboard, part, behavior }) {
 
 
-    const { setDragMap, dragMap, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap } = React.useContext(AppContext)
+    const { setDragMap, dragMap, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap, eletronicMtx, setEletronicMtx } = React.useContext(AppContext)
 
     function dragMapHandler(xy) {
 
@@ -20,7 +20,7 @@ export default function SvgGridItem({ svg, name, breadboard, part }) {
         let tempMap = [...dragMap]
         let id = uuid()
         let connectors = createConnectors(part, breadboard, id).connectorList
-        tempMap.push({ componentName: name, breadboard: breadboard, part: part, id: id, connectors: connectors, position: xy })
+        tempMap.push({ componentName: name, breadboard: breadboard, part: part, id: id, connectors: connectors, position: xy, behavior:behavior  })
 
         // É chamada a função helper para a atualização da matriz de conectividade e do seu maping
         let matrixParams = addConnectortToMatrix(id, connectors, connectivityMtx, connectivityMtxMap)
@@ -28,6 +28,7 @@ export default function SvgGridItem({ svg, name, breadboard, part }) {
         //Atualização dos states do contexto
         setConnectivityMtx(matrixParams.matrix)
         setConnectivityMtxMap(matrixParams.maping)
+        setEletronicMtx(matrixParams.eletronicMatrix)
         setDragMap(tempMap)
 
     }

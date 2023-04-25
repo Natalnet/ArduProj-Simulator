@@ -25,13 +25,13 @@ function App() {
 
     const [connectivityMtxMap, setConnectivityMtxMap] = useState([])
 
-    const [emitter, setEmitter] = useState(createNanoEvents())
+    const [eletronicMtx, setEletronicMtx] = useState([])
 
-
+    
 
     return (
         <div className="App" >
-            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap, emitter, setEmitter}}>
+            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap, eletronicMtx, setEletronicMtx}}>
                 <Routes>
                     <Route path='/' element={<Simulador />} />
                     <Route path='editor' element={<Editor />} />
