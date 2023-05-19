@@ -30,11 +30,9 @@ export default function SideBar(props) {
 
 	//Arquivos importados
 
-	const { data, setData, dragMap, alignment, lines, emitter, connectivityMtxMap, connectivityMtx, eletronicMtx } = React.useContext(AppContext)
+	const { data, setData, dragMap, alignment, lines, connectivityMtxMap, connectivityMtx, eletronicMtx, setEletronicMtx, running, setRunning } = React.useContext(AppContext)
 
 	const [screen, setScreen] = React.useState('components')
-
-	const [running, setRunning] = React.useState(false)
 
 	const [intervalId, setIntervalId] = React.useState()
 
@@ -49,6 +47,7 @@ export default function SideBar(props) {
 		setClock({ tempo: 0 })
 	}, [])
 
+	/*
 	React.useEffect(() => {
 		if (running) {
 			let count = 0;
@@ -61,7 +60,7 @@ export default function SideBar(props) {
 
 					props.setConnectorValues(updateConnectorsValues(props.connectorValues, props.editorCode))
 
-					//console.log(connectorValues)
+					
 
 					count++
 					setClock({ ...clock, tempo: clock.tempo++ })
@@ -74,7 +73,7 @@ export default function SideBar(props) {
 		}
 
 	}, [running])
-
+	
 	React.useEffect(() => {
 		if (running) {
 
@@ -96,8 +95,8 @@ export default function SideBar(props) {
 		}
 
 	}, [props.connectorValues])
-
-
+	*/
+	
 	function updateConfigPins() {
 		let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
 		let connectorValuesHOLDER = props.connectorValues
@@ -215,12 +214,7 @@ export default function SideBar(props) {
 					saveAs(blob, 'customElement.zip')
 				})
 		} else {
-			emitter.emit(lines[0].id,1)
-		}
-	}
-
-	const test = () => {
-		console.log('dragMap:')
+			console.log('dragMap:')
 		console.log(dragMap)
 		console.log('connectivityMtx:')
 		console.log(connectivityMtx)
@@ -228,7 +222,12 @@ export default function SideBar(props) {
 		console.log(lines)
 		console.log('data:')
 		console.log(data)
-		simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx)
+		console.log('eletronicMtx:')
+		console.log(eletronicMtx)
+		console.log('connectivityMtxMap:')
+		console.log(connectivityMtxMap)
+		setEletronicMtx(simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx, lines))
+		}
 	}
 
 
@@ -259,7 +258,7 @@ export default function SideBar(props) {
 					right: '-1.25rem',
 					zIndex: 1
 				}}
-				onClick={() => { test() }}
+				onClick={() => { saveButton() }}
 			>
 				<SaveRoundedIcon />
 			</Fab>

@@ -142,7 +142,7 @@ export async function handleFileDrop(e, data, setData) {
 
 
 
-export function createConnectors(partComponent, breadboard, id) {
+export function createConnectors(partComponent, breadboard, id, dragComponentName) {
 
     const parser = new DOMParser();
     const partComponentText = parser.parseFromString(partComponent, 'text/html')
@@ -165,25 +165,16 @@ export function createConnectors(partComponent, breadboard, id) {
             break
         }
 
-        //Classe adicionada no conector
-        svgConnector.setAttribute('class', 'connector')
-        //Classe adicionada no conector
-        svgConnector.setAttribute('id', `${connectorSvgId}/${id}`)
-
-        svgConnector.setAttribute('pointer-events', 'fill')
-
-        svgConnector.parentElement.appendChild(svgConnector)
-
-
-
         connectorList.push({
             id: connector.getAttribute('id'),
             svgId: p.getAttribute('svgId'),
             type: connector.getAttribute('type'),
             name: connector.getAttribute('name'),
             value: null,
-            connectedTo: null
+            connectedTo: [],
+            fullId: `${dragComponentName}/${connectorSvgId}/${id}`
         })
+        
 
         //? Arrumar bug dos highlight - Em progresso
         /* 
@@ -205,6 +196,7 @@ export function createConnectors(partComponent, breadboard, id) {
 
 export function editorCodeCaller(input = undefined, editorCode) {
 
+    console.log(editorCode)
     let splitedCode = editorCode.split('main(input){')
 
     let mainCode = splitedCode[1].slice(0,-1)

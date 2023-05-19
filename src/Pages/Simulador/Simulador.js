@@ -3,6 +3,7 @@ import React from 'react'
 import DragArea from '../../Components/DragArea/DragArea'
 import SideBar from '../../Components/SideBar/SideBar'
 import { AppContext } from '../../App'
+import MatrizDisplay from '../../Components/MatrizDisplay/MatrizDisplay'
 
 export default function Simulador() {
 
@@ -14,6 +15,7 @@ export default function Simulador() {
     <>
       <SideBar />
       <DragArea />
+      <MatrizDisplay />
     </>
   )
 }

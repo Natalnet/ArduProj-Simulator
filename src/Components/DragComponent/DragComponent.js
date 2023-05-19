@@ -7,7 +7,7 @@ import { lineFunc } from '../../helpers/linesHelpers'
 
 export default function DragComponentIndex({ name, svg, part, id, updatePositionCallback, position }) {
 
-    const { dragMap, setDragMap, lines, setLines, connectivityMtx, connectivityMtxMap, data } = React.useContext(AppContext)
+    const { dragMap, setDragMap, lines, setLines, connectivityMtx, connectivityMtxMap, data, setConnectivityMtx } = React.useContext(AppContext)
 
     const parser = new DOMParser();
     const connectorsDoc = parser.parseFromString(part, 'text/html')
@@ -31,7 +31,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
             //Classe adicionada no conector
             svgConnector.setAttribute('class', 'connector')
             //Classe adicionada no conector
-            svgConnector.setAttribute('id', `${connectorSvgId}/${id}`)
+            svgConnector.setAttribute('id', `${name}/${connectorSvgId}/${id}`)
 
             svgConnector.setAttribute('pointer-events', 'fill')
 
@@ -84,7 +84,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
             if (params.tap && params.elapsedTime >= 500 && params.event.target.className.baseVal === 'connector') {
                 console.log('novanova')
                 
-                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap, data, connectivityMtx, connectivityMtxMap)
+                lineFunc(params.event.target, lines, setLines, dragMap, setDragMap, data, connectivityMtx, connectivityMtxMap, setConnectivityMtx)
             }
 
             //Função para atualizar a posição da linha
@@ -130,6 +130,7 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
 
         
         // Aqui verificamos se algum dos componentes que não foram removidos estava conectado no componente removido e atualizamos seu campo connectedTo para null
+        //! NÃO ESTA FUNCIONANDO POR CAUSA DO ATUALIZAÇÕES DO FULLID E CONNECTEDTO[]
         toCleanList.forEach((l) => {
             console.log(l)
             let splitedL = l.split('/')

@@ -25,13 +25,19 @@ function App() {
 
     const [connectivityMtxMap, setConnectivityMtxMap] = useState([])
 
-    const [eletronicMtx, setEletronicMtx] = useState([])
+    const [eletronicMtx, setEletronicMtx] = useState(null)
+
+    const [eletronicEventsList, setEletronicEventsList] = useState({})
+
+    const [running, setRunning] = React.useState(false)
+
+
 
     
 
     return (
         <div className="App" >
-            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap, eletronicMtx, setEletronicMtx}}>
+            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap, eletronicMtx, setEletronicMtx, eletronicEventsList, setEletronicEventsList, running, setRunning}}>
                 <Routes>
                     <Route path='/' element={<Simulador />} />
                     <Route path='editor' element={<Editor />} />

@@ -5,10 +5,11 @@ import LeaderLine from 'react-leader-line'
 import { AppContext } from '../../App'
 import { lineFunc } from '../../helpers/functionHelpers'
 import InvisibleDivsHolder from '../InvisibleDivsHolder/InvisibleDivsHolder'
+import { simulationController, simulationSetup } from '../../helpers/simulationController'
 
 export default function DragArea() {
 
-    const { dragMap, lines, emitter } = React.useContext(AppContext)
+    const { dragMap, lines, connectivityMtx, connectivityMtxMap, data, eletronicMtx, setEletronicMtx, eletronicEventsList, setEletronicEventsList, running } = React.useContext(AppContext)
 
     //Função para atualizar a linha quando o componente recebe um drag
     function updatePosition(componentId) {
@@ -16,7 +17,7 @@ export default function DragArea() {
         let filteredSections = []
         //Aqui é pego todas as linhas que estão ligadas ao componente que esta se movendo.
         lines.forEach(line => {
-            if (line.startLine.split('/')[1] === componentId || line.endLine.split('/')[1] === componentId) {
+            if (line.startLine.split('/')[2] === componentId || line.endLine.split('/')[2] === componentId) {
                 line.sections.forEach(section => {
                     filteredSections.push(section)
                 })
@@ -31,11 +32,15 @@ export default function DragArea() {
         })
     }
 
-    useEffect(() => {
-        console.log(lines)
-        console.log(dragMap)
-    }, [lines])
-
+    React.useEffect(() => {
+		if(running) {
+            simulationSetup(dragMap, eletronicEventsList, setEletronicEventsList)
+            setEletronicMtx(simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx, lines, eletronicEventsList))
+            console.log(eletronicMtx)
+            
+		}
+	},
+	[running])
 
 
     return (

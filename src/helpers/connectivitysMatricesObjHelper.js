@@ -1,8 +1,11 @@
 export function addConnectortToMatrix(componentId, connectorList, connectorMtx, connectorMtxMap) {
 
+    //TODO: Fazer função para copiar
+    let tempConnectorMtx = JSON.parse(JSON.stringify(connectorMtx))
+    let tempConnectorMtxMap = JSON.parse(JSON.stringify(connectorMtxMap))
 
-    let tempConnectorMtx = connectorMtx
-    let tempConnectorMtxMap = connectorMtxMap
+    //JSON.parse(JSON.stringify(originalObj));
+    //!TALVEZ O PROBLEMA ESTEJA AQUI ^^^^^^
 
     // Aqui é criada a matriz de conectividade
     // Os valores iniciais são sempre falsos 
@@ -11,21 +14,19 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
         let row = {}
 
         connectorList.map(connector => {
-            console.log(connector)
-            row = { ...row, [`${connector.svgId}/${componentId}`]: null }
+            row = { ...row, [connector.fullId]: null }
         })
 
         connectorList.map(connector => {
-            tempConnectorMtx = { ...tempConnectorMtx, [`${connector.svgId}/${componentId}`]: row }
+            tempConnectorMtx = { ...tempConnectorMtx, [connector.fullId]: row }
         })
     } else {
         // Caso ela não seja nula é copiado a parte ja preenchida da matriz e adicionado a suas linhas valores falsos representando os novos connectors
 
         var row = {}
-
         Object.keys(tempConnectorMtx).map( k => {
             for (let index = 0; index < connectorList.length; index++) {
-                tempConnectorMtx[k] = { ...tempConnectorMtx[k], [`${connectorList[index].svgId}/${componentId}`]: null }
+                tempConnectorMtx[k] = { ...tempConnectorMtx[k], [connectorList[index].fullId]: null }
                 row = tempConnectorMtx[k]
             }
         })
@@ -35,26 +36,19 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
         for (let index = 0; index < connectorList.length; index++) {
             Object.keys(row).forEach(k => row[k] = null)
             
-            tempConnectorMtx = { ...tempConnectorMtx, [`${connectorList[index].svgId}/${componentId}`]: row }
+            tempConnectorMtx = { ...tempConnectorMtx, [connectorList[index].fullId]: row }
         }
     }
 
     // Por fim é feito o array do map adicionando os connectors novos a um array ja existente
     connectorList.forEach(connector => {
-        tempConnectorMtxMap.push(`${connector.svgId}/${componentId}`)
+        tempConnectorMtxMap.push(connector.fullId)
     })
 
-    
-    let eletronicMtx = []
-    for(let i = 0; i < tempConnectorMtxMap.length; i++){
-        eletronicMtx.push([])
-        for(let j = 0; j < tempConnectorMtxMap.length; j++){
-            eletronicMtx[i].push(null)
-        }
-    }
+   
     
     
 
-    return ({ matrix: tempConnectorMtx, maping: tempConnectorMtxMap, eletronicMatrix: eletronicMtx })
+    return ({ matrix: tempConnectorMtx, maping: tempConnectorMtxMap})
 
 }
