@@ -12,7 +12,6 @@ export default function InvisibleDivsHolder() {
         >
             {
                 lines.map(line => {
-                    console.log(line)
                     return <InvisibleDivsSectionHolder key={useId} sections={line.sections} line={line} />
                 })
             }

@@ -27,7 +27,8 @@ function App() {
 
     const [eletronicMtx, setEletronicMtx] = useState(null)
 
-    const [eletronicEventsList, setEletronicEventsList] = useState({})
+    //TODO: Mudar nome para estados
+    const [eletronicStateList, setEletronicStateList] = useState({})
 
     const [running, setRunning] = React.useState(false)
 
@@ -37,7 +38,7 @@ function App() {
 
     return (
         <div className="App" >
-            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap, eletronicMtx, setEletronicMtx, eletronicEventsList, setEletronicEventsList, running, setRunning}}>
+            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap, eletronicMtx, setEletronicMtx, eletronicStateList, setEletronicStateList, running, setRunning}}>
                 <Routes>
                     <Route path='/' element={<Simulador />} />
                     <Route path='editor' element={<Editor />} />

@@ -19,7 +19,7 @@ export default function SvgGridItem({ svg, name, breadboard, part, behavior }) {
         // Aqui é criado um novo componente como objeto
         let tempMap = [...dragMap]
         let id = uuid()
-        let connectors = createConnectors(part, breadboard, id, name).connectorList
+        let connectors = createConnectors(part, breadboard, id, name, behavior).connectorList
         tempMap.push({ componentName: name, breadboard: breadboard, part: part, id: id, connectors: connectors, position: xy, behavior:behavior  })
 
         // É chamada a função helper para a atualização da matriz de conectividade e do seu maping

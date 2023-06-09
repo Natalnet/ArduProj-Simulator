@@ -24,13 +24,13 @@ import { saveAs } from 'file-saver';
 import code_default from '../../helpers/default_code';
 import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
-import { simulationController } from '../../helpers/simulationController';
+import { simulationController, simulationSetup } from '../../helpers/simulationController';
 
 export default function SideBar(props) {
 
 	//Arquivos importados
 
-	const { data, setData, dragMap, alignment, lines, connectivityMtxMap, connectivityMtx, eletronicMtx, setEletronicMtx, running, setRunning } = React.useContext(AppContext)
+	const { data, setData, dragMap, alignment, lines, connectivityMtxMap, connectivityMtx, eletronicMtx, setEletronicMtx, running, setRunning, eletronicStateList, setEletronicStateList } = React.useContext(AppContext)
 
 	const [screen, setScreen] = React.useState('components')
 
@@ -96,6 +96,27 @@ export default function SideBar(props) {
 
 	}, [props.connectorValues])
 	*/
+
+	React.useEffect(() => {
+		if(running) {
+            simulationSetup(dragMap, eletronicStateList, setEletronicStateList)
+            let auxIntervalId = setInterval(() => {
+				try {
+					console.log(eletronicMtx)
+					let auxEletronicMtx = JSON.parse(JSON.stringify(simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx, lines, eletronicStateList)))
+					setEletronicMtx(auxEletronicMtx)
+					console.log(auxEletronicMtx)
+					console.log(eletronicMtx)
+				} catch (error) {
+					console.log(error)
+				}
+            
+				setClock({ ...clock, tempo: clock.tempo++ })
+            }, 1000)
+			setIntervalId(auxIntervalId)
+		}
+	},
+	[running])
 	
 	function updateConfigPins() {
 		let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
@@ -110,8 +131,8 @@ export default function SideBar(props) {
 
 
 	function startSimulation() {
-		console.log(running)
 		if (alignment == 'simulador') {
+			/*
 			console.log("Compiling code " + code_default);
 			fetch('http://localhost:3001/compile-wasm',
 				{
@@ -130,13 +151,14 @@ export default function SideBar(props) {
 					/*versão com js global*/
 					//loadJS(`http://localhost:3001/${resJson.res.jsfile}`);
 
-					/*versão com workers*/
+					//versão com workers
+					/*
 					var instance = new WorkerBuilder(Worker);
 					instance.onmessage = (msg) => {
 
 						if (msg.data.type === 'stateUpdate') {
 							var pinStates = JSON.parse(msg.data.pinValues);
-							/*TODO: @Mario adiciona aqui a lógica para mudar a cor do led*/
+							//TODO: @Mario adiciona aqui a lógica para mudar a cor do led
 						}
 					};
 					instance.addEventListener("error", (event) => {
@@ -145,7 +167,7 @@ export default function SideBar(props) {
 					});
 					if (arduino !== undefined)
 						arduino.terminate()
-
+						
 					arduino = instance
 					arduino.postMessage({ start: `http://localhost:3001/${resJson.res.jsfile}` });
 				})
@@ -154,6 +176,16 @@ export default function SideBar(props) {
 					setRunning(false);
 					console.error('Error:', error);
 				});
+				*/
+				if (running) {
+					setRunning(false)
+					let auxIntervalId = intervalId
+					clearInterval(auxIntervalId)
+					setClock({ tempo: 0 })
+				}
+				 else {
+					setRunning(true)
+				}
 		} else {
 			if (props.editorComponent) {
 				console.log(running)
@@ -245,7 +277,7 @@ export default function SideBar(props) {
 					right: '-1.25rem',
 					zIndex: 1
 				}}
-				onClick={() => { setRunning(!running) }}
+				onClick={() => { startSimulation() }}
 			>
 				{running ? <StopRoundedIcon /> : <PlayArrowRoundedIcon />}
 			</Fab>

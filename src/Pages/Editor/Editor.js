@@ -34,7 +34,7 @@ export default function Editor() {
             if (editorComponent) {
 
                 //Codigo para atualizar os connectors quando o componente é selecionado
-                let connectorsHolder = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg').connectorList
+                let connectorsHolder = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg', editorComponent.componentName, editorComponent.behavior).connectorList
 
                 setConnectorList(connectorsHolder)
 

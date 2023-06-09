@@ -23,8 +23,9 @@ export default function EditorComponentDisplay() {
 
 
     function hasEditorComponent() {
+        console.log(editorComponent)
         if (editorComponent) {
-            var localSvgData = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg')
+            var localSvgData = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg', editorComponent.componentName, editorComponent.behavior)
 
             return (
                 <svg

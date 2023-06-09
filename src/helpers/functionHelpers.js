@@ -142,13 +142,16 @@ export async function handleFileDrop(e, data, setData) {
 
 
 
-export function createConnectors(partComponent, breadboard, id, dragComponentName) {
+export function createConnectors(partComponent, breadboard, id, dragComponentName, behavior) {
 
     const parser = new DOMParser();
     const partComponentText = parser.parseFromString(partComponent, 'text/html')
     const svgComXML = parser.parseFromString(breadboard, 'text/html')
     const svgPuro = svgComXML.getElementsByTagName('svg')[0]
     var connectorList = []
+
+    let behaviorFunctions = editorCodeCaller(undefined, behavior)
+    let configOutput = behaviorFunctions.configPins
 
     for (let index = 0; partComponentText.getElementsByTagName('connector')[index]; index++) {
 
@@ -165,6 +168,8 @@ export function createConnectors(partComponent, breadboard, id, dragComponentNam
             break
         }
 
+        let connectorConfig = configOutput[p.getAttribute('svgId')]
+
         connectorList.push({
             id: connector.getAttribute('id'),
             svgId: p.getAttribute('svgId'),
@@ -172,7 +177,8 @@ export function createConnectors(partComponent, breadboard, id, dragComponentNam
             name: connector.getAttribute('name'),
             value: null,
             connectedTo: [],
-            fullId: `${dragComponentName}/${connectorSvgId}/${id}`
+            fullId: `${dragComponentName}/${connectorSvgId}/${id}`,
+            connectorConfig: connectorConfig
         })
         
 
@@ -196,7 +202,6 @@ export function createConnectors(partComponent, breadboard, id, dragComponentNam
 
 export function editorCodeCaller(input = undefined, editorCode) {
 
-    console.log(editorCode)
     let splitedCode = editorCode.split('main(input){')
 
     let mainCode = splitedCode[1].slice(0,-1)
@@ -205,13 +210,12 @@ export function editorCodeCaller(input = undefined, editorCode) {
 
     let configPins = new Function(configCode)
 
-    let mainFunc = new Function("input", mainCode)
-
-
     if (!input) {
         let configHolder = configPins()
         return ({ main: undefined, configPins: configHolder })
     }
+
+    let mainFunc = new Function("input", mainCode)
 
     let mainCodeF = mainFunc(input)
     let configHolder = configPins()

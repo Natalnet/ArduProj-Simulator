@@ -5,7 +5,6 @@ export default function MatrizDisplay() {
 
     const { connectivityMtxMap, connectivityMtx, eletronicMtx, setEletronicMtx, running, setRunning } = React.useContext(AppContext)
     
-
   return (
     <>
         {eletronicMtx ? 

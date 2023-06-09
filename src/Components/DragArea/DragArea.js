@@ -9,7 +9,7 @@ import { simulationController, simulationSetup } from '../../helpers/simulationC
 
 export default function DragArea() {
 
-    const { dragMap, lines, connectivityMtx, connectivityMtxMap, data, eletronicMtx, setEletronicMtx, eletronicEventsList, setEletronicEventsList, running } = React.useContext(AppContext)
+    const { dragMap, lines, connectivityMtx, connectivityMtxMap, data, eletronicMtx, setEletronicMtx, eletronicStateList, setEletronicStateList, running } = React.useContext(AppContext)
 
     //Função para atualizar a linha quando o componente recebe um drag
     function updatePosition(componentId) {
@@ -31,16 +31,6 @@ export default function DragArea() {
             section.leaderLine.position()
         })
     }
-
-    React.useEffect(() => {
-		if(running) {
-            simulationSetup(dragMap, eletronicEventsList, setEletronicEventsList)
-            setEletronicMtx(simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx, lines, eletronicEventsList))
-            console.log(eletronicMtx)
-            
-		}
-	},
-	[running])
 
 
     return (
