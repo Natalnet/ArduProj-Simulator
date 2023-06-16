@@ -12,7 +12,7 @@ export default function InvisibleDivsHolder() {
         >
             {
                 lines.map(line => {
-                    return <InvisibleDivsSectionHolder key={useId} sections={line.sections} line={line} />
+                    return <InvisibleDivsSectionHolder key={line.id} sections={line.sections} line={line} />
                 })
             }
         </div>

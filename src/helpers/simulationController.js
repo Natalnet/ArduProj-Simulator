@@ -260,20 +260,32 @@ function createDepth(lines, dragMap) {
             let configOutput = behaviorFunctions.configPins
 
 
-            
+            console.log(connector.connectorConfig)
             if(connector.connectorConfig === 'in'){
                 return
             }
 
             // O inout só é analisado se o componente que ele está conectado é um 'in', tornando ele um 'out'
-            //TODO: Perguntar a julio sobre varios inout connectados
             if(connector.connectorConfig === 'in-out'){
-                let connectedToConnectorConfig = dragMap.find(connectedToConnector => {
-                    if(connectedToConnector.fullId === connector.connectedTo[0]){
-                        return connectedToConnector.connectorConfig
+                let connectedToConnectorConfig = null
+                dragMap.forEach(connectedToComponent => {
+
+                    let auxConfig = null
+
+                    if(connectedToComponent.id === connector.connectedTo[0].split('/')[2]){
+                        auxConfig = connectedToComponent.connectors.find(connectedToConnector => {
+                            if(connectedToConnector.fullId === connector.connectedTo[0]){
+                                connectedToConnectorConfig = connectedToConnector.connectorConfig
+                            }
+                        })
+                    }
+
+                    if(auxConfig) {
+                        connector.auxConfig = auxConfig
+                        return auxConfig
                     }
                 })
-                console.log(connectedToConnectorConfig)
+                console.log(connector)
                 if(!connectedToConnectorConfig) return
                 if(connectedToConnectorConfig.connectorConfig === 'out'){
                     return
@@ -305,6 +317,8 @@ function createDepth(lines, dragMap) {
             components.forEach(componentToPush => {
                 depthMap.forEach(depthLevel => {
                     depthLevel.forEach(depthComponent => {
+                        console.log(depthComponent)
+                        console.log(componentToPush)
                         if(depthComponent === componentToPush){
                             includesComponent = true
                         }

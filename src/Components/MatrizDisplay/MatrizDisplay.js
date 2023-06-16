@@ -54,7 +54,6 @@ export default function MatrizDisplay() {
             {Object.keys(eletronicMtx).map((outerConnector, outerIndex) => {
                 return (
                 Object.keys(eletronicMtx).map((innerConnector, innerIndex) => {
-                    console.log(eletronicMtx[outerConnector][innerConnector])
                     return (
                         <div
                         style={{

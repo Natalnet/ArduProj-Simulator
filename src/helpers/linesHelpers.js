@@ -9,14 +9,11 @@ import { editorCodeCaller } from './functionHelpers';
 
 export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, connectivityMtx, connectivityMtxMap, setConnectivityMtx, isSection = false) {
 
-    console.log('linefunc')
-
     let tempLines = lines
     let tempDragMap = dragMap
     let tempConnectorsEndIndex
 
     if (!isSection) {
-        console.log(target)
         var targetDragMap = dragMap.filter((i) => {
             return i.id === target.id.split('/')[2]
         })[0]
@@ -97,7 +94,6 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, con
 
         //tempLines[index] = newLineWithEmitters
 
-        console.log(tempLines)
 
         setDragMap(tempDragMap)
         setLines(tempLines)
@@ -110,8 +106,6 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, con
 
     } else if (Object.values(tempLines).some(l => l.status === 'Em aberto') && (isSection)) {
         //Aqui temos a adição de mais uma section
-
-        console.log('nova section')
 
         let sectionUuid = uuid()
 
@@ -140,8 +134,6 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, con
     }
     //Aqui temos o caso de estar sendo iniciado uma nova linha
     else {
-
-        console.log('nova linha')
 
         let sectionUuid = uuid()
 
@@ -219,8 +211,6 @@ export function makeLine(lines, section = false) {
                         outlineColor: 'black'
                     }
                 )
-                console.log(section.leaderLine)
-                console.log(section.leaderLine.end)
             } else if (section.status === 'end') {
                 section.leaderLine = new LeaderLine(
                     LeaderLine.pointAnchor(document.getElementById(section.startLine), {
@@ -247,9 +237,6 @@ export function makeLine(lines, section = false) {
 }
 
 function attConnectivityMtx(lines, dragMap, connectivityMtx, connectivityMtxMap){
-
-    console.log('connectivityMtx:')
-    console.log(connectivityMtx)
 
     //? trocar parametro lines por uma line singular
 
@@ -280,30 +267,27 @@ function attConnectivityMtx(lines, dragMap, connectivityMtx, connectivityMtxMap)
 
     //Aqui iremos definir se os valores no connectorMtx são entradas ou saidas baseadas no configPins
     filteredDragMap.forEach((component) => {
+        console.log(component)
     
     //Primeiro pegamos o valor do output do configPins
      let behaviorFunctions = editorCodeCaller(undefined, component.behavior)
      let configOutput = behaviorFunctions.configPins
     let configOutputPinKeys = Object.keys(configOutput)
 
-    console.log(configOutputPinKeys)
-
     //E a partir dos pinos dados checamos se o seu valor é de in ou out e atribuimos um devido valor
     configOutputPinKeys.forEach(pin => {
         if(pin === 'type') return
-        let pinId = `${component.componentName}/${pin}/${component.id}`
+        let pin = `${component.componentName}/${pin}/${component.id}`
         connectivityMtxMap.forEach(upper => {
-            console.log('pinId')
-            console.log(pinId)
-            console.log('upper')
-            console.log(upper)
-            if (tempConnectivityMtx[pinId][upper] !== null) {
+            if (tempConnectivityMtx[pin][upper] !== null) {
                 if(configOutput[pin] === 'in'){
-                    tempConnectivityMtx[pinId][upper] = -1
+                    tempConnectivityMtx[pin][upper] = -1
                 } else if(configOutput[pin] === 'out'){
-                    tempConnectivityMtx[pinId][upper] = 1
+                    tempConnectivityMtx[pin][upper] = 1
+                } else if(configOutput[pin] === 'in-out') {
+                    tempConnectivityMtx[pin][upper] = 0
                 } else {
-                    tempConnectivityMtx[pinId][upper] = 0
+                    tempConnectivityMtx[pin][upper] = 0
                 }
         }})
     })
@@ -311,24 +295,20 @@ function attConnectivityMtx(lines, dragMap, connectivityMtx, connectivityMtxMap)
     //Aqui temos o mesmo caso acima mas com a ordem invertida na matriz
     configOutputPinKeys.forEach(pin => {
         if(pin === 'type') return
-        let pinId = `${component.componentName}/${pin}/${component.id}`
+        let pin = `${component.componentName}/${pin}/${component.id}`
         connectivityMtxMap.forEach(lefter => {
-            if (tempConnectivityMtx[lefter][pinId] !== null) {
+            if (tempConnectivityMtx[lefter][pin] !== null) {
                 if(configOutput[pin] === 'in'){
-                    tempConnectivityMtx[lefter][pinId] = 1
+                    tempConnectivityMtx[lefter][pin] = 1
                 } else if(configOutput[pin] === 'out'){
-                    tempConnectivityMtx[lefter][pinId] = -1
+                    tempConnectivityMtx[lefter][pin] = -1
                 } else {
-                    tempConnectivityMtx[lefter][pinId] = 0
+                    tempConnectivityMtx[lefter][pin] = 0
                 }
         }})
     })
 
     })
-
-    console.log('connectivityMtx:')
-    console.log(tempConnectivityMtx)
-
 
     /*
 

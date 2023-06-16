@@ -40,6 +40,8 @@ export default function SideBar(props) {
 
 	const [clock, setClock] = React.useState({})
 
+	const [finished, setFinished] = React.useState(true)
+
 
 	var arduino = undefined; //variavel para guardar a instancia em execução
 
@@ -97,26 +99,26 @@ export default function SideBar(props) {
 	}, [props.connectorValues])
 	*/
 
+
 	React.useEffect(() => {
-		if(running) {
+		if(running && finished) {
             simulationSetup(dragMap, eletronicStateList, setEletronicStateList)
-            let auxIntervalId = setInterval(() => {
+            let auxIntervalId = setTimeout(() => {
 				try {
-					console.log(eletronicMtx)
+					setFinished(false)
 					let auxEletronicMtx = JSON.parse(JSON.stringify(simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx, lines, eletronicStateList)))
 					setEletronicMtx(auxEletronicMtx)
-					console.log(auxEletronicMtx)
-					console.log(eletronicMtx)
+					setFinished(true)
 				} catch (error) {
+					//a
 					console.log(error)
 				}
-            
 				setClock({ ...clock, tempo: clock.tempo++ })
-            }, 1000)
+            }, 50)
 			setIntervalId(auxIntervalId)
 		}
 	},
-	[running])
+	[running, eletronicMtx, eletronicStateList, finished, clock])
 	
 	function updateConfigPins() {
 		let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
@@ -188,7 +190,6 @@ export default function SideBar(props) {
 				}
 		} else {
 			if (props.editorComponent) {
-				console.log(running)
 				if (running) {
 					setRunning(false)
 				} else {

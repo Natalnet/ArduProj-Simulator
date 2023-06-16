@@ -104,7 +104,6 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
                     dangerouslySetInnerHTML={{ __html: createSvgComponent() }}
                     width={currentSvg.width.baseVal.value}
                     height={currentSvg.height.baseVal.value}
-                    viewBox={currentSvg.viewBox}
 
                 />
 
@@ -132,7 +131,6 @@ export default function DragComponentIndex({ name, svg, part, id, updatePosition
         // Aqui verificamos se algum dos componentes que não foram removidos estava conectado no componente removido e atualizamos seu campo connectedTo para null
         //! NÃO ESTA FUNCIONANDO POR CAUSA DO ATUALIZAÇÕES DO FULLID E CONNECTEDTO[]
         toCleanList.forEach((l) => {
-            console.log(l)
             let splitedL = l.split('/')
             filteredMap.forEach((f) => {
                 if (f.id === splitedL[1]) {
