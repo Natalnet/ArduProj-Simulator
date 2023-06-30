@@ -6,10 +6,11 @@ import { AppContext } from '../../App'
 import { lineFunc } from '../../helpers/functionHelpers'
 import InvisibleDivsHolder from '../InvisibleDivsHolder/InvisibleDivsHolder'
 import { simulationController, simulationSetup } from '../../helpers/simulationController'
+import { makeLine } from '../../helpers/linesHelpers'
 
 export default function DragArea() {
 
-    const { dragMap, lines, connectivityMtx, connectivityMtxMap, data, eletronicMtx, setEletronicMtx, eletronicStateList, setEletronicStateList, running } = React.useContext(AppContext)
+    const { dragMap, setDragMap, lines, setLines, connectivityMtx, connectivityMtxMap, setConnectivityMtx, data, eletronicMtx, setEletronicMtx, eletronicStateList, setEletronicStateList, running } = React.useContext(AppContext)
 
     //Função para atualizar a linha quando o componente recebe um drag
     function updatePosition(componentId) {
@@ -31,6 +32,14 @@ export default function DragArea() {
             section.leaderLine.position()
         })
     }
+
+    React.useEffect(() => {
+        console.log(lines.lenght)
+        if(lines.length > 0){
+            console.log(lines)
+            makeLine(lines)
+        }
+    }, [lines])
 
 
     return (

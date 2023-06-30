@@ -23,11 +23,8 @@ function App() {
 
     const [connectivityMtx, setConnectivityMtx] = useState({})
 
-    const [connectivityMtxMap, setConnectivityMtxMap] = useState([])
-
     const [eletronicMtx, setEletronicMtx] = useState(null)
 
-    //TODO: Mudar nome para estados
     const [eletronicStateList, setEletronicStateList] = useState({})
 
     const [running, setRunning] = React.useState(false)
@@ -38,7 +35,7 @@ function App() {
 
     return (
         <div className="App" >
-            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, connectivityMtxMap, setConnectivityMtxMap, eletronicMtx, setEletronicMtx, eletronicStateList, setEletronicStateList, running, setRunning}}>
+            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, eletronicMtx, setEletronicMtx, eletronicStateList, setEletronicStateList, running, setRunning}}>
                 <Routes>
                     <Route path='/' element={<Simulador />} />
                     <Route path='editor' element={<Editor />} />

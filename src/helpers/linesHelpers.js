@@ -7,7 +7,7 @@ import { editorCodeCaller } from './functionHelpers';
 
 
 
-export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, connectivityMtx, connectivityMtxMap, setConnectivityMtx, isSection = false) {
+export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, connectivityMtx, setConnectivityMtx, isSection = false) {
 
     let tempLines = lines
     let tempDragMap = dragMap
@@ -98,7 +98,7 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, con
         setDragMap(tempDragMap)
         setLines(tempLines)
 
-        var attConnectivityMtxOutput = attConnectivityMtx(tempLines, tempDragMap, connectivityMtx, connectivityMtxMap)
+        var attConnectivityMtxOutput = attConnectivityMtx(tempLines, tempDragMap, connectivityMtx)
 
         //! Não sei se isso vai dar erro vvvv
         setConnectivityMtx(attConnectivityMtxOutput.connectivityMtx)
@@ -163,6 +163,30 @@ export function makeLine(lines, section = false) {
 
     if (!lines.some(l => l.status == 'Em aberto') && lines.length > 0 && (!section)) {
         console.log('codigo morto?')
+        
+        lines.forEach(line => {
+            if(line.LeaderLine) return
+            line.LeaderLine = new LeaderLine(
+                LeaderLine.pointAnchor(document.getElementById(line.startLine), {
+                    x: '50%',
+                    y: '50%'
+                }),
+                LeaderLine.pointAnchor(document.getElementById(line.endLine), {
+                    x: '50%',
+                    y: '50%'
+                }),
+                {
+                    path: 'straight',
+                    startPlug: 'disc',
+                    endPlug: 'disc',
+                    color: 'red',
+                    size: 3,
+                    outline: true,
+                    outlineColor: 'black'
+                }
+            )
+
+        })
         /*
         let lastLine = lines[lines.length - 1]
 
@@ -185,7 +209,8 @@ export function makeLine(lines, section = false) {
                 outlineColor: 'black'
             }
         )
-            */
+        */
+            
     } else {
         lines[lines.length - 1].sections.map(section => {
 
@@ -236,7 +261,7 @@ export function makeLine(lines, section = false) {
     }
 }
 
-function attConnectivityMtx(lines, dragMap, connectivityMtx, connectivityMtxMap){
+function attConnectivityMtx(lines, dragMap, connectivityMtx){
 
     //? trocar parametro lines por uma line singular
 
@@ -267,126 +292,70 @@ function attConnectivityMtx(lines, dragMap, connectivityMtx, connectivityMtxMap)
 
     //Aqui iremos definir se os valores no connectorMtx são entradas ou saidas baseadas no configPins
     filteredDragMap.forEach((component) => {
-        console.log(component)
     
     //Primeiro pegamos o valor do output do configPins
      let behaviorFunctions = editorCodeCaller(undefined, component.behavior)
      let configOutput = behaviorFunctions.configPins
     let configOutputPinKeys = Object.keys(configOutput)
-
+    
     //E a partir dos pinos dados checamos se o seu valor é de in ou out e atribuimos um devido valor
     configOutputPinKeys.forEach(pin => {
-        if(pin === 'type') return
-        let pin = `${component.componentName}/${pin}/${component.id}`
-        connectivityMtxMap.forEach(upper => {
-            if (tempConnectivityMtx[pin][upper] !== null) {
+        if(pin === 'type' || pin === 'events') return
+        let pinFullId = `${component.componentName}/${pin}/${component.id}`
+        Object.keys(connectivityMtx).forEach(upper => {
+            if (tempConnectivityMtx[pinFullId][upper] !== null) {
                 if(configOutput[pin] === 'in'){
-                    tempConnectivityMtx[pin][upper] = -1
+                    tempConnectivityMtx[pinFullId][upper] = -1
                 } else if(configOutput[pin] === 'out'){
-                    tempConnectivityMtx[pin][upper] = 1
+                    tempConnectivityMtx[pinFullId][upper] = 1
                 } else if(configOutput[pin] === 'in-out') {
-                    tempConnectivityMtx[pin][upper] = 0
-                } else {
-                    tempConnectivityMtx[pin][upper] = 0
+                    let connectedToConnectorFullId = component.connectors.find(connector => connector.fullId === pinFullId).connectedTo[0]
+                    let connectedToConnectorComponent = filteredDragMap.find(filtetedComponent => filtetedComponent.id === connectedToConnectorFullId.split('/')[2])
+                    let connectedToConnectorConfig = connectedToConnectorComponent.connectors.find(connector => connector.fullId === connectedToConnectorFullId).connectorConfig
+                    if(connectedToConnectorConfig === 'in'){
+                        tempConnectivityMtx[pinFullId][upper] = 1
+                    } else if (connectedToConnectorConfig === 'out') {
+                        tempConnectivityMtx[pinFullId][upper] = -1
+                    } else {
+                        //! CONVERSAR COM JULIO SOBRE ESSES CASOS DE IN-OUT CONNECTADOS EM CADEIA
+                        tempConnectivityMtx[pinFullId][upper] = 0
+                    }
+                }
+                 else {
+                    tempConnectivityMtx[pinFullId][upper] = 0
                 }
         }})
     })
 
     //Aqui temos o mesmo caso acima mas com a ordem invertida na matriz
     configOutputPinKeys.forEach(pin => {
-        if(pin === 'type') return
-        let pin = `${component.componentName}/${pin}/${component.id}`
-        connectivityMtxMap.forEach(lefter => {
-            if (tempConnectivityMtx[lefter][pin] !== null) {
+        if(pin === 'type' || pin === 'events') return
+        let pinFullId = `${component.componentName}/${pin}/${component.id}`
+        Object.keys(connectivityMtx).forEach(lefter => {
+            if (tempConnectivityMtx[lefter][pinFullId] !== null) {
                 if(configOutput[pin] === 'in'){
-                    tempConnectivityMtx[lefter][pin] = 1
+                    tempConnectivityMtx[lefter][pinFullId] = 1
                 } else if(configOutput[pin] === 'out'){
-                    tempConnectivityMtx[lefter][pin] = -1
+                    tempConnectivityMtx[lefter][pinFullId] = -1
+                } else if(configOutput[pin] === 'in-out') {
+                    let connectedToConnectorFullId = component.connectors.find(connector => connector.fullId === pinFullId).connectedTo[0]
+                    let connectedToConnectorComponent = filteredDragMap.find(filtetedComponent => filtetedComponent.id === connectedToConnectorFullId.split('/')[2])
+                    let connectedToConnectorConfig = connectedToConnectorComponent.connectors.find(connector => connector.fullId === connectedToConnectorFullId).connectorConfig
+                    if(connectedToConnectorConfig === 'in'){
+                        tempConnectivityMtx[lefter][pinFullId] = -1
+                    } else if (connectedToConnectorConfig === 'out') {
+                        tempConnectivityMtx[lefter][pinFullId] = 1
+                    } else {
+                        //! CONVERSAR COM JULIO SOBRE ESSES CASOS DE IN-OUT CONNECTADOS EM CADEIA
+                        tempConnectivityMtx[lefter][pinFullId] = 0
+                    } 
                 } else {
-                    tempConnectivityMtx[lefter][pin] = 0
+                    tempConnectivityMtx[lefter][pinFullId] = 0
                 }
         }})
     })
 
     })
 
-    /*
-
-    //Aqui damos inicio a criação do depthMap usando de um fifo
-    let fifo = []
-    let depthMap = []
-    let aux = []
-
-    aux.push(filteredDragMap[0])
-
-    //! Erro em transformar o primeiro termo do depthMap em array
-    depthMap.push(aux)
-
-    fifo.push(filteredDragMap[0])
-
-
-    console.log('fifo:')
-    console.log(fifo)
-
-    console.log('depthMap:')
-    console.log(depthMap)
-    
-    while(fifo.length > 0){
-
-        //Pegamos o primeiro componente da fila 
-        let currentComponent = fifo.shift()
-
-        //! Usar os connectors de saida para definir o depthMap
-        //Então a partir desse componente percorremos seus conectores e verificamos com quem eles estão conectados
-        let depthMapAux = []
-        currentComponent.connectors.forEach(connector => {
-            let behaviorFunctions = editorCodeCaller(undefined, component.behavior)
-            let configOutput = behaviorFunctions.configPins
-
-            if(configOutput[connector.svgId] === 'in'){
-                return
-            }
-
-            let component = dragMap.find(component => { 
-                //TODO: trocar para achar o componente pela matriz
-                if(!connector.connectedTo){
-                    return null
-                }
-                return (component.id === connector.connectedTo.split('/')[2]) 
-            })
-            
-            if(!component) return 
-
-            //! Erro aqui vvv
-            let includesComponent = false
-
-            //Verificamos se os componentes alvos dos conectores ja estão no depthMap
-            //TODO: otimizar isso vvv
-            depthMap.forEach(depthLevel => {
-                depthLevel.forEach(depthComponent => {
-                    if(depthComponent === component){
-                        includesComponent = true
-                    }
-                })
-            })
-
-            //Então se o teste acima for falso adicionamos o componente ao depthMap e ao fifo
-            if(!includesComponent){
-                depthMapAux.push(component)
-                fifo.push(component)
-            }
-        })
-        if(depthMapAux.length > 0){
-            depthMap.push(depthMapAux)
-        }
-    }
-
-    console.log('fifo:')
-    console.log(fifo)
-
-    //! Erro aqui vvv
-    console.log('depthMap:')
-    console.log(depthMap)
-    */
     return ({connectivityMtx: tempConnectivityMtx})
 }

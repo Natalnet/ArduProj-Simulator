@@ -11,12 +11,15 @@ import { changeColor } from '../../helpers/Behavior';
 import { editorCodeCaller, updateConnectorsValues } from '../../helpers/functionHelpers';
 
 import { Fab } from '@material-ui/core';
+import Alert from '@mui/material/Alert';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import DisplaySettingsRoundedIcon from '@mui/icons-material/DisplaySettingsRounded';
 import StopRoundedIcon from '@mui/icons-material/StopRounded';
 import Snackbar from '@mui/material/Snackbar';
 import Slide from '@mui/material/Slide';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
 
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -30,7 +33,7 @@ export default function SideBar(props) {
 
 	//Arquivos importados
 
-	const { data, setData, dragMap, alignment, lines, connectivityMtxMap, connectivityMtx, eletronicMtx, setEletronicMtx, running, setRunning, eletronicStateList, setEletronicStateList } = React.useContext(AppContext)
+	const { data, setData, dragMap, setDragMap, alignment, lines, setLines, connectivityMtx, setConnectivityMtx, eletronicMtx, setEletronicMtx, running, setRunning, eletronicStateList, setEletronicStateList } = React.useContext(AppContext)
 
 	const [screen, setScreen] = React.useState('components')
 
@@ -41,6 +44,8 @@ export default function SideBar(props) {
 	const [clock, setClock] = React.useState({})
 
 	const [finished, setFinished] = React.useState(true)
+
+	const [alertOpen, setAlertOpen] = React.useState(false)
 
 
 	var arduino = undefined; //variavel para guardar a instancia em execução
@@ -102,25 +107,26 @@ export default function SideBar(props) {
 
 	React.useEffect(() => {
 		if(running && finished) {
-            simulationSetup(dragMap, eletronicStateList, setEletronicStateList)
             let auxIntervalId = setTimeout(() => {
 				try {
 					setFinished(false)
-					let auxEletronicMtx = JSON.parse(JSON.stringify(simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx, lines, eletronicStateList)))
+					let auxEletronicMtx = JSON.parse(JSON.stringify(simulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList)))
 					setEletronicMtx(auxEletronicMtx)
+					//console.log(auxEletronicMtx)
 					setFinished(true)
 				} catch (error) {
-					//a
 					console.log(error)
+					setAlertOpen(true)
 				}
 				setClock({ ...clock, tempo: clock.tempo++ })
-            }, 50)
+            }, 1000)
 			setIntervalId(auxIntervalId)
 		}
 	},
 	[running, eletronicMtx, eletronicStateList, finished, clock])
 	
 	function updateConfigPins() {
+		/*
 		let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
 		let connectorValuesHOLDER = props.connectorValues
 
@@ -129,56 +135,22 @@ export default function SideBar(props) {
 		})
 
 		props.setConnectorValues(connectorValuesHOLDER)
+		*/
+		console.log('dragMap:')
+		console.log(dragMap)
+		console.log('connectivityMtx:')
+		console.log(connectivityMtx)
+		console.log('lines:')
+		console.log(lines)
+		console.log('data:')
+		console.log(data)
+		console.log('eletronicMtx:')
+		console.log(eletronicMtx)
 	}
 
 
 	function startSimulation() {
 		if (alignment == 'simulador') {
-			/*
-			console.log("Compiling code " + code_default);
-			fetch('http://localhost:3001/compile-wasm',
-				{
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					method: 'POST',
-					body: JSON.stringify({ 'code': code_default })
-				}
-			)
-				.then(async (response) => {
-					const resJson = await response.json();
-					//lastExecuted = resJson.res;
-					//executedCode = code_default;
-					console.log(resJson, `http://localhost:3001/${resJson.res.jsfile}`);
-					/*versão com js global*/
-					//loadJS(`http://localhost:3001/${resJson.res.jsfile}`);
-
-					//versão com workers
-					/*
-					var instance = new WorkerBuilder(Worker);
-					instance.onmessage = (msg) => {
-
-						if (msg.data.type === 'stateUpdate') {
-							var pinStates = JSON.parse(msg.data.pinValues);
-							//TODO: @Mario adiciona aqui a lógica para mudar a cor do led
-						}
-					};
-					instance.addEventListener("error", (event) => {
-						console.log("error while loading " + event.message + " on " + event.filename + "::" + event.lineno);
-						instance.terminate();
-					});
-					if (arduino !== undefined)
-						arduino.terminate()
-						
-					arduino = instance
-					arduino.postMessage({ start: `http://localhost:3001/${resJson.res.jsfile}` });
-				})
-				.then(data => console.log(data))
-				.catch((error) => {
-					setRunning(false);
-					console.error('Error:', error);
-				});
-				*/
 				if (running) {
 					setRunning(false)
 					let auxIntervalId = intervalId
@@ -186,6 +158,8 @@ export default function SideBar(props) {
 					setClock({ tempo: 0 })
 				}
 				 else {
+
+					simulationSetup(dragMap, eletronicStateList, setEletronicStateList)
 					setRunning(true)
 				}
 		} else {
@@ -193,6 +167,7 @@ export default function SideBar(props) {
 				if (running) {
 					setRunning(false)
 				} else {
+
 					setRunning(true)
 				}
 			} else {
@@ -214,9 +189,9 @@ export default function SideBar(props) {
 	//Função que testa se a pagina esta no simulador ou editor e adiciona o dropzone baseado nisso
 	const hasDropZone = () => {
 		if (alignment == 'simulador') {
-			return <DropZone data={data} setData={setData} />
+			return <DropZone data={data} setData={setData} dragMap={dragMap} setDragMap={setDragMap} lines={lines} setLines={setLines} connectivityMtx={connectivityMtx} setConnectivityMtx={setConnectivityMtx} />
 		} else {
-			return <DropZone data={data} setData={setData} />
+			return <DropZone data={data} setData={setData} dragMap={dragMap} setDragMap={setDragMap} lines={lines} setLines={setLines} connectivityMtx={connectivityMtx} setConnectivityMtx={setConnectivityMtx} />
 		}
 	}
 
@@ -247,19 +222,45 @@ export default function SideBar(props) {
 					saveAs(blob, 'customElement.zip')
 				})
 		} else {
-			console.log('dragMap:')
-		console.log(dragMap)
-		console.log('connectivityMtx:')
-		console.log(connectivityMtx)
-		console.log('lines:')
-		console.log(lines)
-		console.log('data:')
-		console.log(data)
-		console.log('eletronicMtx:')
-		console.log(eletronicMtx)
-		console.log('connectivityMtxMap:')
-		console.log(connectivityMtxMap)
-		setEletronicMtx(simulationController(connectivityMtx, connectivityMtxMap, dragMap, data, eletronicMtx, lines))
+			
+	
+		const jszip = new JSZip()
+
+		let dataFolder = jszip.folder('data')
+
+		data.forEach(component => {
+			dataFolder.file(`breadboard.${component.componentName}.svg`, component.breadboard)
+			dataFolder.file(`part.${component.componentName}.fzp`, component.part)
+			dataFolder.file(`behavior.${component.componentName}.js`, component.behavior)
+		})
+
+		let dragMapFolder = jszip.folder('dragMap')
+
+		dragMap.forEach(component => {
+			console.log(component)
+			let stringComponent = JSON.stringify(component)
+			dragMapFolder.file(`${component.componentName}_${component.id}`, stringComponent)
+		})
+
+		let stringConnectivityMtx = JSON.stringify(connectivityMtx)
+		jszip.file('connectivityMtx', stringConnectivityMtx)
+
+		let linesFolder = jszip.folder('lines')
+
+		lines.forEach(line => {
+			let stringLine = JSON.stringify(line)
+			linesFolder.file(`${line.id}`, stringLine)
+		})
+		
+
+		
+			jszip.generateAsync({ type: 'blob' })
+				.then(function (blob) {
+					saveAs(blob, 'customCircuit.zip')
+				})
+		
+
+
 		}
 	}
 
@@ -328,6 +329,28 @@ export default function SideBar(props) {
 				autoHideDuration={3000}
 
 			/>
+			<Collapse 
+			in={alertOpen} 
+			style={{ 
+				position: 'fixed', 
+				bottom: '0', 
+				right: '0', 
+				display: 'flex',
+				alignItems: 'center',
+				}}>
+				<Alert severity="error">
+					Há um erro na sua simulação. 
+					<CloseIcon 
+						aria-label="close"
+						color="inherit"
+						size="small"
+						onClick={() => {
+						  setAlertOpen(false);
+						}}
+					/>
+					</Alert>
+			</Collapse>
+			
 		</div>
 	)
 }

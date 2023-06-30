@@ -46,8 +46,10 @@ export default function DropZoneIndex(props) {
 
   function handleDrop(e) {
 
+    console.log(props.setDragMap)
+
     //Função que lida com os arquivos dropados 
-    handleFileDrop(e, props.data, props.setData)
+    handleFileDrop(e, props.data, props.setData, props.dragMap, props.setDragMap, props.lines, props.setLines, props.connectivityMtx, props.setConnectivityMtx)
 
     setDragging(false)
   }

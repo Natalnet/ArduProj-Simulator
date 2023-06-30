@@ -1,8 +1,7 @@
-export function addConnectortToMatrix(componentId, connectorList, connectorMtx, connectorMtxMap) {
+export function addConnectortToMatrix(componentId, connectorList, connectorMtx) {
 
     //TODO: Fazer função para copiar
     let tempConnectorMtx = JSON.parse(JSON.stringify(connectorMtx))
-    let tempConnectorMtxMap = JSON.parse(JSON.stringify(connectorMtxMap))
 
     //JSON.parse(JSON.stringify(originalObj));
     //!TALVEZ O PROBLEMA ESTEJA AQUI ^^^^^^
@@ -40,15 +39,7 @@ export function addConnectortToMatrix(componentId, connectorList, connectorMtx, 
         }
     }
 
-    // Por fim é feito o array do map adicionando os connectors novos a um array ja existente
-    connectorList.forEach(connector => {
-        tempConnectorMtxMap.push(connector.fullId)
-    })
-
-   
     
-    
-
-    return ({ matrix: tempConnectorMtx, maping: tempConnectorMtxMap})
+    return ( tempConnectorMtx)
 
 }

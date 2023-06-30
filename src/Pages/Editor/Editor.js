@@ -1,6 +1,7 @@
 import React from 'react'
 import EditorComponentDisplay from '../../Components/EditorComponentDisplay/EditorComponentDisplay'
 import EditorComponentSideBar from '../../Components/EditorComponentSideBar/EditorComponentSideBar'
+import EditorInputOutput from '../../Components/EditorInputOutput/EditorInputOutput'
 import SideBar from '../../Components/SideBar/SideBar'
 import ToolsArea from '../../Components/ToolsArea/ToolsArea'
 import './EditorStyle.css'
@@ -111,6 +112,7 @@ export default function Editor() {
                 <ToolsArea />
                 <EditorComponentDisplay />
                 <EditorComponentSideBar />
+                <EditorInputOutput />
             </EditorContext.Provider>
         </div>
     )

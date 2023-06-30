@@ -1,10 +1,6 @@
-import React from 'react'
 import JSZip from 'jszip'
-
-import { getSpeedDialIconUtilityClass } from '@mui/material'
-
 //Função responsavel por extrair arquivos do zip e adicionalos no data
-export function unzipFile(file, data, setData) {
+export function unzipFile(file, data, setData, dragMap, setDragMap, lines, setLines, connectivityMtx, setConnectivityMtx) {
     return new Promise((resolve, reject) => {
 
 
@@ -16,8 +12,11 @@ export function unzipFile(file, data, setData) {
         //algum outro estado que sinalizasse ou forçasse o update
 
         //console.log(data)
-        let dataLet = [...data]
-        //console.log(dataLet)
+        let tempData = [...data]
+        let tempDragMap = []
+        let tempLines = []
+        let tempConnectivityMtx = []
+        //console.log(tempData)
 
         //Aqui o arquivo é lido como um buffer
         const bufferReader = new FileReader()
@@ -31,83 +30,100 @@ export function unzipFile(file, data, setData) {
 
                     zip.files[filename].async('string').then(function (fileData) {
 
-                        /* 
-                        ! O formato do nome do arquivo deverá ser tipoDeComponente.nome.formatoDoArquivo
-                        ! Ex: breadboard.arduinoUnoV3.svg
-                        ! Os arquvios fzb serão excessão devendo ser da seguinte forma:
-                        ! nome.fzb
-                        */
-
-                        //E adicionado a variavel temporaria formando um objeto composto pelo nome do arquivo e seu conteudo em texto
-
-                        let cortado = filename.split('.')
-
-                        let componentName
-                        let contentType
-
-                        //Condicional para dividir os arquivos entre Svgs, fzb e fzp
-                        if (!cortado[1]) {
-
-                            //A primeira leitura será sempre um arquivo vazio com o nome da pasta
-                            return 0
-
-                        } else if (cortado[2] === 'svg' || cortado[2] === 'fzp' || cortado[2] === 'js') {
-
-                            //componentName = cortado[2].slice(0,-(cortado[1].length))
-                            //componentName = componentName.substring(0,20)
-                            componentName = cortado[1].substring(0, 20)
-
-                            var directoryName = cortado[0].split('/')
-
-                            //? O filename pode possuir ou não o nome da pasta onde ele esta inserido por isso esse teste. Não sei ao certo o que define isso.
-                            if (directoryName[1]) {
-                                contentType = directoryName[1]
-                            } else {
-                                contentType = directoryName[0]
-                            }
-
-                        } else {
-
-                            componentName = `${cortado[0]}_fzbList`
-                            contentType = cortado[1]
-
-                        }
-
-
-                        //Condional para testar se ja existe um objeto que condiz ao componente atual
-                        if (contentType === 'fzb') {
-
-                            /* Nesse caso ja existe um objeto guardando os fzbs
-                            let index = dataLet.findIndex(e => e.componentName === `${cortado[0]}_fzbList`)
-                            dataLet[index][contentType] = fileData
+                        if(filename.split('/')[0] === 'data') {
+                             /* 
+                            ! O formato do nome do arquivo deverá ser tipoDeComponente.nome.formatoDoArquivo
+                            ! Ex: breadboard.arduinoUnoV3.svg
+                            ! Os arquvios fzb serão excessão devendo ser da seguinte forma:
+                            ! nome.fzb
                             */
 
-                        } else if (dataLet.some(e => e.componentName === componentName)) {
+                            //E adicionado a variavel temporaria formando um objeto composto pelo nome do arquivo e seu conteudo em texto
 
-                            //Nesse caso ja existe um objeto guardando o componente atual então apenas adicionamos um novo svg nele
+                            let cortado = filename.split('.')
 
-                            let index = dataLet.findIndex(e => e.componentName === componentName)
-                            dataLet[index][contentType] = fileData
+                            let componentName
+                            let contentType
 
-                        } else {
+                            //Condicional para dividir os arquivos entre Svgs, fzb e fzp
+                            if (!cortado[1]) {
 
-                            //Nesse caso ainda não existe um objeto que corresponda ao componente atual então é criado um 
+                                //A primeira leitura será sempre um arquivo vazio com o nome da pasta
+                                return 0
 
-                            //Objeto temporario para guardar as variaveis de nome e o arquivo html convertido em texto
-                            let tempObj = {}
-                            tempObj.componentName = componentName
-                            tempObj[contentType] = fileData
+                            } else if (cortado[2] === 'svg' || cortado[2] === 'fzp' || cortado[2] === 'js') {
 
-                            dataLet.push(tempObj)
-                        }
+                                //componentName = cortado[2].slice(0,-(cortado[1].length))
+                                //componentName = componentName.substring(0,20)
+                                componentName = cortado[1].substring(0, 20)
 
+                                var directoryName = cortado[0].split('/')
+
+                                //? O filename pode possuir ou não o nome da pasta onde ele esta inserido por isso esse teste. Não sei ao certo o que define isso.
+                                if (directoryName[1]) {
+                                    contentType = directoryName[1]
+                                } else {
+                                    contentType = directoryName[0]
+                                }
+
+                            } else {
+
+                                componentName = `${cortado[0]}_fzbList`
+                                contentType = cortado[1]
+
+                            }
+
+
+                            //Condional para testar se ja existe um objeto que condiz ao componente atual
+                            if (contentType === 'fzb') {
+
+                                /* Nesse caso ja existe um objeto guardando os fzbs
+                                let index = tempData.findIndex(e => e.componentName === `${cortado[0]}_fzbList`)
+                                tempData[index][contentType] = fileData
+                                */
+
+                            } else if (tempData.some(e => e.componentName === componentName)) {
+
+                                //Nesse caso ja existe um objeto guardando o componente atual então apenas adicionamos um novo svg nele
+
+                                let index = tempData.findIndex(e => e.componentName === componentName)
+                                tempData[index][contentType] = fileData
+
+                            } else {
+
+                                //Nesse caso ainda não existe um objeto que corresponda ao componente atual então é criado um 
+
+                                //Objeto temporario para guardar as variaveis de nome e o arquivo html convertido em texto
+                                let tempObj = {}
+                                tempObj.componentName = componentName
+                                tempObj[contentType] = fileData
+
+                                tempData.push(tempObj)
+                            }
+
+                        } else if(filename.split('/')[0] === 'dragMap'){
+
+                            tempDragMap.push(JSON.parse(fileData))
+                            
+                        } else if(filename.split('/')[0] === 'lines'){
+
+                            tempLines.push(JSON.parse(fileData))
+
+                        } else if(filename.split('/')[0] === 'connectivityMtx'){
+
+                            tempConnectivityMtx.push(JSON.parse(fileData))
+
+                        } 
+
+                       
                     })
                         .then(() => {
 
                             //Aqui transferimos para a variavel global
-
-                            setData([...dataLet])
-
+                            setData([...tempData])
+                            setDragMap([...tempDragMap])
+                            setLines([...tempLines])
+                            setConnectivityMtx(tempConnectivityMtx)
 
                         })
                 })
@@ -120,7 +136,7 @@ export function unzipFile(file, data, setData) {
 }
 
 //Função que lida com os arquivos dropados 
-export async function handleFileDrop(e, data, setData) {
+export async function handleFileDrop(e, data, setData, dragMap, setDragMap, lines, setLines, connectivityMtx, setConnectivityMtx) {
 
     e.preventDefault()
     e.stopPropagation()
@@ -134,7 +150,7 @@ export async function handleFileDrop(e, data, setData) {
         if (typeof item === 'object') {
 
             //Função que extrai e adiciona os arquivos a variavel data
-            await unzipFile(item, data, setData)
+            await unzipFile(item, data, setData, dragMap, setDragMap, lines, setLines, connectivityMtx, setConnectivityMtx)
         }
     }
 
@@ -181,17 +197,7 @@ export function createConnectors(partComponent, breadboard, id, dragComponentNam
             connectorConfig: connectorConfig
         })
         
-
-        //? Arrumar bug dos highlight - Em progresso
-        /* 
-        svgConnector.removeAttribute('style')
-  
-        svgConnector.setAttribute('fill','none') 
-  
-        svgConnector.parentElement.insertBefore(svgConnector, null)
-        */
     }
-    //console.log(svgPuro)
 
     return ({
         svg: svgPuro,
