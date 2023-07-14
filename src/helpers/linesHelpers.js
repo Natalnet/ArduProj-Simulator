@@ -159,59 +159,40 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, con
 
 
 
-export function makeLine(lines, section = false) {
+export function makeLine(lines, section = false, building = false) {
+    console.log(lines)
+    console.log(section)
 
-    if (!lines.some(l => l.status == 'Em aberto') && lines.length > 0 && (!section)) {
+    if (!lines.some(l => l.status == 'Em aberto') && lines.length > 0 && (!section) && building) {
         console.log('codigo morto?')
         
         lines.forEach(line => {
-            if(line.LeaderLine) return
-            line.LeaderLine = new LeaderLine(
-                LeaderLine.pointAnchor(document.getElementById(line.startLine), {
-                    x: '50%',
-                    y: '50%'
-                }),
-                LeaderLine.pointAnchor(document.getElementById(line.endLine), {
-                    x: '50%',
-                    y: '50%'
-                }),
-                {
-                    path: 'straight',
-                    startPlug: 'disc',
-                    endPlug: 'disc',
-                    color: 'red',
-                    size: 3,
-                    outline: true,
-                    outlineColor: 'black'
-                }
-            )
+            line.sections.forEach(section => {
+                if(section.leaderLine._id) return
+                section.leaderLine = new LeaderLine(
+                    LeaderLine.pointAnchor(document.getElementById(section.startLine), {
+                        x: '50%',
+                        y: '50%'
+                    }),
+                    LeaderLine.pointAnchor(document.getElementById(section.endLine), {
+                        x: '50%',
+                        y: '50%'
+                    }),
+                    {
+                        path: 'straight',
+                        startPlug: 'disc',
+                        endPlug: 'disc',
+                        color: 'red',
+                        size: 3,
+                        outline: true,
+                        outlineColor: 'black'
+                    }
+                )
+            })
+            
 
         })
-        /*
-        let lastLine = lines[lines.length - 1]
-
-        lines[lines.length - 1].LeaderLine = new LeaderLine(
-            LeaderLine.pointAnchor(document.getElementById(lastLine.startLine), {
-                x: '50%',
-                y: '50%'
-            }),
-            LeaderLine.pointAnchor(document.getElementById(lastLine.endLine), {
-                x: '50%',
-                y: '50%'
-            }),
-            {
-                path: 'straight',
-                startPlug: 'disc',
-                endPlug: 'disc',
-                color: 'red',
-                size: 3,
-                outline: true,
-                outlineColor: 'black'
-            }
-        )
-        */
-            
-    } else {
+    } else if (!building) {
         lines[lines.length - 1].sections.map(section => {
 
         
@@ -266,7 +247,10 @@ function attConnectivityMtx(lines, dragMap, connectivityMtx){
     //? trocar parametro lines por uma line singular
 
     let tempConnectivityMtx = JSON.parse(JSON.stringify(connectivityMtx))
+
+    console.log(tempConnectivityMtx)
     
+    //! ERRO AQUI 
     // Aqui alteramos o valor da matriz para definir todos aqueles que estão conectados entre si
     lines.forEach(line => {
         tempConnectivityMtx[line.startLine][line.endLine] = 1

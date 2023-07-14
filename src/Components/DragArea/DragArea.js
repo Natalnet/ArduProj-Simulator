@@ -33,14 +33,15 @@ export default function DragArea() {
         })
     }
 
+    
     React.useEffect(() => {
         console.log(lines.lenght)
-        if(lines.length > 0){
+        if(lines.length){
             console.log(lines)
-            makeLine(lines)
+            makeLine(lines, false, true)
         }
     }, [lines])
-
+    
 
     return (
         <div className='DragAreaDiv'>

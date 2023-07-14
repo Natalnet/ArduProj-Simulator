@@ -33,7 +33,7 @@ export default function SideBar(props) {
 
 	//Arquivos importados
 
-	const { data, setData, dragMap, setDragMap, alignment, lines, setLines, connectivityMtx, setConnectivityMtx, eletronicMtx, setEletronicMtx, running, setRunning, eletronicStateList, setEletronicStateList } = React.useContext(AppContext)
+	const { data, setData, dragMap, setDragMap, alignment, lines, setLines, connectivityMtx, setConnectivityMtx, eletronicMtx, setEletronicMtx, running, setRunning, eletronicStateList, setEletronicStateList, buildingCircuit, setBuildingCircuit } = React.useContext(AppContext)
 
 	const [screen, setScreen] = React.useState('components')
 
@@ -54,57 +54,6 @@ export default function SideBar(props) {
 		setClock({ tempo: 0 })
 	}, [])
 
-	/*
-	React.useEffect(() => {
-		if (running) {
-			let count = 0;
-			console.log(props.connectorValues)
-			let connectorValuesHOLDER = props.connectorValues
-			let func = editorCodeCaller(connectorValuesHOLDER, props.editorCode).main
-			let funcId = setInterval(() => {
-				if (running) {
-					let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
-
-					props.setConnectorValues(updateConnectorsValues(props.connectorValues, props.editorCode))
-
-					
-
-					count++
-					setClock({ ...clock, tempo: clock.tempo++ })
-				}
-			}, 1000)
-			return () => {
-				clearInterval(funcId)
-				setClock({ tempo: 0 })
-			}
-		}
-
-	}, [running])
-	
-	React.useEffect(() => {
-		if (running) {
-
-			//TODO: Mudar a simulação para atualizar quando os connectors mudam. Usar o UseEffect para rodar com o connectorValues.
-			let connectorValuesHOLDER = props.connectorValues
-
-			let codeOutPuts = editorCodeCaller(connectorValuesHOLDER, props.editorCode)
-
-			let configHolder = codeOutPuts.configPins
-
-
-			Object.keys(configHolder).map((c) => {
-				connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
-			})
-
-			let output = codeOutPuts.main
-			props.setConnectorValues(output)
-
-		}
-
-	}, [props.connectorValues])
-	*/
-
-
 	React.useEffect(() => {
 		if(running && finished) {
             let auxIntervalId = setTimeout(() => {
@@ -112,6 +61,7 @@ export default function SideBar(props) {
 					setFinished(false)
 					let auxEletronicMtx = JSON.parse(JSON.stringify(simulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList)))
 					setEletronicMtx(auxEletronicMtx)
+					console.log(auxEletronicMtx)
 					//console.log(auxEletronicMtx)
 					setFinished(true)
 				} catch (error) {
@@ -119,23 +69,13 @@ export default function SideBar(props) {
 					setAlertOpen(true)
 				}
 				setClock({ ...clock, tempo: clock.tempo++ })
-            }, 1000)
+            }, 2000)
 			setIntervalId(auxIntervalId)
 		}
 	},
 	[running, eletronicMtx, eletronicStateList, finished, clock])
 	
 	function updateConfigPins() {
-		/*
-		let configHolder = editorCodeCaller(undefined, props.editorCode).configPins
-		let connectorValuesHOLDER = props.connectorValues
-
-		Object.keys(configHolder).map((c) => {
-			connectorValuesHOLDER = { ...connectorValuesHOLDER, [c]: { value: connectorValuesHOLDER[c].value, type: configHolder[c] } }
-		})
-
-		props.setConnectorValues(connectorValuesHOLDER)
-		*/
 		console.log('dragMap:')
 		console.log(dragMap)
 		console.log('connectivityMtx:')
@@ -189,7 +129,7 @@ export default function SideBar(props) {
 	//Função que testa se a pagina esta no simulador ou editor e adiciona o dropzone baseado nisso
 	const hasDropZone = () => {
 		if (alignment == 'simulador') {
-			return <DropZone data={data} setData={setData} dragMap={dragMap} setDragMap={setDragMap} lines={lines} setLines={setLines} connectivityMtx={connectivityMtx} setConnectivityMtx={setConnectivityMtx} />
+			return <DropZone data={data} setData={setData} dragMap={dragMap} setDragMap={setDragMap} lines={lines} setLines={setLines} connectivityMtx={connectivityMtx} setConnectivityMtx={setConnectivityMtx} setBuildingCircuit={setBuildingCircuit} />
 		} else {
 			return <DropZone data={data} setData={setData} dragMap={dragMap} setDragMap={setDragMap} lines={lines} setLines={setLines} connectivityMtx={connectivityMtx} setConnectivityMtx={setConnectivityMtx} />
 		}
@@ -208,14 +148,14 @@ export default function SideBar(props) {
 		if (alignment === 'editor') {
 			const jszip = new JSZip()
 
-			console.log(data)
-			console.log(props.editorComponent)
+			let dataFolder = jszip.folder('data')
 
 			data.forEach(component => {
-				jszip.file(`breadboard.${component.componentName}.svg`, component.breadboard)
-				jszip.file(`part.${component.componentName}.fzp`, component.part)
-				jszip.file(`behavior.${component.componentName}.js`, component.behavior)
+				dataFolder.file(`breadboard.${component.componentName}.svg`, component.breadboard)
+				dataFolder.file(`part.${component.componentName}.fzp`, component.part)
+				dataFolder.file(`behavior.${component.componentName}.js`, component.behavior)
 			})
+	
 
 			jszip.generateAsync({ type: 'blob' })
 				.then(function (blob) {

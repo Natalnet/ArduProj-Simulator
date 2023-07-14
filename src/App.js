@@ -17,9 +17,9 @@ function App() {
 
     const [lines, setLines] = useState([])
 
-    const [data, setData] = React.useState([])
+    const [data, setData] = useState([])
 
-    const [alignment, setAlignment] = React.useState('simulador')
+    const [alignment, setAlignment] = useState('simulador')
 
     const [connectivityMtx, setConnectivityMtx] = useState({})
 
@@ -27,7 +27,9 @@ function App() {
 
     const [eletronicStateList, setEletronicStateList] = useState({})
 
-    const [running, setRunning] = React.useState(false)
+    const [running, setRunning] = useState(false)
+
+    const [buildingCircuit, setBuildingCircuit] = useState(false)
 
 
 
@@ -35,7 +37,7 @@ function App() {
 
     return (
         <div className="App" >
-            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, eletronicMtx, setEletronicMtx, eletronicStateList, setEletronicStateList, running, setRunning}}>
+            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, eletronicMtx, setEletronicMtx, eletronicStateList, setEletronicStateList, running, setRunning, buildingCircuit, setBuildingCircuit}}>
                 <Routes>
                     <Route path='/' element={<Simulador />} />
                     <Route path='editor' element={<Editor />} />

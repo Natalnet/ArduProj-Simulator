@@ -14,26 +14,17 @@ export default function EditorInputOutput() {
             let behaviorFunctions = editorCodeCaller(undefined, editorComponent.behavior)
             let configOutput = behaviorFunctions.configPins
             Object.keys(configOutput).forEach(connector => {
-                console.log(connector)
                 if(connector.includes('connector')){
-                    setInputValues({
-                        ...inputValues,
-                        [connector]: 0
-                    })
+                    console.log(connector)
+                    setInputValues(inputValues + `, [${connector}]:{value:0}`)
                 }
             })
         }
     }, [editorComponent])
-    
 
-    function hasEditorComponent(){
-        return(
-            console.log(inputValues)
-           
-        )
-            
+    function getOutput(){
+        
     }
-
 
   return (
     <div  
@@ -53,33 +44,22 @@ export default function EditorInputOutput() {
         style={{
             width: '30%',
             height: '100%',
+            overflowY: 'auto',
+            overflowX: 'hidden',
         }}>
             <h4>Input</h4>
-            {editorComponent ? 
-             Object.keys(inputValues).forEach(connector => {
-                if(connector.includes('connector')){
-                        <div>
-                            <input
-                            type="text"
-                            placeholder={connector}
-                            value={inputValues[connector]}
-                            onChange={e => {
-                                setInputValues({
-                                    ...inputValues,
-                                    [connector]: e.target.value
-                                })
-                            }}
-                            />
-                        
-                        </div>
-                }
-            })
-            : null}
+            <input
+                type="text"
+                placeholder="input"
+                value={inputValues}
+                onChange={e => {setInputValues(e.target.value)}}    
+            />
         </div>
         <button
         style={{
             height: '40%',
         }}
+        onClick={getOutput}
         >Run</button>
         <div
         style={{

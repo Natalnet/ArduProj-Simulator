@@ -2,10 +2,7 @@ import { editorCodeCaller } from "./functionHelpers"
 
 export function simulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList) {
 
-    //let depth = createDepth(lines, dragMap)
-
     let outConnector = [], inConnector = []
-
 
     let eletronicMtxHOLDER
 
@@ -66,6 +63,7 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
                                         return outConnectorConnectedTo === inConnector.fullId
                                     } )
                                     if (!isConnectedTo) return
+                                    console.log(outConnector)
                                     eletronicMtxHOLDER[outConnector.fullId][inConnector.fullId] = {value: 1}
                                     
                                 })
@@ -75,51 +73,10 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
             }
 
         })
-
-        /*
-        //Aqui definimos o primeiro elemento a ser chamado baseado em quem é power source
-        depth.forEach(depthLevel => {
-            depthLevel.forEach(outComponent => {
-
-            let behaviorFunctions = editorCodeCaller(undefined, outComponent.behavior)
-            let configOutput = behaviorFunctions.configPins
-
-
-            if (configOutput.type === 'power_source'){
-                outComponent.connectors.forEach(outConnector => {
-                    if(configOutput[outConnector.svgId] === 'in'){
-                        return
-                    }
-
-                    outConnector.connectedTo.forEach(inComponentFullId => {
-                        depth.forEach(depthLevel => {
-                            depthLevel.forEach(inComponent => {
-                                if(inComponent.id !== inComponentFullId.split('/')[2]) return
-                                inComponent.connectors.forEach( inConnector => {
-                                    let isConnectedTo = outConnector.connectedTo.some(outConnectorConnectedTo => {
-                                        return outConnectorConnectedTo === inConnector.fullId
-                                    } )
-                                    if (!isConnectedTo) return
-                                    eletronicMtxHOLDER[outConnector.fullId][inConnector.fullId] = {value: 1}
-                                    
-                                })
-                            })
-                        })
-                        
-                    })
-                })
-            }
-        })
-    })
-    */
         
     } else {
         eletronicMtxHOLDER = JSON.parse(JSON.stringify(eletronicMtx))
     }
-    
-
-
-
 
     //Loop para encontrar em que parte da matrix eletronica a corrente esta sendo passada sendo a linha aquele que esta passando a corrente e a coluna aquele que a está recebendo.
     Object.keys(connectivityMtx).forEach( outConnectorLoop => {
@@ -136,11 +93,18 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
   
     let nextComponentInLineID = [] 
     inConnector.forEach(inConnectorLoop => {
+        if(nextComponentInLineID.some(id => id === inConnectorLoop.split('/')[2])) {
+            return
+        }
         nextComponentInLineID.push(inConnectorLoop.split('/')[2])
     })
 
     let nextComponentInLineDATA = [] 
     inConnector.forEach(inConnectorLoop => {
+        console.log(inConnectorLoop)
+        if(nextComponentInLineDATA.some(dataComponent => dataComponent.componentName === inConnectorLoop.split('/')[0])) {
+            return
+        }
         nextComponentInLineDATA.push(data.find( dataComponent => dataComponent.componentName === inConnectorLoop.split('/')[0]))
     }) 
 
@@ -151,8 +115,7 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
         }
     })
 
-    
-
+    var output = []
 
     for(let indexInLine = 0; indexInLine < nextComponentInLineID.length; indexInLine++){
 
@@ -177,31 +140,66 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
         })
 
         
-
-        /*
-        let configOutput = editorCodeCaller(undefined, nextComponentInLineDATA[indexInLine].behavior).configPins
-        
-        if (configOutput.type === 'interactable_component') {
-            configOutput.events.forEach(eventType => {
-                document.getElementById(nextComponentInLineID[indexInLine]).addEventListener(eventType, (e) => {
-                    input.events.eventType = e
-                })
-            })
-        }
-        */
-        //TODO: TENHO QUE PENSAR COMO FAZER O EVENT LISTENER OU ALGO DO GENERO. SE EU COLOCAR PRA CRIAR EVENTO SEMPRE Q RODAR VAI TER EVENTO INFINITO. TALVEZ A SOLUÇÃO SEJA CRIAR UMA FUNÇÃO DE SETUP QUE SÓ RODE UMA VEZ QUANDO A SIMULAÇÃO FOR INICIADA.
-        
-        //TODO: Arrumar isso vvv
-        //! Acho que isso não funcionará pro caso de um componente que possua mais de 1 tipo de evento. 
         input.events = eletronicStateList[nextComponentInLineID[indexInLine]]
 
 
-       
 
-    // Codigo do componente que esta sendo passado a corrente sendo chamado
+    input.path = new Set
+    console.log(input.path) 
+    if(input.path.size == 0){
+        input.path.add(input.id)
+    } else if(input.path.has(input.id)){
+        console.log('CIRCUITO FECHADOOOO')
+    }
+
+    var pathHOLDER = new Set
+    //! ERRO AQUI DEFININDO PATH 
+    if(input) {
+        console.log(output[indexInLine])
+        Object.keys(input).forEach(connector => {
+
+            console.log('a')
+            console.log(input)
+                if(!connector.includes('connector')) return
+                if(!input[connector]) return
+                console.log('b')
+                console.log(connector)
+                if(input[connector].path) {
+                    console.log(input[connector].path)
+                    if(input[connector].path){  
+                        pathHOLDER.add(input[connector].path)
+                    } 
+                }
+            })
+        
+    }
+    
+
+    console.log(input)
+    console.log(nextComponentInLineDATA[indexInLine])
     let behaviorFunctions = editorCodeCaller(input, nextComponentInLineDATA[indexInLine].behavior)
     let mainFunc = new Function("input", behaviorFunctions.main)
-    var output = mainFunc(input)
+
+    
+    try {
+        output.push(mainFunc(input))
+    } catch (error) {
+        console.log('Erro no comportamento:')
+        console.log(error)
+    }
+    
+        output[indexInLine].id = input.id
+        pathHOLDER.add(input.id)
+        output[indexInLine].path = pathHOLDER
+
+        console.log(nextComponentInLineID)
+        console.log(nextComponentInLineDATA)
+        console.log('input:')
+        console.log(input)
+        console.log('output:')
+        console.log(output[indexInLine])
+
+
     }
     // Esvaziamento da matriz eletronica para poder inserir o output
     Object.keys(connectivityMtx).forEach( outConnectorLoop => {
@@ -212,12 +210,10 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
 
     for(let indexInLine = 0; indexInLine < nextComponentInLineID.length; indexInLine++){
 
-       
         let configPins = editorCodeCaller(undefined, nextComponentInLineDATA[indexInLine].behavior).configPins
 
     // Busca dos index dos connectors que estão passando e recebendo a corrente eletronica no proximo loop
-    let connectorsKeysArray = Object.keys(output)
-    connectorsKeysArray.forEach((pin) => {
+    Object.keys(output[indexInLine]).forEach((pin) => {
         if(configPins[pin] !== 'out' && configPins[pin] !== 'in-out') return
         let newOutConnectorId = `${inConnector[indexInLine].split('/')[0]}/${pin}/${nextComponentInLineID[indexInLine]}`
         let connectoroutConnector 
@@ -235,37 +231,20 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
             return component.id === nextComponentInLineID[indexInLine]
         })
 
-        // Aqui pegamos o connector de saida do outComponent
-        let nextComponentInLineDragComponentConnector = nextComponentInLinedragComponent.connectors.find( connector => {
-            return connector.svgId === pin
-        })
-        
-        // Aqui pegamos todos os connectors que estão conectados ao outComponentConnector 
-        let nextComponentInLineConnectedToConnector = []
-        Object.keys(connectivityMtx).forEach(connector => { 
-            //!Erro aqui vvv
-            nextComponentInLineDragComponentConnector.connectedTo.forEach(connectorTo => {
-                if(connectorTo === connector){
-                    nextComponentInLineConnectedToConnector.push(connector)
-                }
+        //* Pegar cada componente do nextComponentInLinedragComponent
+        //* pegar com quem eles estão connectados
+        //* ir na matriz eletronica e por [os connectors][os connectedTo deles]: output[os connectors]
+
+        nextComponentInLinedragComponent.connectors.forEach(outConnector => {
+            outConnector.connectedTo.forEach(NEWoutConnector => {
+                console.log(`o path do output ${outConnector.fullId} aq: ${output[indexInLine].path}`)
+                output[indexInLine][outConnector.fullId.split('/')[1]].path = output[indexInLine].path
+                eletronicMtxHOLDER[outConnector.fullId][NEWoutConnector] = output[indexInLine][outConnector.fullId.split('/')[1]]
             })
-
         })
-        
-        //console.log(output)
-        
-        // Inserção do output na matriz eletronica
-        if(nextComponentInLineConnectedToConnector){
-            nextComponentInLineConnectedToConnector.forEach(nextInConnector => {
-                if(!output[connectoroutConnector.svgId]) return
-                eletronicMtxHOLDER[connectoroutConnector.fullId][nextInConnector] = output[connectoroutConnector.svgId]
-                
-            })
-        }
-
 
         
-    });
+    })
     }
 
     return(eletronicMtxHOLDER)

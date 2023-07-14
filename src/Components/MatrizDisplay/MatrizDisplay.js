@@ -28,8 +28,8 @@ export default function MatrizDisplay() {
                 <div
                     style={{
                         overflow: 'hidden',
-                        gridRow: index+2,
-                        gridColumn: 1,
+                        gridRow: 1,
+                        gridColumn: index+2,
                         border: '2px solid hsla(233, 33%, 30%, 0.7)'
                     }}
                 >
@@ -42,8 +42,8 @@ export default function MatrizDisplay() {
                 <div
                     style={{
                         overflow: 'hidden',
-                        gridRow: 1,
-                        gridColumn: index+2,
+                        gridRow: index+2,
+                        gridColumn: 1,
                         border: '2px solid hsla(233, 33%, 30%, 0.7)'
                     }}
                 >
@@ -54,18 +54,51 @@ export default function MatrizDisplay() {
             {Object.keys(eletronicMtx).map((outerConnector, outerIndex) => {
                 return (
                 Object.keys(eletronicMtx).map((innerConnector, innerIndex) => {
-                    return (
-                        <div
-                        style={{
-                            overflow: 'hidden',
-                            gridRow: innerIndex+2,
-                            gridColumn: outerIndex+2,
-                            border: '2px solid hsla(233, 33%, 50%, 0.7)'
-                        }}
-                        >
-                           {`${eletronicMtx[outerConnector][innerConnector]}`}
-                        </div>
-                    )
+                    if(!eletronicMtx[outerConnector][innerConnector]) {
+                        return (
+                            <div
+                            style={{
+                                overflow: 'hidden',
+                                gridRow: innerIndex+2,
+                                gridColumn: outerIndex+2,
+                                border: '2px solid hsla(233, 33%, 50%, 0.7)',
+                                backgroundColor: 'hsla(233, 33%, 10%, 0.7)',
+                            }}
+                            >
+                               {`${eletronicMtx[outerConnector][innerConnector]}`}
+                            </div>
+                        )
+                    }
+                    if(eletronicMtx[outerConnector][innerConnector].value > 0) {
+                        return (
+                            <div
+                            style={{
+                                overflow: 'hidden',
+                                gridRow: innerIndex+2,
+                                gridColumn: outerIndex+2,
+                                border: '2px solid hsla(233, 33%, 50%, 0.7)',
+                                backgroundColor: 'green'
+                            }}
+                            >
+                               {`${eletronicMtx[outerConnector][innerConnector]}`}
+                            </div>
+                        )
+                    }
+                    if(eletronicMtx[outerConnector][innerConnector].value <= 0) {
+                        return (
+                            <div
+                            style={{
+                                overflow: 'hidden',
+                                gridRow: innerIndex+2,
+                                gridColumn: outerIndex+2,
+                                border: '2px solid hsla(233, 33%, 50%, 0.7)',
+                                backgroundColor: 'red'
+                            }}
+                            >
+                               {`${eletronicMtx[outerConnector][innerConnector]}`}
+                            </div>
+                        )
+                    }
                 })
                 )
             })}

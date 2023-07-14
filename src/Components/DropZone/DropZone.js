@@ -2,10 +2,13 @@ import React, { useContext } from 'react'
 import './DropZoneStyle.css'
 import { handleFileDrop } from '../../helpers/functionHelpers';
 import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
+import { makeLine } from '../../helpers/linesHelpers';
 
 export default function DropZoneIndex(props) {
 
   const drop = React.useRef(null)
+
+  const [hasDropped, setHasDropped] = React.useState(false)
 
   const [dragging, setDragging] = React.useState(false)
 
@@ -45,9 +48,10 @@ export default function DropZoneIndex(props) {
   }
 
   function handleDrop(e) {
-
-    console.log(props.setDragMap)
-
+    console.log(e)
+    props.setBuildingCircuit(true)
+    console.log(props.buildingCircuit)
+    
     //Função que lida com os arquivos dropados 
     handleFileDrop(e, props.data, props.setData, props.dragMap, props.setDragMap, props.lines, props.setLines, props.connectivityMtx, props.setConnectivityMtx)
 

@@ -11,12 +11,11 @@ export function unzipFile(file, data, setData, dragMap, setDragMap, lines, setLi
         //o estado. O ruim é perdere memória =), para não fazer assim a gente teria que implementar
         //algum outro estado que sinalizasse ou forçasse o update
 
-        //console.log(data)
+        
         let tempData = [...data]
         let tempDragMap = []
         let tempLines = []
         let tempConnectivityMtx = []
-        //console.log(tempData)
 
         //Aqui o arquivo é lido como um buffer
         const bufferReader = new FileReader()
@@ -29,8 +28,10 @@ export function unzipFile(file, data, setData, dragMap, setDragMap, lines, setLi
                 Object.keys(zip.files).forEach(function (filename) {
 
                     zip.files[filename].async('string').then(function (fileData) {
-
+                        
                         if(filename.split('/')[0] === 'data') {
+                            
+                            
                              /* 
                             ! O formato do nome do arquivo deverá ser tipoDeComponente.nome.formatoDoArquivo
                             ! Ex: breadboard.arduinoUnoV3.svg
@@ -73,10 +74,9 @@ export function unzipFile(file, data, setData, dragMap, setDragMap, lines, setLi
 
                             }
 
-
                             //Condional para testar se ja existe um objeto que condiz ao componente atual
                             if (contentType === 'fzb') {
-
+                                
                                 /* Nesse caso ja existe um objeto guardando os fzbs
                                 let index = tempData.findIndex(e => e.componentName === `${cortado[0]}_fzbList`)
                                 tempData[index][contentType] = fileData
@@ -85,14 +85,11 @@ export function unzipFile(file, data, setData, dragMap, setDragMap, lines, setLi
                             } else if (tempData.some(e => e.componentName === componentName)) {
 
                                 //Nesse caso ja existe um objeto guardando o componente atual então apenas adicionamos um novo svg nele
-
+                                
                                 let index = tempData.findIndex(e => e.componentName === componentName)
                                 tempData[index][contentType] = fileData
-
                             } else {
-
                                 //Nesse caso ainda não existe um objeto que corresponda ao componente atual então é criado um 
-
                                 //Objeto temporario para guardar as variaveis de nome e o arquivo html convertido em texto
                                 let tempObj = {}
                                 tempObj.componentName = componentName
@@ -118,7 +115,6 @@ export function unzipFile(file, data, setData, dragMap, setDragMap, lines, setLi
                        
                     })
                         .then(() => {
-
                             //Aqui transferimos para a variavel global
                             setData([...tempData])
                             setDragMap([...tempDragMap])
@@ -148,7 +144,6 @@ export async function handleFileDrop(e, data, setData, dragMap, setDragMap, line
     for (let i in droppedFiles) {
         let item = droppedFiles[i]
         if (typeof item === 'object') {
-
             //Função que extrai e adiciona os arquivos a variavel data
             await unzipFile(item, data, setData, dragMap, setDragMap, lines, setLines, connectivityMtx, setConnectivityMtx)
         }

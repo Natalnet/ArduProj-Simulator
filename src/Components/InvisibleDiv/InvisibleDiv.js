@@ -33,7 +33,7 @@ export default function InvisibleDiv({ updatePositionCallback, sectionUuid, sect
             let connectorCliked = clickedOver.find(element => {
                 return element.className.baseVal === 'connector'
             })
-
+            console.log('clccick')
             if (connectorCliked) {
 
                 lineFunc(connectorCliked, lines, setLines, dragMap, setDragMap)
