@@ -1,4 +1,6 @@
 import JSZip from 'jszip'
+import { DataModelClass } from '../@types/DataModelClass'
+import { ConnectorModelClass } from '../@types/ConnectorModelClass'
 //Função responsavel por extrair arquivos do zip e adicionalos no data
 export function unzipFile(file, data, setData, dragMap, setDragMap, lines, setLines, connectivityMtx, setConnectivityMtx) {
     return new Promise((resolve, reject) => {
@@ -91,7 +93,7 @@ export function unzipFile(file, data, setData, dragMap, setDragMap, lines, setLi
                             } else {
                                 //Nesse caso ainda não existe um objeto que corresponda ao componente atual então é criado um 
                                 //Objeto temporario para guardar as variaveis de nome e o arquivo html convertido em texto
-                                let tempObj = {}
+                                let tempObj = new DataModelClass
                                 tempObj.componentName = componentName
                                 tempObj[contentType] = fileData
 
@@ -115,6 +117,7 @@ export function unzipFile(file, data, setData, dragMap, setDragMap, lines, setLi
                        
                     })
                         .then(() => {
+                            console.log(tempData)
                             //Aqui transferimos para a variavel global
                             setData([...tempData])
                             setDragMap([...tempDragMap])
@@ -181,16 +184,9 @@ export function createConnectors(partComponent, breadboard, id, dragComponentNam
 
         let connectorConfig = configOutput[p.getAttribute('svgId')]
 
-        connectorList.push({
-            id: connector.getAttribute('id'),
-            svgId: p.getAttribute('svgId'),
-            type: connector.getAttribute('type'),
-            name: connector.getAttribute('name'),
-            value: null,
-            connectedTo: [],
-            fullId: `${dragComponentName}/${connectorSvgId}/${id}`,
-            connectorConfig: connectorConfig
-        })
+        let connectorClass = new ConnectorModelClass(connector.getAttribute('id'), connector.getAttribute('name'), p.getAttribute('svgId'), connector.getAttribute('type'), null, [], connectorConfig, `${dragComponentName}/${connectorSvgId}/${id}`)
+
+        connectorList.push(connectorClass)
         
     }
 

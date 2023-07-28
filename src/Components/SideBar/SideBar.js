@@ -47,6 +47,8 @@ export default function SideBar(props) {
 
 	const [alertOpen, setAlertOpen] = React.useState(false)
 
+	const [circuitChanged, setCircuitChanged] = React.useState(false)
+
 
 	var arduino = undefined; //variavel para guardar a instancia em execução
 
@@ -55,14 +57,13 @@ export default function SideBar(props) {
 	}, [])
 
 	React.useEffect(() => {
-		if(running && finished) {
+		if(running && finished && circuitChanged) {
             let auxIntervalId = setTimeout(() => {
 				try {
 					setFinished(false)
-					let auxEletronicMtx = JSON.parse(JSON.stringify(simulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList)))
+					let auxEletronicMtx = JSON.parse(JSON.stringify(simulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList, setCircuitChanged)))
 					setEletronicMtx(auxEletronicMtx)
 					console.log(auxEletronicMtx)
-					//console.log(auxEletronicMtx)
 					setFinished(true)
 				} catch (error) {
 					console.log(error)
@@ -73,7 +74,7 @@ export default function SideBar(props) {
 			setIntervalId(auxIntervalId)
 		}
 	},
-	[running, eletronicMtx, eletronicStateList, finished, clock])
+	[running, eletronicMtx, eletronicStateList, finished, clock, circuitChanged])
 	
 	function updateConfigPins() {
 		console.log('dragMap:')
@@ -99,7 +100,8 @@ export default function SideBar(props) {
 				}
 				 else {
 
-					simulationSetup(dragMap, eletronicStateList, setEletronicStateList)
+					simulationSetup(dragMap, eletronicStateList, setEletronicStateList, setCircuitChanged)
+					setCircuitChanged(true)
 					setRunning(true)
 				}
 		} else {

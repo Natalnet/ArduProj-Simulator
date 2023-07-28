@@ -1,6 +1,6 @@
 import { editorCodeCaller } from "./functionHelpers"
 
-export function simulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList) {
+export function simulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList, setCircuitChanged) {
 
     let outConnector = [], inConnector = []
 
@@ -63,7 +63,6 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
                                         return outConnectorConnectedTo === inConnector.fullId
                                     } )
                                     if (!isConnectedTo) return
-                                    console.log(outConnector)
                                     eletronicMtxHOLDER[outConnector.fullId][inConnector.fullId] = {value: 1}
                                     
                                 })
@@ -101,7 +100,6 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
 
     let nextComponentInLineDATA = [] 
     inConnector.forEach(inConnectorLoop => {
-        console.log(inConnectorLoop)
         if(nextComponentInLineDATA.some(dataComponent => dataComponent.componentName === inConnectorLoop.split('/')[0])) {
             return
         }
@@ -119,7 +117,7 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
 
     for(let indexInLine = 0; indexInLine < nextComponentInLineID.length; indexInLine++){
 
-        let input = {}
+        var input = {}
 
         input.id =  nextComponentInLineID[indexInLine]
 
@@ -142,7 +140,29 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
         
         input.events = eletronicStateList[nextComponentInLineID[indexInLine]]
 
+        // Aqui temos o bloco de codigo que passa o path de cada entrada para o output e também testa se o circuito esta fechado
+        input.path = []
+        var circuitClosed = false
+        Object.keys(input).forEach(inputKey => {
+            if(inputKey.includes('connector')){
+                console.log('INCLUDEEES')
+                if(!input[inputKey]) return
+                if(!input[inputKey].path) return
+                input[inputKey].path.forEach(pathId => {
+                    if(input.path.some(inputPath => { return inputPath === pathId})){
+                        console.log('CIRCUITO FECHADO')
+                        setCircuitChanged(false)
+                        circuitClosed = true
+                        resetPaths(eletronicMtxHOLDER)
+                    } else {
+                        input.path.push(pathId)
+                    }
+                })
+            }
+        })
 
+        if(circuitClosed) break
+/*
 
     input.path = new Set
     console.log(input.path) 
@@ -152,31 +172,8 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
         console.log('CIRCUITO FECHADOOOO')
     }
 
-    var pathHOLDER = new Set
-    //! ERRO AQUI DEFININDO PATH 
-    if(input) {
-        console.log(output[indexInLine])
-        Object.keys(input).forEach(connector => {
-
-            console.log('a')
-            console.log(input)
-                if(!connector.includes('connector')) return
-                if(!input[connector]) return
-                console.log('b')
-                console.log(connector)
-                if(input[connector].path) {
-                    console.log(input[connector].path)
-                    if(input[connector].path){  
-                        pathHOLDER.add(input[connector].path)
-                    } 
-                }
-            })
-        
-    }
+    */
     
-
-    console.log(input)
-    console.log(nextComponentInLineDATA[indexInLine])
     let behaviorFunctions = editorCodeCaller(input, nextComponentInLineDATA[indexInLine].behavior)
     let mainFunc = new Function("input", behaviorFunctions.main)
 
@@ -188,10 +185,11 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
         console.log(error)
     }
     
+    /*
         output[indexInLine].id = input.id
         pathHOLDER.add(input.id)
         output[indexInLine].path = pathHOLDER
-
+    */
         console.log(nextComponentInLineID)
         console.log(nextComponentInLineDATA)
         console.log('input:')
@@ -207,6 +205,8 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
             eletronicMtxHOLDER[outConnectorLoop][inConnectorLoop] = null
         })
     })
+
+    if(circuitClosed) return eletronicMtxHOLDER
 
     for(let indexInLine = 0; indexInLine < nextComponentInLineID.length; indexInLine++){
 
@@ -237,8 +237,17 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
 
         nextComponentInLinedragComponent.connectors.forEach(outConnector => {
             outConnector.connectedTo.forEach(NEWoutConnector => {
-                console.log(`o path do output ${outConnector.fullId} aq: ${output[indexInLine].path}`)
-                output[indexInLine][outConnector.fullId.split('/')[1]].path = output[indexInLine].path
+                if(!output[indexInLine][outConnector.fullId.split('/')[1]]) return
+                if(output[indexInLine][outConnector.fullId.split('/')[1]].value > 0){
+                    if(!output[indexInLine][outConnector.fullId.split('/')[1]].path){
+                        output[indexInLine][outConnector.fullId.split('/')[1]].path = input.path
+                    }
+                    let pathLineId = findLine(lines, NEWoutConnector, outConnector.fullId).id
+                    if(!output[indexInLine][outConnector.fullId.split('/')[1]].path.some(path => { return pathLineId === path})){
+                        output[indexInLine][outConnector.fullId.split('/')[1]].path.push(pathLineId)
+                    }
+                    console.log(output[indexInLine][outConnector.fullId.split('/')[1]].path)
+                }
                 eletronicMtxHOLDER[outConnector.fullId][NEWoutConnector] = output[indexInLine][outConnector.fullId.split('/')[1]]
             })
         })
@@ -247,7 +256,31 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
     })
     }
 
+    console.log(eletronicMtxHOLDER)
+
     return(eletronicMtxHOLDER)
+}
+
+function findLine(lines,startLine, endLine){
+    return(lines.find(line => {
+        if(line.startLine === startLine && line.endLine === endLine){
+            return line.id
+        }
+        if(line.startLine === endLine && line.endLine === startLine){
+            return line.id
+        }
+    }))
+}
+
+function resetPaths(eletronicMtx){
+    Object.keys(eletronicMtx).forEach(line => {
+        Object.keys(eletronicMtx).forEach(row => {
+            if(eletronicMtx[line][row] !==  null && eletronicMtx[line][row].path) {
+                eletronicMtx[line][row].path = []
+            }
+        })
+    })
+
 }
 
 function createDepth(lines, dragMap) {
@@ -375,7 +408,7 @@ function createDepth(lines, dragMap) {
     return(depthMap)
 }
 
-export function simulationSetup( dragMap, eletronicStateList, seteletronicStateList) {
+export function simulationSetup( dragMap, eletronicStateList, seteletronicStateList, setCircuitChanged) {
     let tempEletronicEventList = {}
     const InteractiveConnectedComponentsSet = new Set()
     dragMap.forEach(currentComponent => {
@@ -395,7 +428,7 @@ export function simulationSetup( dragMap, eletronicStateList, seteletronicStateL
         let behaviorFunctions = editorCodeCaller(undefined, currentComponent.behavior).configPins
         behaviorFunctions.events.forEach(event => {
             console.log(typeof event)
-            document.getElementById(currentComponent.id).addEventListener(event, (event) => {attEventList(currentComponent.id, eletronicStateList, seteletronicStateList)} )
+            document.getElementById(currentComponent.id).addEventListener(event, (event) => {attEventList(currentComponent.id, eletronicStateList, seteletronicStateList, setCircuitChanged)} )
         })
 
     })
@@ -404,7 +437,7 @@ export function simulationSetup( dragMap, eletronicStateList, seteletronicStateL
 
 }
 
-function attEventList(componentId, eletronicStateList, seteletronicStateList) {
+function attEventList(componentId, eletronicStateList, seteletronicStateList, setCircuitChanged) {
     console.log(componentId)
     //! Acho que isso não funcionará pro caso de um componente que possua mais de 1 tipo de evento. 
     // Fazer os eventos alterarem o valor inicial a cada evento.
@@ -415,6 +448,7 @@ function attEventList(componentId, eletronicStateList, seteletronicStateList) {
         auxeletronicStateList[componentId] = !auxeletronicStateList[componentId]
     }
     console.log(auxeletronicStateList)
+    setCircuitChanged(true)
     seteletronicStateList(auxeletronicStateList)
 }
 

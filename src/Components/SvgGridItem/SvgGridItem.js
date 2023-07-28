@@ -7,6 +7,7 @@ import { useSpring, animated } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import { createConnectors } from '../../helpers/functionHelpers'
 import { addConnectortToMatrix } from '../../helpers/connectivitysMatricesObjHelper'
+import { ComponentModelClass } from '../../@types/ComponentModelClass'
 
 
 export default function SvgGridItem({ svg, name, breadboard, part, behavior }) {
@@ -20,7 +21,8 @@ export default function SvgGridItem({ svg, name, breadboard, part, behavior }) {
         let tempMap = [...dragMap]
         let id = uuid()
         let connectors = createConnectors(part, breadboard, id, name, behavior).connectorList
-        tempMap.push({ componentName: name, breadboard: breadboard, part: part, id: id, connectors: connectors, position: xy, behavior:behavior  })
+        let componentToPush = new ComponentModelClass(name, behavior, breadboard, part, connectors, id, xy)
+        tempMap.push(componentToPush)
 
         // É chamada a função helper para a atualização da matriz de conectividade e do seu maping
         let matrixParams = addConnectortToMatrix(id, connectors, connectivityMtx)
