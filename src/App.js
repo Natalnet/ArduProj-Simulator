@@ -1,46 +1,67 @@
-import './App.css';
-import React, { useState } from 'react'
-import { createNanoEvents } from 'nanoevents'
+import "./App.css";
+import React, { useState } from "react";
+import { createNanoEvents } from "nanoevents";
 
-import { Route, BrowserRouter as Router, Routes, Switch } from 'react-router-dom';
-import Editor from './Pages/Editor/Editor';
-import Simulador from './Pages/Simulador/Simulador';
+import {
+    Route,
+    BrowserRouter as Router,
+    Routes,
+    Switch,
+} from "react-router-dom";
+import Editor from "./Pages/Editor/Editor";
+import Simulador from "./Pages/Simulador/Simulador";
 
 //import { led, bateria } from './@types/exportData';
 
-export const AppContext = React.createContext(null)
+export const AppContext = React.createContext(null);
 
 function App() {
-
     //Todos os componentes presentes no drag and drop
-    const [dragMap, setDragMap] = useState([])
+    const [dragMap, setDragMap] = useState([]);
 
-    const [lines, setLines] = useState([])
+    const [lines, setLines] = useState([]);
 
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
 
-    const [alignment, setAlignment] = useState('simulador')
+    const [alignment, setAlignment] = useState("simulador");
 
-    const [connectivityMtx, setConnectivityMtx] = useState({})
+    const [connectivityMtx, setConnectivityMtx] = useState({});
 
-    const [eletronicMtx, setEletronicMtx] = useState(null)
+    const [eletronicMtx, setEletronicMtx] = useState(null);
 
-    const [eletronicStateList, setEletronicStateList] = useState({})
+    const [eletronicStateList, setEletronicStateList] = useState({});
 
-    const [running, setRunning] = useState(false)
+    const [running, setRunning] = useState(false);
 
-    const [buildingCircuit, setBuildingCircuit] = useState(false)
-
-
-
-    
+    const [buildingCircuit, setBuildingCircuit] = useState(false);
 
     return (
-        <div className="App" >
-            <AppContext.Provider value={{ data, setData, dragMap, setDragMap, lines, setLines, alignment, setAlignment, connectivityMtx, setConnectivityMtx, eletronicMtx, setEletronicMtx, eletronicStateList, setEletronicStateList, running, setRunning, buildingCircuit, setBuildingCircuit}}>
+        <div className="App">
+            <AppContext.Provider
+                value={{
+                    data,
+                    setData,
+                    dragMap,
+                    setDragMap,
+                    lines,
+                    setLines,
+                    alignment,
+                    setAlignment,
+                    connectivityMtx,
+                    setConnectivityMtx,
+                    eletronicMtx,
+                    setEletronicMtx,
+                    eletronicStateList,
+                    setEletronicStateList,
+                    running,
+                    setRunning,
+                    buildingCircuit,
+                    setBuildingCircuit,
+                }}
+            >
                 <Routes>
-                    <Route path='/' element={<Simulador />} />
-                    <Route path='editor' element={<Editor />} />
+                    <Route path="/" element={<Simulador />} />
+                    <Route path="editor" element={<Editor />} />
                 </Routes>
             </AppContext.Provider>
         </div>

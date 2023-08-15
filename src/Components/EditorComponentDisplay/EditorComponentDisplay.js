@@ -24,7 +24,8 @@ export default function EditorComponentDisplay() {
 
     function hasEditorComponent() {
         if (editorComponent) {
-            var localSvgData = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg', editorComponent.componentName, editorComponent.behavior)
+            try {
+                var localSvgData = createConnectors(editorComponent.part, editorComponent.breadboard, 'displayedSvg', editorComponent.componentName, editorComponent.behavior)
 
             return (
                 <svg
@@ -34,6 +35,10 @@ export default function EditorComponentDisplay() {
                     dangerouslySetInnerHTML={{ __html: localSvgData.svg.innerHTML }}
                     id='displayedSvg'
                 />)
+            } catch (error) {
+                
+            }
+            
         } else {
             return (
                 <Typography variant="h5" component="div">

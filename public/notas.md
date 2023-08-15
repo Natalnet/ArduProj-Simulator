@@ -5,6 +5,9 @@
 - faz uma lista dos elementos que tão de fora do circuito e chamar eles para resetar
 - converter pra typescript
 
+- simulação não funciona com leds em serie 
+- simulação fica rodando infinito ainda 
+
 
 
 

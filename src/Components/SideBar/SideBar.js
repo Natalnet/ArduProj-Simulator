@@ -28,6 +28,7 @@ import code_default from '../../helpers/default_code';
 import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
 import { simulationController, simulationSetup } from '../../helpers/simulationController';
+import { newSimulationController } from '../../helpers/newSimulationControler';
 
 export default function SideBar(props) {
 
@@ -61,9 +62,10 @@ export default function SideBar(props) {
             let auxIntervalId = setTimeout(() => {
 				try {
 					setFinished(false)
-					let auxEletronicMtx = JSON.parse(JSON.stringify(simulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList, setCircuitChanged)))
-					setEletronicMtx(auxEletronicMtx)
-					console.log(auxEletronicMtx)
+					//let auxEletronicMtx = JSON.parse(JSON.stringify(simulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList, setCircuitChanged)))
+					newSimulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList, circuitChanged, setCircuitChanged)
+					//setEletronicMtx(auxEletronicMtx)
+					//console.log(auxEletronicMtx)
 					setFinished(true)
 				} catch (error) {
 					console.log(error)
@@ -87,6 +89,9 @@ export default function SideBar(props) {
 		console.log(data)
 		console.log('eletronicMtx:')
 		console.log(eletronicMtx)
+		console.log('eletronicStateList:')
+		console.log(eletronicStateList)
+	
 	}
 
 

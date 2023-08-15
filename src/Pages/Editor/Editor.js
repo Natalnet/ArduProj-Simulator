@@ -71,7 +71,7 @@ export default function Editor() {
                 <ToolsArea />
                 <EditorComponentDisplay />
                 <EditorComponentSideBar />
-                <EditorInputOutput />
+                
             </EditorContext.Provider>
         </div>
     )

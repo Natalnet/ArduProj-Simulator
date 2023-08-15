@@ -162,6 +162,8 @@ export function simulationController(connectivityMtx, dragMap, data, eletronicMt
         })
 
         if(circuitClosed) break
+
+        
 /*
 
     input.path = new Set
@@ -415,9 +417,7 @@ export function simulationSetup( dragMap, eletronicStateList, seteletronicStateL
 
         //TODO: Fazer o caso onde o componente é interativo mas não está conectado no circuito 
 
-        let behaviorFunctions = editorCodeCaller(undefined, currentComponent.behavior).configPins
-
-        if(behaviorFunctions.type === 'interactive_component') {
+        if(currentComponent.config.type === 'interactive_component') {
             InteractiveConnectedComponentsSet.add(currentComponent)
             tempEletronicEventList[currentComponent.id] = null
             return
@@ -425,8 +425,7 @@ export function simulationSetup( dragMap, eletronicStateList, seteletronicStateL
     })
     
     InteractiveConnectedComponentsSet.forEach(currentComponent => {
-        let behaviorFunctions = editorCodeCaller(undefined, currentComponent.behavior).configPins
-        behaviorFunctions.events.forEach(event => {
+        currentComponent.config.events.forEach(event => {
             console.log(typeof event)
             document.getElementById(currentComponent.id).addEventListener(event, (event) => {attEventList(currentComponent.id, eletronicStateList, seteletronicStateList, setCircuitChanged)} )
         })

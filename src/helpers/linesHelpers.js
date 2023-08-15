@@ -14,6 +14,9 @@ export function lineFunc(target, lines, setLines, dragMap, setDragMap, data, con
     let tempConnectorsEndIndex
 
     if (!isSection) {
+
+        console.log(target)
+
         var targetDragMap = dragMap.filter((i) => {
             return i.id === target.id.split('/')[2]
         })[0]
@@ -280,7 +283,7 @@ function attConnectivityMtx(lines, dragMap, connectivityMtx){
     //Primeiro pegamos o valor do output do configPins
      let behaviorFunctions = editorCodeCaller(undefined, component.behavior)
      let configOutput = behaviorFunctions.configPins
-    let configOutputPinKeys = Object.keys(configOutput)
+    let configOutputPinKeys = Object.keys(configOutput.pins)
     
     //E a partir dos pinos dados checamos se o seu valor é de in ou out e atribuimos um devido valor
     configOutputPinKeys.forEach(pin => {
