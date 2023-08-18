@@ -36,9 +36,7 @@ export default function DragArea() {
 
     
     React.useEffect(() => {
-        console.log(lines.lenght)
         if(lines.length){
-            console.log(lines)
             makeLine(lines, false, true)
         }
     }, [lines])

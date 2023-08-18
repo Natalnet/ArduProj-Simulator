@@ -25,7 +25,6 @@ export default function SvgGrid() {
                 if (d.behavior) {
                     behavior = d.behavior
                 }
-                console.log(d.breadboard)
                 if (alignment === 'simulador') {
                     return createPortal(
                         <SvgGridItem
