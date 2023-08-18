@@ -18,6 +18,7 @@ export default function DragArea() {
         let filteredSections = []
         //Aqui é pego todas as linhas que estão ligadas ao componente que esta se movendo.
         lines.forEach(line => {
+            if (!line.endLine) return
             if (line.startLine.split('/')[2] === componentId || line.endLine.split('/')[2] === componentId) {
                 line.sections.forEach(section => {
                     filteredSections.push(section)

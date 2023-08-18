@@ -37,7 +37,7 @@ export function newSimulationController(connectivityMtx, dragMap, data, eletroni
     })
 
     // Aqui simulamos o primeiro elemento vulgo elemento de alimentação
-    let input = {}
+    
 
     //TODO Fazer ele ir tirando os componentes que já foram simulados e parar em algum momento e continuar quando tiver mudanças
 
@@ -45,21 +45,20 @@ export function newSimulationController(connectivityMtx, dragMap, data, eletroni
     while(toBeSimulatedComponents.length > 0){
         
         
-        let currentComponent
+        
         toBeSimulatedComponents.forEach(component => {
-            console.log(component)
-            currentComponent = component
-            
+
             // Aqui iteramos pela eletronicMtxHolder para achar qualquer valor de entrada não nulo para o componente atual e guardamos no input
+            let input = {}
+            component.connectors.forEach(connectorPin => {
+                input[connectorPin.svgId] = null
+            })
             component.connectors.forEach(connectorPin => {
                 Object.keys(eletronicMtxHOLDER).forEach(inComponent => {
                     if(eletronicMtxHOLDER[inComponent][connectorPin.fullId] !== null){
                         //! Ver o caso de multiplos inputs
-                        console.log(inComponent)
-                        console.log(connectorPin.fullId)
-                        console.log(eletronicMtxHOLDER[inComponent][connectorPin.fullId])
                         input[connectorPin.svgId] = eletronicMtxHOLDER[inComponent][connectorPin.fullId]
-                    }
+                    } 
                 })
             })
 
@@ -69,15 +68,9 @@ export function newSimulationController(connectivityMtx, dragMap, data, eletroni
             
 
             input.id = component.id
-
-            //! Porque 
-            console.log(input)
-
         
             // Então pegamos o output pelo behavior do componente
             let output = component.doBehavior(input)
-
-            console.log(output)
 
             // Depois disso iteramos por cada pino do componente
             Object.keys(component.config.pins).forEach(connectorPin => {
@@ -88,23 +81,18 @@ export function newSimulationController(connectivityMtx, dragMap, data, eletroni
                 // Aqui atualizamos o valor do eletronicMtx para todos que estão conectados com o devido pino
                 component.connectors.forEach(connector => {
                     if(connector.svgId === connectorPin) {
-                        console.log(connector)
-                        console.log(connectorPin)
                         connector.connectedTo.forEach(connectedTo => {
                             eletronicMtxHOLDER[connector.fullId][connectedTo] = output[connectorPin]
 
-                            console.log(eletronicMtxHOLDER)
 
                             // Aqui adicionamos o componente connectado ao pino atual e o adicionamos na fila.
                             let toAddComponent = allSimulatedComponents.find(component => {
                                 return component.id === connectedTo.split('/')[2]
                             })
-                            console.log(toAddComponent)
                             if(toBeSimulatedComponents.some(component => component.id === toAddComponent.id)) return
                             if(simulatedComponents.some(component => component === toAddComponent)) return
                             toBeSimulatedComponents.push(toAddComponent)
                         
-                            console.log(toBeSimulatedComponents)
                         })
                     }
                 })
@@ -114,12 +102,6 @@ export function newSimulationController(connectivityMtx, dragMap, data, eletroni
 
             simulatedComponents.push(component)
             toBeSimulatedComponents.shift()
-
-            console.log(toBeSimulatedComponents)
-            console.log(simulatedComponents)
-            console.log(eletronicMtxHOLDER)
-            
-        
             
         })
     }
@@ -129,11 +111,42 @@ export function newSimulationController(connectivityMtx, dragMap, data, eletroni
 
 }
 
-function resetComponents(allSimulatedComponents, simulatedComponents){
-    let notSimulatedComponents = []
-    allSimulatedComponents.forEach(generalComponent => {
-        if(!(simulatedComponents.some(simulatedComponent => simulatedComponent.id === generalComponent.id))) notSimulatedComponents.push(generalComponent)
+export function resetCircuit(dragMap, lines, setCircuitChanged){
+
+    // Aqui filtramos os componentes e fazemos um Set com apenas aqueles que estão em conexão com um outro componente
+    const toBeLookedComponentsSet = new Set()
+    lines.forEach(line => {
+        let id
+        id = line.startLine.split('/')[2]
+        toBeLookedComponentsSet.add(id)
+        id = line.endLine.split('/')[2]
+        toBeLookedComponentsSet.add(id)
     })
+
+    // Baseado na filtragem acima conseguimos um dragMap filtrado
+    let allSimulatedComponents
+    allSimulatedComponents = dragMap.filter(component => {
+        return toBeLookedComponentsSet.has(component.id)
+    })
+
+    console.log(allSimulatedComponents)
+    resetComponents(allSimulatedComponents, [])
+    setCircuitChanged(false)
+}
+
+function resetComponents(allSimulatedComponents, simulatedComponents){
+    console.log('r\n e\n s\n e\n t\n')
+    let notSimulatedComponents = []
+
+    if(simulatedComponents.length > 0) {
+        allSimulatedComponents.forEach(generalComponent => {
+            if(!(simulatedComponents.some(simulatedComponent => simulatedComponent.id === generalComponent.id))) notSimulatedComponents.push(generalComponent)
+        })
+    } else {
+        notSimulatedComponents = allSimulatedComponents
+    }
+    console.log(notSimulatedComponents)
+    
 
     notSimulatedComponents.forEach(component => {
         let input = {}

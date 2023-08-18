@@ -28,7 +28,7 @@ import code_default from '../../helpers/default_code';
 import WorkerBuilder from '../ArduinoSimulator/worker-builder';
 import Worker from '../ArduinoSimulator/arduino.worker';
 import { simulationController, simulationSetup } from '../../helpers/simulationController';
-import { newSimulationController } from '../../helpers/newSimulationControler';
+import { newSimulationController, resetCircuit } from '../../helpers/newSimulationControler';
 
 export default function SideBar(props) {
 
@@ -72,8 +72,12 @@ export default function SideBar(props) {
 					setAlertOpen(true)
 				}
 				setClock({ ...clock, tempo: clock.tempo++ })
-            }, 2000)
+            }, 50)
 			setIntervalId(auxIntervalId)
+		}
+		if((!running) && circuitChanged){
+			console.log('aqui ó')
+			resetCircuit(dragMap, lines, setCircuitChanged)
 		}
 	},
 	[running, eletronicMtx, eletronicStateList, finished, clock, circuitChanged])
@@ -98,10 +102,12 @@ export default function SideBar(props) {
 	function startSimulation() {
 		if (alignment == 'simulador') {
 				if (running) {
+					setCircuitChanged(true)
 					setRunning(false)
 					let auxIntervalId = intervalId
 					clearInterval(auxIntervalId)
 					setClock({ tempo: 0 })
+					
 				}
 				 else {
 
