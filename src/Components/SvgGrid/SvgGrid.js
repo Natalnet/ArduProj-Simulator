@@ -18,13 +18,14 @@ export default function SvgGrid() {
     return (
         <div className='Grid'>
             {data.map(d => {
-
+                if(!d.breadboard) return
                 const doc = parser.parseFromString(d.breadboard, 'text/html')
                 const currentSvg = doc.getElementsByTagName('svg')[0]
                 let behavior = ''
                 if (d.behavior) {
                     behavior = d.behavior
                 }
+                console.log(d.breadboard)
                 if (alignment === 'simulador') {
                     return createPortal(
                         <SvgGridItem
@@ -38,7 +39,7 @@ export default function SvgGrid() {
                         document.querySelector('.SideBar')
                     )
                 } else {
-                    return (
+                    return createPortal(
                         <SvgGridItemEditor
                             key={d.componentName}
                             svg={currentSvg}
@@ -46,7 +47,8 @@ export default function SvgGrid() {
                             breadboard={d.breadboard}
                             part={d.part}
                             behavior={behavior}
-                        />
+                        />,
+                        document.querySelector('.SideBar')
                     )
                 }
 
