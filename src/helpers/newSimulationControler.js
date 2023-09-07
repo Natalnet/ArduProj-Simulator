@@ -1,3 +1,6 @@
+import WorkerBuilder from '../Components/ArduinoSimulator/worker-builder';
+import ArduinoWorker from '../Components/ArduinoSimulator/arduino.worker';
+
 export function newSimulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList, circuitChanged, setCircuitChanged) {
 
     console.log('simulacao comecoua ')
@@ -161,4 +164,64 @@ function resetComponents(allSimulatedComponents, simulatedComponents){
     })
 }
 
+export function runCode (code_, arduinos){
+    /*if (executedCode === code_) {
+        console.log("Calling main");
+        arduinos[arduinos.length - 1].terminate();
+        arduinos[arduinos.length - 1] = new WorkerBuilder(Worker);
+        arduinos[arduinos.length - 1].postMessage({ start: `http://localhost:3001/${lastExecuted.jsfile}` });
+        //Arduinos[Arduinos.length - 1].postMessage({getState: `?`});
+    } else {*/
+        console.log("Compiling code " + code_);
+        fetch('http://localhost:3001/compile-wasm',
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: JSON.stringify({ 'code': code_ })
+            }
+        ).then(
+            async (response) => {
+                const resJson = await response.json();
+                //lastExecuted = resJson.res;
+                const executedCode = code_;
+                console.log(resJson)
+                console.log(`received binary size ${resJson}`);
+                /*versão com js global*/
+                //loadJS(`http://localhost:3001/${resJson.res.jsfile}`);
 
+                /*versão com workers*/
+                var instance = new WorkerBuilder(ArduinoWorker);
+                instance.onmessage = (msg) => {
+                    //let diagramTemp = JSON.parse(JSON.stringify(diagram));
+
+                    if (msg.data.type === 'stateUpdate') {
+                        var pinStates = JSON.parse(msg.data.pinValues);
+
+                        //for (let i = 0; i < diagramTemp.parts.length; i++) {
+                            //if (diagramTemp.parts[i].type === 'wokwi-led') {
+                                console.log('pin states: ', pinStates);
+                            //    diagramTemp.parts[i].attrs.value = pinStates[13] === 1 ? '1' : '';
+                            //    setDiagram(diagramTemp);
+                            //}
+                        //diagramTemp = undefined;
+                    }
+                    //console.log("Diagram Values");
+                    //console.log(diagram);
+                };
+                instance.addEventListener("error", () => {
+                    console.log("error while loading");
+                    instance.terminate();
+                });
+                arduinos.push(instance);
+                arduinos[arduinos.length - 1].postMessage({ start: resJson.res.binary });
+            }
+        ).then(
+            data => console.log(data)
+        ).catch((error) => {
+            console.error('Error:', error);
+        });
+
+    //}
+}

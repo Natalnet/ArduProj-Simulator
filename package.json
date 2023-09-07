@@ -47,6 +47,9 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "ignorePatterns": [
+      "src/Components/ArduinoSimulator/exec.js"
     ]
   },
   "browserslist": {

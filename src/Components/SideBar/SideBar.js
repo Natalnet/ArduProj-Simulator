@@ -25,10 +25,10 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
 import code_default from '../../helpers/default_code';
-import WorkerBuilder from '../ArduinoSimulator/worker-builder';
-import Worker from '../ArduinoSimulator/arduino.worker';
+
 import { simulationController, simulationSetup } from '../../helpers/simulationController';
-import { newSimulationController, resetCircuit } from '../../helpers/newSimulationControler';
+import { newSimulationController, resetCircuit, runCode } from '../../helpers/newSimulationControler';
+import default_code from '../../helpers/default_code';
 
 export default function SideBar(props) {
 
@@ -50,8 +50,7 @@ export default function SideBar(props) {
 
 	const [circuitChanged, setCircuitChanged] = React.useState(false)
 
-
-	var arduino = undefined; //variavel para guardar a instancia em execução
+	const [arduinos, setArduinos] = React.useState([])
 
 	React.useEffect(() => {
 		setClock({ tempo: 0 })
@@ -100,6 +99,9 @@ export default function SideBar(props) {
 
 
 	function startSimulation() {
+
+		
+
 		if (alignment == 'simulador') {
 				if (running) {
 					setCircuitChanged(true)
@@ -107,13 +109,14 @@ export default function SideBar(props) {
 					let auxIntervalId = intervalId
 					clearInterval(auxIntervalId)
 					setClock({ tempo: 0 })
-					
+					//arduinos[arduinos.length - 1].postMessage({ stop: 'stop' });
+					//arduinos[arduinos.length - 1].terminate();
 				}
-				 else {
-
+				else {
 					simulationSetup(dragMap, eletronicStateList, setEletronicStateList, setCircuitChanged)
 					setCircuitChanged(true)
 					setRunning(true)
+					//runCode(default_code, arduinos);
 				}
 		} else {
 			if (props.editorComponent) {
