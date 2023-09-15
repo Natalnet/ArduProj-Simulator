@@ -172,12 +172,14 @@ export function createConnectors(partComponent, breadboard, id, dragComponentNam
         let connector = partComponentText.getElementsByTagName('connector')[index]
 
         let breadboardView = partComponentText.getElementsByTagName('breadboardView')[1]
+        
         let p = breadboardView.querySelectorAll('[layer=breadboard]')[index]
+        
         let connectorSvgId = p.getAttribute('svgId')
-
+        
         //Elemento que é um conector baseado no part
         const svgConnector = svgPuro.getElementById(connectorSvgId)
-
+        
         if (!svgConnector) {
             break
         }
@@ -198,9 +200,9 @@ export function createConnectors(partComponent, breadboard, id, dragComponentNam
 
 
 export function editorCodeCaller(input = undefined, editorCode) {
-
+    //console.log(editorCode)
     let splitedCode = editorCode.split('main(input){')
-
+   
     let mainCode = splitedCode[1].slice(0,-1)
 
     let configCode = splitedCode[0].slice(13,-6)

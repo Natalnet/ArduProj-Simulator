@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import useMousePosition from '../../helpers/linePositionHook'
 import { makeLine, lineFunc } from '../../helpers/linesHelpers'
 import { AppContext } from '../../App'
+import useEventListener from '../../helpers/eventListenerHook'
 
 
 export default function InvisibleDiv({ updatePositionCallback, sectionUuid, section, line }) {
@@ -16,6 +17,9 @@ export default function InvisibleDiv({ updatePositionCallback, sectionUuid, sect
 
     React.useEffect(() => {
         makeLine(lines, section)
+
+        //document.current.addEventListener('onkeydown', cancelLines)
+
     }, [])
 
     var mousePosition = { x: 0, y: 0 }
@@ -25,6 +29,9 @@ export default function InvisibleDiv({ updatePositionCallback, sectionUuid, sect
     }
 
     function handleClick() {
+
+            console.log('CLICLADO NO INVISBLE DIV ')
+
             setIsStoped(true)
             setFinalLocation(mousePosition)
 
@@ -43,12 +50,9 @@ export default function InvisibleDiv({ updatePositionCallback, sectionUuid, sect
             }
     }
 
-    function cancelLines(event) {
+    function cancelLines() {
 
-        event.preventDefault()
-        event.stopPropagation()
 
-        console.log('clcickl')
         line.sections.forEach(section => {
             section.leaderLine.remove()
         })
@@ -61,6 +65,16 @@ export default function InvisibleDiv({ updatePositionCallback, sectionUuid, sect
         setLines(filteredLines)
     }
 
+    const ESCAPE_KEYS = ['27', 'Escape'];
+
+        function handler({ key }) {
+          if (ESCAPE_KEYS.includes(String(key))) {
+            console.log('Escape key pressed!')
+            cancelLines()
+          }
+        }
+      
+        useEventListener('keydown', handler);
 
     return (
         <div
@@ -79,7 +93,7 @@ export default function InvisibleDiv({ updatePositionCallback, sectionUuid, sect
             stoped={isStoped.toString()}
             onClick={handleClick}
             onContextMenu={(e) => {cancelLines(e)}}
-
+           
         />)
 }
 

@@ -1,16 +1,25 @@
 import WorkerBuilder from '../Components/ArduinoSimulator/worker-builder';
 import ArduinoWorker from '../Components/ArduinoSimulator/arduino.worker';
 
-export function newSimulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList, circuitChanged, setCircuitChanged) {
+export function newSimulationController(connectivityMtx, dragMap, data, eletronicMtx, lines, eletronicStateList, circuitChanged, setCircuitChanged, setEletronicMtx) {
 
     console.log('simulacao comecoua ')
 
-    var eletronicMtxHOLDER = JSON.parse(JSON.stringify(connectivityMtx))
+
+    let emptyEletronicMtx = true
+    
+    var eletronicMtxHOLDER
+    if(emptyEletronicMtx){
+        eletronicMtxHOLDER = JSON.parse(JSON.stringify(connectivityMtx))
         Object.keys(connectivityMtx).forEach( outConnectorLoop => {
             Object.keys(connectivityMtx).forEach( inConnectorLoop => {
                 eletronicMtxHOLDER[outConnectorLoop][inConnectorLoop] = null
             })
         })
+    } else {
+        eletronicMtxHOLDER = JSON.parse(JSON.stringify(eletronicMtx))
+    }
+    
 
     // Aqui filtramos os componentes e fazemos um Set com apenas aqueles que estão em conexão com um outro componente
     const toBeLookedComponentsSet = new Set()
@@ -50,6 +59,14 @@ export function newSimulationController(connectivityMtx, dragMap, data, eletroni
         
         
         toBeSimulatedComponents.forEach(component => {
+
+            if(toBeSimulatedComponents[0].id !== component.id) return
+            console.log('toBeSimulated INICIO DO LOOP: ')
+            toBeSimulatedComponents.forEach(component => {
+                console.log(component.componentName)
+            })
+
+            console.log(component)
 
             // Aqui iteramos pela eletronicMtxHolder para achar qualquer valor de entrada não nulo para o componente atual e guardamos no input
             let input = {}
@@ -102,16 +119,33 @@ export function newSimulationController(connectivityMtx, dragMap, data, eletroni
 
             })
 
-
             simulatedComponents.push(component)
-            toBeSimulatedComponents.shift()
+
+            console.log('toBeSimulated PRE SHIFT: ')
+            toBeSimulatedComponents.forEach(component => {
+                console.log(component.componentName)
+            })
+
+            let shiftResult = toBeSimulatedComponents.shift()
+            console.log('shift result: ', shiftResult)
+
+            /*
+            !ERRO AQUI vvvvvvvvvvvvvvvvv
+            
+            !^^^^^^^^^^^^^^^^^^^^^^^^^^
+            */
+           //toBeSimulatedComponents.filter(toBeSComponents => {return toBeSComponents.id !== component.id} )
+
+            toBeSimulatedComponents.forEach(component => {
+                console.log(component.componentName)
+            })
             
         })
     }
 
     resetComponents(allSimulatedComponents, simulatedComponents)
     setCircuitChanged(false)
-
+    setEletronicMtx(eletronicMtxHOLDER)
 }
 
 export function resetCircuit(dragMap, lines, setCircuitChanged){
@@ -162,6 +196,8 @@ function resetComponents(allSimulatedComponents, simulatedComponents){
 
         component.doBehavior(input)
     })
+
+    console.log('e\n n\n d\n r\n')
 }
 
 export function runCode (code_, arduinos){

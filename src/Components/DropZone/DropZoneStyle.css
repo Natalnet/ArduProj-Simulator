@@ -2,7 +2,8 @@
     margin-top:0;
     margin: 0 auto;
     width: 90%;
-    height: 90%;
+    padding-top:36px;
+    padding-bottom:36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,8 +27,8 @@
 
 .DragOver {
     color: white;
-    font-size: 24px;
+    font-size: 20px;
     opacity: .9;
     text-align: center;
-    line-height: 1.4;
+    line-height: 1;
 }
