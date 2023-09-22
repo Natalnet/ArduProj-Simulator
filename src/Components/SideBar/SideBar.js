@@ -40,7 +40,7 @@ import {
 } from "../../helpers/newSimulationControler";
 import default_code from "../../helpers/default_code";
 
-    const PAGINATION_SETTINGS = 3
+const PAGINATION_SETTINGS = 3;
 
 export default function SideBar(props) {
     //Arquivos importados
@@ -145,7 +145,7 @@ export default function SideBar(props) {
     }
 
     function startSimulation() {
-        if (alignment == "simulador") {
+        if (alignment === "simulador") {
             if (running) {
                 setCircuitChanged(true);
                 setRunning(false);
@@ -153,8 +153,8 @@ export default function SideBar(props) {
                 clearInterval(auxIntervalId);
                 setClock({ tempo: 0 });
                 setEletronicMtx(null);
-                //arduinos[arduinos.length - 1].postMessage({ stop: 'stop' });
-                //arduinos[arduinos.length - 1].terminate();
+                arduinos[arduinos.length - 1].postMessage({ stop: "stop" });
+                arduinos[arduinos.length - 1].terminate();
             } else {
                 simulationSetup(
                     dragMap,
@@ -164,6 +164,7 @@ export default function SideBar(props) {
                 );
                 setCircuitChanged(true);
                 setRunning(true);
+                runCode(code_default, arduinos);
             }
         } else {
             if (props.editorComponent) {
@@ -325,12 +326,16 @@ export default function SideBar(props) {
             >
                 <SaveRoundedIcon />
             </Fab>
-            {screen == "components" ? (
-                <SvgGrid pagination={pagination} PAGINATION_SETTINGS={PAGINATION_SETTINGS}/>
+            {screen == screen ? ( //"components"
+                //TODO ver possibilidade de parar de usar as tools ou muda-las
+                <SvgGrid
+                    pagination={pagination}
+                    PAGINATION_SETTINGS={PAGINATION_SETTINGS}
+                />
             ) : (
                 <ToolsGrid />
             )}
-            
+
             <Fab
                 className="FabButton"
                 size="small"
