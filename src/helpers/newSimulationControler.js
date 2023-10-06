@@ -1,6 +1,6 @@
 import WorkerBuilder from "../Components/ArduinoSimulator/worker-builder";
 import ArduinoWorker from "../Components/ArduinoSimulator/arduino.worker";
-import _ from "lodash";
+import ArduinoWorkerMock from "../Components/ArduinoSimulator/arduino.mock";
 
 export function newSimulationController(
     connectivityMtx,
@@ -214,18 +214,7 @@ function resetComponents(allSimulatedComponents, simulatedComponents) {
     console.log("e\n n\n d\n r\n");
 }
 
-export function runCode(code_, arduinos, dragMap, eletronicMtx, setEletronicMtx, setCircuitChanged) {
-
-    let eletronicMtxHOLDER = JSON.parse(JSON.stringify(eletronicMtx));
-
-    //? Sugerir a julio mover o code_ para dentro do dragMap
-    let microControllersToRun = []
-    dragMap.forEach(component => {
-        if (component.config.type === "microcontroller"){
-            microControllersToRun.push(component)
-        }
-    })
-
+export function runCode(code_, arduinos) {
     /*if (executedCode === code_) {
         console.log("Calling main");
         arduinos[arduinos.length - 1].terminate();
@@ -252,34 +241,12 @@ export function runCode(code_, arduinos, dragMap, eletronicMtx, setEletronicMtx,
 
             /*versão com workers*/
             var instance = new WorkerBuilder(ArduinoWorker);
+            //var instance = new WorkerBuilder(ArduinoWorkerMock);
             instance.onmessage = (msg) => {
                 //let diagramTemp = JSON.parse(JSON.stringify(diagram));
 
                 if (msg.data.type === "stateUpdate") {
-
-                    let selectedComponent = {} //? Perguntar a julio se seria possivel iterar essa função pelo microControllersToRun para ter o dragMap de cada arduino rodado aqui
-                    //? Por exemplo trocar o arduinos pelo dragMap e aqui dentro definir ele como uma filtragem do dragMap baseado em quem seja microcontrolador
-
                     var pinStates = JSON.parse(msg.data.pinValues);
-
-                    // Aqui criamos um output baseado no pinSTates
-                    let output = {}
-                    selectedComponent.connectors.forEach((connector, index) => {
-                        output[connector.svgId] = {value: pinStates[index], type:"digital"}
-                    })
-
-
-                    //Iteramos pelos connectors do microcontrolador e se algum valor do output estiver diferente da eletronicMTX atualizamos a eletronicMTX e definimos que o circuito mudou
-                    selectedComponent.connectors.forEach(connector => {
-                        connector.connectedTo.forEach(connectedTo => {
-                            if(!_.isEqual(eletronicMtx[connector.fullId][connectedTo],output[connector.svgId])){
-                                eletronicMtxHOLDER[connector.fullId][connectedTo] = output[connector.svgId]
-                                setCircuitChanged(true)
-                            }
-                        })
-                    })
-
-                    setEletronicMtx(eletronicMtxHOLDER)
 
                     //for (let i = 0; i < diagramTemp.parts.length; i++) {
                     //if (diagramTemp.parts[i].type === 'wokwi-led') {
