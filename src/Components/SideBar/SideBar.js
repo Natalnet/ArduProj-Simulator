@@ -164,7 +164,7 @@ export default function SideBar(props) {
                 );
                 setCircuitChanged(true);
                 setRunning(true);
-                runCode(code_default, arduinos);
+                runCode(code_default, arduinos, dragMap, eletronicMtx, setEletronicMtx, setCircuitChanged);
             }
         } else {
             if (props.editorComponent) {
