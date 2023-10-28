@@ -223,6 +223,7 @@ export function runCode(code_, arduinos) {
         //Arduinos[Arduinos.length - 1].postMessage({getState: `?`});
     } else {*/
     console.log("Compiling code " + code_);
+    
     fetch("http://localhost:3001/compile-wasm", {
         headers: {
             "Content-Type": "application/json",
@@ -238,9 +239,11 @@ export function runCode(code_, arduinos) {
             console.log(`received binary size ${resJson}`);
             /*versão com js global*/
             //loadJS(`http://localhost:3001/${resJson.res.jsfile}`);
-
+            
+            let inicializado = false;
             /*versão com workers*/
             var instance = new WorkerBuilder(ArduinoWorker);
+            
             //var instance = new WorkerBuilder(ArduinoWorkerMock);
             instance.onmessage = (msg) => {
                 //let diagramTemp = JSON.parse(JSON.stringify(diagram));
@@ -250,8 +253,8 @@ export function runCode(code_, arduinos) {
 
                     //for (let i = 0; i < diagramTemp.parts.length; i++) {
                     //if (diagramTemp.parts[i].type === 'wokwi-led') {
-                    console.log("pin states: ", pinStates);
-
+                    console.log(`pin states: ${pinStates}`);
+                    instance.pinState = pinStates;
                     //* setCircuitChanged()
                     //* instance.setPinStates(pinStates)
 
@@ -260,6 +263,11 @@ export function runCode(code_, arduinos) {
                     //}
                     //diagramTemp = undefined;
                 }
+                else if (msg.data.type === "log"){
+                    inicializado = true;
+                    console.log("Inicializacao terminada");
+                }
+                
                 //console.log("Diagram Values");
                 //console.log(diagram);
             };
@@ -271,6 +279,9 @@ export function runCode(code_, arduinos) {
             arduinos[arduinos.length - 1].postMessage({
                 start: resJson.res.binary,
             });
+
+            //while(!inicializado);
+
         })
         .then((data) => console.log(data))
         .catch((error) => {
