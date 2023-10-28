@@ -27,7 +27,7 @@ Module['ready'] = new Promise((resolve, reject) => {
   readyPromiseResolve = resolve;
   readyPromiseReject = reject;
 });
-["_main","_memory","___indirect_function_table","__notifyUpdate","__notifyFinished","__embind_initialize_bindings","_fflush","___start_em_js","___stop_em_js","onRuntimeInitialized"].forEach((prop) => {
+["_main","_memory","___indirect_function_table","__notifyUpdate","__notifyFinished","__getPinValues","__digitalRead","__embind_initialize_bindings","_fflush","___start_em_js","___stop_em_js","onRuntimeInitialized"].forEach((prop) => {
   if (!Object.getOwnPropertyDescriptor(Module['ready'], prop)) {
     Object.defineProperty(Module['ready'], prop, {
       get: () => abort('You are getting ' + prop + ' on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js'),
@@ -922,8 +922,10 @@ function dbg(text) {
 // end include: runtime_debug.js
 // === Body ===
 
-function _notifyUpdate() { console.log('Notify update called'); console.log('Calling self.notifyUpdate ' + self.notifyUpdate); self.notifyUpdate(); }
-function _notifyFinished() { console.log('Notify finished called'); console.log('Calling self.notifyFinished ' + self.notifyFinished); self.notifyFinished(); }
+function _notifyUpdate() { console.log('Notify update called'); self.notifyUpdate(); }
+function _notifyFinished() { console.log('Notify finished called'); self.notifyFinished(); }
+function _getPinValues() { var str = self.getPinValues(); var strLength = lengthBytesUTF8(str) + 1; var buffer = _malloc(strLength); stringToUTF8(str, buffer, strLength); return buffer; }
+function _digitalRead(index,pin) { var pinVal = self.digitalRead(index, pin); return pinVal; }
 
 
 // end include: preamble.js
@@ -5911,6 +5913,7 @@ function checkIncomingModuleAPI() {
 }
 var wasmImports = {
   __cxa_throw: ___cxa_throw,
+  _digitalRead: _digitalRead,
   _embind_register_bigint: __embind_register_bigint,
   _embind_register_bool: __embind_register_bool,
   _embind_register_emval: __embind_register_emval,
@@ -5921,6 +5924,7 @@ var wasmImports = {
   _embind_register_std_string: __embind_register_std_string,
   _embind_register_std_wstring: __embind_register_std_wstring,
   _embind_register_void: __embind_register_void,
+  _getPinValues: _getPinValues,
   _notifyFinished: _notifyFinished,
   _notifyUpdate: _notifyUpdate,
   abort: _abort,
@@ -5959,6 +5963,7 @@ var dynCall_ii = Module['dynCall_ii'] = createExportWrapper('dynCall_ii');
 var dynCall_v = Module['dynCall_v'] = createExportWrapper('dynCall_v');
 var dynCall_vii = Module['dynCall_vii'] = createExportWrapper('dynCall_vii');
 var dynCall_iii = Module['dynCall_iii'] = createExportWrapper('dynCall_iii');
+var dynCall_viii = Module['dynCall_viii'] = createExportWrapper('dynCall_viii');
 var dynCall_iiii = Module['dynCall_iiii'] = createExportWrapper('dynCall_iiii');
 var dynCall_viijii = Module['dynCall_viijii'] = createExportWrapper('dynCall_viijii');
 var dynCall_viiii = Module['dynCall_viiii'] = createExportWrapper('dynCall_viiii');
@@ -5979,8 +5984,8 @@ var _asyncify_start_unwind = createExportWrapper('asyncify_start_unwind');
 var _asyncify_stop_unwind = createExportWrapper('asyncify_stop_unwind');
 var _asyncify_start_rewind = createExportWrapper('asyncify_start_rewind');
 var _asyncify_stop_rewind = createExportWrapper('asyncify_stop_rewind');
-var ___start_em_js = Module['___start_em_js'] = 82196;
-var ___stop_em_js = Module['___stop_em_js'] = 82466;
+var ___start_em_js = Module['___start_em_js'] = 82244;
+var ___stop_em_js = Module['___stop_em_js'] = 82639;
 
 // include: postamble.js
 // === Auto-generated postamble setup entry stuff ===
