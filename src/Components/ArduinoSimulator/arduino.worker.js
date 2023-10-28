@@ -19,9 +19,9 @@ export default () => {
     let customWasModule = {}    
 
     self.notifyUpdate = () => {
-        console.log('Pin values changed \n from \n ' + actPinValues + '\n to \n' + customWasModule.getArduinoState(0));
         let actPinValues_ = customWasModule.getArduinoState(0);
         if(actPinValues !== actPinValues_){
+            console.log('Pin values changed \n from \n ' + actPinValues + '\n to \n' + customWasModule.getArduinoState(0));
             actPinValues = actPinValues_;
             postMessage({type: 'stateUpdate', pinValues: actPinValues});
         }
