@@ -84,6 +84,8 @@ export default function SideBar(props) {
 
     const [arduinos, setArduinos] = React.useState([]);
 
+    const [invert, setInvert] = React.useState(false);
+
     React.useEffect(() => {
         setClock({ tempo: 0 });
     }, []);
@@ -130,6 +132,48 @@ export default function SideBar(props) {
     ]);
 
     function updateConfigPins() {
+
+        if(!invert)
+            arduinos[0].postMessage({
+                    updatePins: [
+                        0,//0
+                        0,//1
+                        0,//2
+                        0,//3
+                        0,//4
+                        0,//5
+                        0,//6
+                        0,//7
+                        0,//8
+                        0,//9
+                        1,//10
+                        0,//11
+                        0,//12
+                        0//13
+                    ]
+            })
+        else
+            arduinos[0].postMessage({
+                updatePins: [
+                    0,//0
+                    0,//1
+                    0,//2
+                    0,//3
+                    0,//4
+                    0,//5
+                    0,//6
+                    0,//7
+                    0,//8
+                    0,//9
+                    0,//10
+                    0,//11
+                    0,//12
+                    0//13
+                ]
+            })
+        
+        setInvert(!invert)
+
         console.log("dragMap:");
         console.log(dragMap);
         console.log("connectivityMtx:");
